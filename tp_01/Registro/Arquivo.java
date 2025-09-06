@@ -1,9 +1,10 @@
-package aed3;
-
+package Registro;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
+import Hash.HashExtensivel;
+import Pares.ParIDEndereco;
 
 public class Arquivo<T extends Registro> {
     final int TAM_CABECALHO = 12;

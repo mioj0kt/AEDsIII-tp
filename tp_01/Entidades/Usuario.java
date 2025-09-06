@@ -1,131 +1,78 @@
 package Entidades;
 
+import Registro.Registro;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class Usuario{
+public class Usuario implements Registro {
 
-    protected int ID;
-    protected String Nome;
-    protected String Email;
-    protected String HashSenha;
-    protected String PerguntaSecreta;
-    protected String RespostaSecreta;
+    public int id;
+    public String nome;
+    public String email;
+    public String hashSenha;
+    public String perguntaSecreta;
+    public String respostaSecreta;
 
-    // Construtor Completo
-    public Usuario(int id, String nome, String email, String hashSenha, String perguntaSecreta, String respostaSecreta){
-        ID = id;
-        Nome = nome;
-        Email = email;
-        HashSenha = hashSenha;
-        PerguntaSecreta = perguntaSecreta;
-        RespostaSecreta = respostaSecreta;
+    public Usuario() {
+        this(-1, "", "", "", "", "");
     }
 
-    // Construtor Vazio
-    public Usuario(){
-        ID = -1;
-        Nome = "";
-        Email = "";
-        HashSenha = "";
-        PerguntaSecreta = "";
-        RespostaSecreta = "";
+    public Usuario(String nome, String email, String hashSenha, String perguntaSecreta, String respostaSecreta) {
+        this(-1, nome, email, hashSenha, perguntaSecreta, respostaSecreta);
     }
 
-    // Construtor sem ID
-    public Usuario(String nome, String email, String hashSenha, String perguntaSecreta, String respostaSecreta){
-        ID = -1;
-        Nome = nome;
-        Email = email;
-        HashSenha = hashSenha;
-        PerguntaSecreta = perguntaSecreta;
-        RespostaSecreta = respostaSecreta;
+    public Usuario(int id, String nome, String email, String hashSenha, String perguntaSecreta, String respostaSecreta) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.hashSenha = hashSenha;
+        this.perguntaSecreta = perguntaSecreta;
+        this.respostaSecreta = respostaSecreta;
     }
 
-    // Getters e Setters
-    public int getId(){
-        return ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setId(int id){
-        ID = id;
+    public int getId() {
+        return id;
     }
 
-    public String getNome(){
-        return Nome;
+    public String toString() {
+        return "\nID...............: " + this.id +
+               "\nNome.............: " + this.nome +
+               "\nEmail............: " + this.email +
+               "\nHash da Senha....: " + this.hashSenha +
+               "\nPergunta Secreta.: " + this.perguntaSecreta +
+               "\nResposta Secreta.: " + this.respostaSecreta;
     }
 
-    public void setNome(String nome){
-        Nome = nome;
-    }
-
-    public String getEmail(){
-        return Email;
-    }
-
-    public void setEmail(String email){
-        Email = email;
-    }
-
-    public String getHashSenha(){
-        return HashSenha;
-    }
-
-    public void setHashSenha(String hashSenha){ 
-        HashSenha = hashSenha;
-    }
-
-    public String getPerguntaSecreta(){
-        return PerguntaSecreta;
-    }
-
-    public void setPerguntaSecreta(String perguntaSecreta){
-        PerguntaSecreta = perguntaSecreta;
-    }
-
-    public String getRespostaSecreta(){
-        return RespostaSecreta;
-    }
-
-    public void setRespostaSecreta(String respostaSecreta){
-        RespostaSecreta = respostaSecreta;
-    }
-
-    public String toString(){
-        return "\nID: " + ID +
-               "\nNome: " + Nome +
-               "\nEmail: " + Email +
-               "\nHash da Senha: " + HashSenha +
-               "\nPergunta Secreta: " + PerguntaSecreta +
-               "\nResposta Secreta: " + RespostaSecreta;
-    }
-
-    public byte[] toByteArray() throws IOException{
+    public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        dos.writeInt(ID);
-        dos.writeUTF(Nome);
-        dos.writeUTF(Email);
-        dos.writeUTF(HashSenha);
-        dos.writeUTF(PerguntaSecreta);
-        dos.writeUTF(RespostaSecreta);
+        dos.writeInt(this.id);
+        dos.writeUTF(this.nome);
+        dos.writeUTF(this.email);
+        dos.writeUTF(this.hashSenha);
+        dos.writeUTF(this.perguntaSecreta);
+        dos.writeUTF(this.respostaSecreta);
 
         return baos.toByteArray();
     }
 
-    public void fromByteArray(byte[] ba) throws IOException{
-        ByteArrayInputStream bais = new ByteArrayInputStream(ba);
+    public void fromByteArray(byte[] b) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(b);
         DataInputStream dis = new DataInputStream(bais);
 
-        ID = dis.readInt();
-        Nome = dis.readUTF();
-        Email = dis.readUTF();
-        HashSenha = dis.readUTF();
-        PerguntaSecreta = dis.readUTF();
-        RespostaSecreta = dis.readUTF();
+        this.id = dis.readInt();
+        this.nome = dis.readUTF();
+        this.email = dis.readUTF();
+        this.hashSenha = dis.readUTF();
+        this.perguntaSecreta = dis.readUTF();
+        this.respostaSecreta = dis.readUTF();
     }
 }

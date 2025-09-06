@@ -2,9 +2,10 @@ package Menus;
 
 import java.util.Scanner;
 
-public class MinhasListas{
+public class MenuMinhasListas{
     public void menu(){
         Scanner sc = new Scanner(System.in);
+        String opcao;
         int x;
 
         do{
@@ -13,11 +14,17 @@ public class MinhasListas{
                             "> Início > Minhas listas\n" +
                             "\nLISTAS\n" +
                             //for(){} +
-                            "(1) Aniversario\n" +
+                            "(1) Aniversario\n" +  //Exemplo
                             "\n(N) Nova listas\n" +
-                            "(R) Nova listas\n");
+                            "(R) Retornar ao menu anterior\n");
 
             System.out.print("\nOpcao: ");
+            opcao = sc.nextLine().trim();
+
+            if (opcao.equalsIgnoreCase("R")) {
+                System.out.println("Retornando ao menu anterior...\n");
+                break;
+            }
 
             try{
                 x = Integer.valueOf(sc.nextLine());

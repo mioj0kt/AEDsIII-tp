@@ -1,5 +1,6 @@
 package Entidades;
 
+import Registro.Registro;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -7,151 +8,102 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 
-public class Lista{
+public class Lista implements Registro {
 
-    protected int ID;
-    protected int IDUsuario;
-    protected String Nome;
-    protected String Descricao;
-    protected LocalDate DataCriacao;
-    protected LocalDate DataLimite;
-    protected String CodigoCompartilhavel;
+    public int id;
+    public int idUsuario;
+    public String nome;
+    public String descricao;
+    public LocalDate dataCriacao;
+    public LocalDate dataLimite;
+    public String codigoCompartilhavel;
 
-    // Construtor Completo
+    // Construtor completo
     public Lista(int id, int idUsuario, String nome, String descricao, LocalDate dataCriacao,
-                 LocalDate dataLimite, String codigoCompartilhavel){
-        ID = id;
-        IDUsuario = idUsuario;
-        Nome = nome;
-        Descricao = descricao;
-        DataCriacao = dataCriacao;
-        DataLimite = dataLimite;
-        CodigoCompartilhavel = codigoCompartilhavel;
+                 LocalDate dataLimite, String codigoCompartilhavel) {
+        this.id = id;
+        this.idUsuario = idUsuario;
+        this.nome = nome;
+        this.descricao = descricao;
+        this.dataCriacao = dataCriacao;
+        this.dataLimite = dataLimite;
+        this.codigoCompartilhavel = codigoCompartilhavel;
     }
 
-    // Construtor Vazio
-    public Lista(){
-        ID = -1;
-        IDUsuario = -1;
-        Nome = "";
-        Descricao = "";
-        DataCriacao = LocalDate.now();
-        DataLimite = null;
-        CodigoCompartilhavel = "";
+    // Construtor vazio
+    public Lista() {
+        this(-1, -1, "", "", LocalDate.now(), null, "");
     }
 
     // Construtor sem ID (para novos registros)
-    public Lista(int idUsuario, String nome, String descricao, LocalDate dataLimite, String codigoCompartilhavel){
-        ID = -1;
-        IDUsuario = idUsuario;
-        Nome = nome;
-        Descricao = descricao;
-        DataCriacao = LocalDate.now();
-        DataLimite = dataLimite;
-        CodigoCompartilhavel = codigoCompartilhavel;
+    public Lista(int idUsuario, String nome, String descricao, LocalDate dataLimite, String codigoCompartilhavel) {
+        this(-1, idUsuario, nome, descricao, LocalDate.now(), dataLimite, codigoCompartilhavel);
     }
 
-    // Getters e Setters
-    public int getId(){
-        return ID;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setId(int id){
-        ID = id;
+    public int getId() {
+        return id;
     }
 
-    public int getIdUsuario(){
-        return IDUsuario;
+    public int getIdUsuario() {
+        return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario){
-        IDUsuario = idUsuario;
-    }
-
-    public String getNome(){
-        return Nome;
-    }
-
-    public void setNome(String nome){
-        Nome = nome;
-    }
-
-    public String getDescricao(){
-        return Descricao;
-    }
-
-    public void setDescricao(String descricao){
-        Descricao = descricao;
-    }
-
-    public LocalDate getDataCriacao(){
-        return DataCriacao;
-    }
-
-    public void setDataCriacao(LocalDate dataCriacao){
-        DataCriacao = dataCriacao;
-    }
-
-    public LocalDate getDataLimite(){
-        return DataLimite;
-    }
-
-    public void setDataLimite(LocalDate dataLimite){
-        DataLimite = dataLimite;
-    }
-
-    public String getCodigoCompartilhavel(){
-        return CodigoCompartilhavel;
-    }
-
-    public void setCodigoCompartilhavel(String codigoCompartilhavel){ 
-        CodigoCompartilhavel = codigoCompartilhavel;
+    public void setIdUsuario(int idUsuario) {
+        this.idUsuario = idUsuario;
     }
 
     @Override
-    public String toString(){
-        return "\nID: " + ID +
-               "\nID Usuário: " + IDUsuario +
-               "\nNome: " + Nome +
-               "\nDescrição: " + Descricao +
-               "\nData Criação: " + DataCriacao +
-               "\nData Limite: " + (DataLimite != null ? DataLimite : "Não definida") +
-               "\nCódigo Compartilhável: " + CodigoCompartilhavel;
+    public String toString() {
+        return "\nID.................: " + this.id +
+               "\nID Usuário........: " + this.idUsuario +
+               "\nNome..............: " + this.nome +
+               "\nDescrição.........: " + this.descricao +
+               "\nData Criação......: " + this.dataCriacao +
+               "\nData Limite.......: " + (this.dataLimite != null ? this.dataLimite : "Não definida") +
+               "\nCódigo Compart....: " + this.codigoCompartilhavel;
     }
 
-    public byte[] toByteArray() throws IOException{
+    @Override
+    public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
 
-        dos.writeInt(ID);
-        dos.writeInt(IDUsuario);
-        dos.writeUTF(Nome);
-        dos.writeUTF(Descricao);
-        dos.writeInt((int) DataCriacao.toEpochDay());
-        dos.writeBoolean(DataLimite != null);
-        if (DataLimite != null) {
-            dos.writeInt((int) DataLimite.toEpochDay());
+        dos.writeInt(this.id);
+        dos.writeInt(this.idUsuario);
+        dos.writeUTF(this.nome);
+        dos.writeUTF(this.descricao);
+        dos.writeInt((int) this.dataCriacao.toEpochDay());
+        dos.writeBoolean(this.dataLimite != null);
+        if (this.dataLimite != null) {
+            dos.writeInt((int) this.dataLimite.toEpochDay());
         }
-        dos.writeUTF(CodigoCompartilhavel);
+        dos.writeUTF(this.codigoCompartilhavel);
 
         return baos.toByteArray();
     }
 
-    public void fromByteArray(byte[] ba) throws IOException{
+    @Override
+    public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
 
-        ID = dis.readInt();
-        IDUsuario = dis.readInt();
-        Nome = dis.readUTF();
-        Descricao = dis.readUTF();
-        DataCriacao = LocalDate.ofEpochDay(dis.readInt());
+        this.id = dis.readInt();
+        this.idUsuario = dis.readInt();
+        this.nome = dis.readUTF();
+        this.descricao = dis.readUTF();
+        this.dataCriacao = LocalDate.ofEpochDay(dis.readInt());
+
         boolean temDataLimite = dis.readBoolean();
-        if (temDataLimite){
-            DataLimite = LocalDate.ofEpochDay(dis.readInt());
-        } else{
-            DataLimite = null;
+        if (temDataLimite) {
+            this.dataLimite = LocalDate.ofEpochDay(dis.readInt());
+        } else {
+            this.dataLimite = null;
         }
-        CodigoCompartilhavel = dis.readUTF();
+
+        this.codigoCompartilhavel = dis.readUTF();
     }
 }

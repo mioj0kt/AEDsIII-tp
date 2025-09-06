@@ -36,7 +36,7 @@ public class Main{
                         System.out.println("Meus dados.\n");
                         break;
                     case 2:
-                        new MinhasListas().menu();
+                        new MenuMinhasListas().menu();
                         break;
                     case 3:
                         System.out.println("Não implementado.\n");

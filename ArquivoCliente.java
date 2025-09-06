@@ -1,6 +1,7 @@
-import aed3.*;
+import Hash.HashExtensivel;
+import Registro.Arquivo;
 
-public class ArquivoCliente extends aed3.Arquivo<Cliente> {
+public class ArquivoCliente extends Arquivo<Cliente> {
 
     Arquivo<Cliente> arqClientes;
     HashExtensivel<ParCPFID> indiceIndiretoCPF;

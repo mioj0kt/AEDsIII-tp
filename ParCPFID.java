@@ -4,7 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ParCPFID implements aed3.RegistroHashExtensivel<ParCPFID> {
+public class ParCPFID implements Registro.RegistroHashExtensivel<ParCPFID> {
     
     private String cpf; // chave
     private int id;     // valor
