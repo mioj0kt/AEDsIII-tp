@@ -10,7 +10,7 @@ public class Main{
             int x;
             String tmp;
             do{ 
-                System.out.println("PresenteFácil 1.0\n" + 
+                System.out.println("PresenteFácil 1.0 \n" + 
                                    "------------------\n" +
                                    "> Início\n" +
                                    "\n(1) Meus dados\n" +
