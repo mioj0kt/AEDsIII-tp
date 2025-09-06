@@ -1,0 +1,47 @@
+package Menus;
+
+import java.util.Scanner;
+
+public class MinhasListas{
+    public void menu(){
+        Scanner sc = new Scanner(System.in);
+        int x;
+
+        do{
+            System.out.println("PresenteFácil 1.0\n" + 
+                            "------------------\n" +
+                            "> Início > Minhas listas\n" +
+                            "\nLISTAS\n" +
+                            //for(){} +
+                            "(1) Aniversario\n" +
+                            "\n(N) Nova listas\n" +
+                            "(R) Nova listas\n");
+
+            System.out.print("\nOpcao: ");
+
+            try{
+                x = Integer.valueOf(sc.nextLine());
+            }catch(NumberFormatException e){
+                x = -1;
+            }
+
+            switch(x){
+                case 1:
+                        
+                    break;
+                case 2:
+                        
+                    break;
+                case 3:
+                        
+                    break;
+                case 4:
+                        
+                    break;
+                default:
+                    break;
+            }
+            sc.close();
+        }while(x != 0);
+    }
+}
