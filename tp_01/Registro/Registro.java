@@ -1,6 +1,5 @@
 package Registro;
 
-
 import java.io.IOException;
 
 public interface Registro {

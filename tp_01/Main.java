@@ -7,7 +7,7 @@ public class Main{
 
         try{
             sc = new Scanner(System.in);
-            int x;
+            int x = -1;
             String tmp;
             do{ 
                 System.out.println("PresenteFácil 1.0 \n" + 
@@ -26,27 +26,18 @@ public class Main{
                     System.out.println("Finalizado.\n");
                     break;
                 }
+
                 try{
                     x = Integer.valueOf(tmp);
                 } catch(NumberFormatException e){
                     x = -1;
                 }
                 switch(x){
-                    case 1:
-                        System.out.println("Meus dados.\n");
-                        break;
-                    case 2:
-                        new MenuMinhasListas().menu();
-                        break;
-                    case 3:
-                        System.out.println("Não implementado.\n");
-                        break;
-                    case 4:
-                        System.out.println("Buscar listas.\n");
-                        break;
-                    default:
-                        System.out.println("Opcao Invalida\n");
-                        break;
+                    case 1: System.out.println("Meus dados.\n"); break;
+                    case 2: new MenuMinhasListas().menu(sc); break;
+                    case 3: System.out.println("Não implementado.\n"); break;
+                    case 4: System.out.println("Buscar listas.\n"); break;
+                    default: System.out.println("Opcao Invalida\n"); break;
                 }
             } while(x != 0);
             sc.close();

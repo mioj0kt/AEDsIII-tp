@@ -1,5 +1,5 @@
+import Arquivo.Arquivo;
 import Hash.HashExtensivel;
-import Registro.Arquivo;
 
 public class ArquivoCliente extends Arquivo<Cliente> {
 

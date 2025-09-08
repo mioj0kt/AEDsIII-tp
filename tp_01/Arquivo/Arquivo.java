@@ -1,10 +1,11 @@
-package Registro;
+package Arquivo;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
 import Hash.HashExtensivel;
 import Pares.ParIDEndereco;
+import Registro.Registro;
 
 public class Arquivo<T extends Registro> {
     final int TAM_CABECALHO = 12;
