@@ -1,25 +1,27 @@
 package Pares;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+
 import Registro.RegistroHashExtensivel;
 
 public class ParIDEndereco implements RegistroHashExtensivel<ParIDEndereco> {
-    
-    private int id;   // chave
-    private long endereco;    // valor
-    private final short TAMANHO = 12;  // tamanho em bytes
+
+    private int id;
+    private long endereco;
+    private final short TAMANHO = 12;
 
     public ParIDEndereco() {
         this.id = -1;
         this.endereco = -1;
     }
 
-    public ParIDEndereco(int id, long end) {
+    public ParIDEndereco(int id, long endereco) {
         this.id = id;
-        this.endereco = end;
+        this.endereco = endereco;
     }
 
     public int getId() {
@@ -30,32 +32,31 @@ public class ParIDEndereco implements RegistroHashExtensivel<ParIDEndereco> {
         return endereco;
     }
 
-    @Override
-    public int hashCode() {
-        return this.id;
+    public short size() {
+        return TAMANHO;
     }
 
-    public short size() {
-        return this.TAMANHO;
+    @Override
+    public int hashCode() {
+        return id;
     }
 
     public String toString() {
-        return "("+this.id + ";" + this.endereco+")";
+        return "(" + id + ";" + endereco + ")";
     }
 
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
-        dos.writeInt(this.id);
-        dos.writeLong(this.endereco);
+        dos.writeInt(id);
+        dos.writeLong(endereco);
         return baos.toByteArray();
     }
 
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-        this.id = dis.readInt();
-        this.endereco = dis.readLong();
+        id = dis.readInt();
+        endereco = dis.readLong();
     }
-
 }

@@ -7,6 +7,15 @@ public class Main{
 
         try{
             sc = new Scanner(System.in);
+            MenuUsuarios menu = new MenuUsuarios();
+
+            // Primeiro: login ou criação de usuário
+            boolean usuarioLogado = menu.menu();
+            if(!usuarioLogado){
+                System.out.println("Programa encerrado. Nenhum usuário logado.");
+                return;
+            }
+
             int x = -1;
             String tmp;
             do{ 
@@ -19,28 +28,28 @@ public class Main{
                                    "(4) Buscar listas\n" +
                                    "\n(S) Sair\n");
 
-                System.out.print("\nOpcao: ");
+                System.out.print("Opcao: ");
                 tmp = sc.nextLine();
 
                 if(tmp.equalsIgnoreCase("S")){
-                    System.out.println("Finalizado.\n");
+                    System.out.println("Finalizado.");
                     break;
                 }
 
                 try{
                     x = Integer.valueOf(tmp);
                 } catch(NumberFormatException e){
-                    x = -1;
+                    x = -1; 
                 }
                 switch(x){
-                    case 1: System.out.println("Meus dados.\n"); break;
+                    case 1: menu.mostraUsuario(menu.getUsuarioAtivo()); break;
                     case 2: new MenuMinhasListas().menu(sc); break;
                     case 3: System.out.println("Não implementado.\n"); break;
                     case 4: System.out.println("Buscar listas.\n"); break;
                     default: System.out.println("Opcao Invalida\n"); break;
                 }
-            } while(x != 0);
-            sc.close();
+            } while(true);
+
         } catch(Exception e){
             e.printStackTrace();
         }

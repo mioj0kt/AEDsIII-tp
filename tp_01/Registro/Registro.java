@@ -2,7 +2,7 @@ package Registro;
 
 import java.io.IOException;
 
-public interface Registro {
+public interface Registro{
     public void setId(int i);
     public int getId();
     public byte[] toByteArray() throws IOException;

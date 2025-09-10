@@ -38,7 +38,7 @@ public class MenuLista{
                 x = -1;
             }
 
-            switch (x){
+            switch(x){
                 case 1: System.out.println("Ainda não implementado"); break;
                 case 2: System.out.println("Alterar dados da lista"); break;
                 case 3: System.out.println("Excluir a lista"); break;
