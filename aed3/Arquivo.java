@@ -1,11 +1,11 @@
 package aed3;
 
-
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
 
 public class Arquivo<T extends Registro> {
+
     final int TAM_CABECALHO = 12;
     RandomAccessFile arquivo;
     String nomeArquivo;
@@ -14,237 +14,149 @@ public class Arquivo<T extends Registro> {
 
     public Arquivo(String na, Constructor<T> c) throws Exception {
         File d = new File(".\\dados");
-        if(!d.exists())
-            d.mkdir();
+        if (!d.exists()) d.mkdir();
+        d = new File(".\\dados\\" + na);
+        if (!d.exists()) d.mkdir();
 
-        d = new File(".\\dados\\"+na);
-        if(!d.exists())
-            d.mkdir();
-
-        this.nomeArquivo = ".\\dados\\"+na+"\\"+na+".db";
+        this.nomeArquivo = ".\\dados\\" + na + "\\" + na + ".db";
         this.construtor = c;
         arquivo = new RandomAccessFile(this.nomeArquivo, "rw");
-        if(arquivo.length()<TAM_CABECALHO) {
-            // inicializa o arquivo, criando seu cabecalho
+
+        if (arquivo.length() < TAM_CABECALHO) {
             arquivo.writeInt(0);   // último ID
-            arquivo.writeLong(-1);   // lista de registros marcados para exclusão 
+            arquivo.writeLong(-1); // lista de registros marcados para exclusão
         }
 
-        indiceDireto = new HashExtensivel<>(
-            ParIDEndereco.class.getConstructor(), 
-            4, 
-            ".\\dados\\"+na+"\\"+na+".d.db", // diretório 
-            ".\\dados\\"+na+"\\"+na+".c.db"  // cestos
-        );
+        indiceDireto = new HashExtensivel<>(ParIDEndereco.class.getConstructor(), 4,
+                ".\\dados\\" + na + "\\" + na + ".d.db",
+                ".\\dados\\" + na + "\\" + na + ".c.db");
     }
 
     public int create(T obj) throws Exception {
         arquivo.seek(0);
-        int proximoID = arquivo.readInt()+1;
+        int proximoID = arquivo.readInt() + 1;
         arquivo.seek(0);
         arquivo.writeInt(proximoID);
         obj.setId(proximoID);
         byte[] b = obj.toByteArray();
 
-        long endereco = getDeleted(b.length);   // tenta reusar algum espaço de registro excluído
-        if(endereco == -1) {   // nenhum espaço disponível; escreve o registro no fim do arquivo  
+        long endereco = getDeleted(b.length);
+        if (endereco == -1) {
             arquivo.seek(arquivo.length());
             endereco = arquivo.getFilePointer();
-            arquivo.writeByte(' ');      // lápide
-            arquivo.writeShort(b.length);  // tamanho do vetor de bytes
-            arquivo.write(b);              // vetor de bytes
+            arquivo.writeByte(' ');
+            arquivo.writeShort(b.length);
+            arquivo.write(b);
         } else {
             arquivo.seek(endereco);
-            arquivo.writeByte(' ');      // limpa o lápide
-            arquivo.skipBytes(2);        // pula o indicador de tamanho para preservá-lo
-            arquivo.write(b);              // vetor de bytes
+            arquivo.writeByte(' ');
+            arquivo.skipBytes(2);
+            arquivo.write(b);
         }
 
         indiceDireto.create(new ParIDEndereco(proximoID, endereco));
-        
         return obj.getId();
     }
-    
-    public T read(int id) throws Exception {
-        T obj;
-        short tam;
-        byte[] b;
-        byte lapide;
 
+    public T read(int id) throws Exception {
         ParIDEndereco pid = indiceDireto.read(id);
-        if(pid!=null) {
-            arquivo.seek(pid.getEndereco());
-            obj = construtor.newInstance();
-            lapide = arquivo.readByte();
-            if(lapide==' ') {
-                tam = arquivo.readShort();
-                b = new byte[tam];
-                arquivo.read(b);
-                obj.fromByteArray(b);
-                if(obj.getId()==id)
-                    return obj;
-            }
-        }
-        return null;
+        if (pid == null) return null;
+
+        arquivo.seek(pid.getEndereco());
+        byte lapide = arquivo.readByte();
+        if (lapide != ' ') return null;
+
+        short tam = arquivo.readShort();
+        byte[] b = new byte[tam];
+        arquivo.read(b);
+
+        T obj = construtor.newInstance();
+        obj.fromByteArray(b);
+        return obj.getId() == id ? obj : null;
     }
 
     public boolean delete(int id) throws Exception {
-        T obj;
-        short tam;
-        byte[] b;
-        byte lapide;
-
         ParIDEndereco pie = indiceDireto.read(id);
-        if(pie!=null) {
-            arquivo.seek(pie.getEndereco());
-            obj = construtor.newInstance();
-            lapide = arquivo.readByte();
-            if(lapide==' ') {
-                tam = arquivo.readShort();
-                b = new byte[tam];
-                arquivo.read(b);
-                obj.fromByteArray(b);
-                if(obj.getId()==id) {
-                    if(indiceDireto.delete(id)) {
-                        arquivo.seek(pie.getEndereco());
-                        arquivo.write('*');
-                        addDeleted(tam, pie.getEndereco());
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        if (pie == null) return false;
+
+        arquivo.seek(pie.getEndereco());
+        byte lapide = arquivo.readByte();
+        if (lapide != ' ') return false;
+
+        short tam = arquivo.readShort();
+        indiceDireto.delete(id);
+        arquivo.seek(pie.getEndereco());
+        arquivo.write('*');
+        addDeleted(tam, pie.getEndereco());
+        return true;
     }
 
-    public boolean update(T novoObj) throws Exception {
-        T obj;
-        short tam;
-        byte[] b;
-        byte lapide;
-        ParIDEndereco pie = indiceDireto.read(novoObj.getId());
-        if(pie!=null) {
-            arquivo.seek(pie.getEndereco());
-            obj = construtor.newInstance();
-            lapide = arquivo.readByte();
-            if(lapide==' ') {
-                tam = arquivo.readShort();
-                b = new byte[tam];
-                arquivo.read(b);
-                obj.fromByteArray(b);
-                if(obj.getId()==novoObj.getId()) {
+    public boolean update(T obj) throws Exception {
+        ParIDEndereco pie = indiceDireto.read(obj.getId());
+        if (pie == null) return false;
 
-                    byte[] b2 = novoObj.toByteArray();
-                    short tam2 = (short)b2.length;
+        arquivo.seek(pie.getEndereco());
+        byte lapide = arquivo.readByte();
+        if (lapide != ' ') return false;
 
-                    // sobrescreve o registro
-                    if(tam2 <= tam) {
-                        arquivo.seek(pie.getEndereco()+3);
-                        arquivo.write(b2);
-                    }
+        short tamAntigo = arquivo.readShort();
+        byte[] bNovo = obj.toByteArray();
+        short tamNovo = (short) bNovo.length;
 
-                    // move o novo registro para o fim
-                    else {
-                        // exclui o registro anterior
-                        arquivo.seek(pie.getEndereco());
-                        arquivo.write('*');
-                        addDeleted(tam, pie.getEndereco());                        
-
-                        // grava o novo registro
-                        long novoEndereco = getDeleted(b.length);   // tenta reusar algum espaço de registro excluído
-                        if(novoEndereco == -1) {   // nenhum espaço disponível; escreve o registro no fim do arquivo  
-                            arquivo.seek(arquivo.length());
-                            novoEndereco = arquivo.getFilePointer();
-                            arquivo.writeByte(' ');       // lápide
-                            arquivo.writeShort(tam2);       // tamanho do vetor de bytes
-                            arquivo.write(b2);              // vetor de bytes
-                        } else {
-                            arquivo.seek(novoEndereco);
-                            arquivo.writeByte(' ');       // limpa o lápide
-                            arquivo.skipBytes(2);         // pula o indicador de tamanho para preservá-lo
-                            arquivo.write(b2);              // vetor de bytes
-                        }
-
-                        // atualiza o índice direto
-                        indiceDireto.update(new ParIDEndereco(novoObj.getId(), novoEndereco));
-                    }
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    // adiciona um registro à lista de excluídos (espaços disponíveis para reuso)
-    public void addDeleted(int tamanhoEspaco, long enderecoEspaco) throws Exception {
-        long anterior = 4; // início da lista
-        arquivo.seek(anterior);
-        long endereco = arquivo.readLong(); // endereço do elemento que será testado
-        long proximo = -1; // endereço do elemento seguinte da lista
-        int tamanho;
-        if(endereco==-1) {  // lista vazia
-            arquivo.seek(4);
-            arquivo.writeLong(enderecoEspaco);
-            arquivo.seek(enderecoEspaco+3);
-            arquivo.writeLong(-1);
+        if (tamNovo <= tamAntigo) {
+            arquivo.seek(pie.getEndereco() + 3);
+            arquivo.write(bNovo);
         } else {
-            do {
-                arquivo.seek(endereco+1);
-                tamanho = arquivo.readShort();
-                proximo = arquivo.readLong();
-                if(tamanho > tamanhoEspaco) {  // encontrou a posição de inserção (antes do elemento atual)
-                    if(anterior == 4) // será o primeiro elemento da lista
-                        arquivo.seek(anterior);
-                    else
-                        arquivo.seek(anterior+3);
-                    arquivo.writeLong(enderecoEspaco);
-                    arquivo.seek(enderecoEspaco+3);
-                    arquivo.writeLong(endereco);
-                    break;
-                }
-                if(proximo == -1) {  // fim da lista
-                    arquivo.seek(endereco+3);
-                    arquivo.writeLong(enderecoEspaco);
-                    arquivo.seek(enderecoEspaco+3);
-                    arquivo.writeLong(+1);
-                    break;
-                }
-                anterior = endereco;
-                endereco = proximo;
-            } while (endereco!=-1);
-        }
-    }
-    
-    // retira um registro à lista de excluídos para reuso, mas com o risco de algum desperdício
-    // se necessário, o código pode ser alterado para controlar um limite máximo de desperdício
-    public long getDeleted(int tamanhoNecessario) throws Exception {
-        long anterior = 4; // início da lista
-        arquivo.seek(anterior);
-        long endereco = arquivo.readLong(); // endereço do elemento que será testado
-        long proximo = -1; // endereço do elemento seguinte da lista
-        int tamanho;
-        while(endereco != -1) {
-            arquivo.seek(endereco+1);
-            tamanho = arquivo.readShort();
-            proximo = arquivo.readLong();
-            if(tamanho > tamanhoNecessario) {  
-                if(anterior == 4)  // o elemento é o primeiro da lista 
-                    arquivo.seek(anterior);
-                else
-                    arquivo.seek(anterior+3);
-                arquivo.writeLong(proximo);
-                break;
+            arquivo.seek(pie.getEndereco());
+            arquivo.write('*');
+            addDeleted(tamAntigo, pie.getEndereco());
+
+            long novoEndereco = getDeleted(bNovo.length);
+            if (novoEndereco == -1) {
+                arquivo.seek(arquivo.length());
+                novoEndereco = arquivo.getFilePointer();
+                arquivo.writeByte(' ');
+                arquivo.writeShort(tamNovo);
+                arquivo.write(bNovo);
+            } else {
+                arquivo.seek(novoEndereco);
+                arquivo.writeByte(' ');
+                arquivo.skipBytes(2);
+                arquivo.write(bNovo);
             }
-            anterior = endereco;
-            endereco = proximo;
+
+            indiceDireto.update(new ParIDEndereco(obj.getId(), novoEndereco));
         }
-        return endereco;
+
+        return true;
+    }
+
+    public void addDeleted(int tamanhoEspaco, long enderecoEspaco) throws Exception {
+        arquivo.seek(4);
+        long inicio = arquivo.readLong();
+        arquivo.seek(4);
+        arquivo.writeLong(enderecoEspaco);
+        arquivo.seek(enderecoEspaco + 3);
+        arquivo.writeLong(inicio);
+    }
+
+    public long getDeleted(int tamanhoNecessario) throws Exception {
+        arquivo.seek(4);
+        long endereco = arquivo.readLong();
+        if (endereco == -1) return -1;
+
+        arquivo.seek(endereco + 1);
+        short tamanho = arquivo.readShort();
+        if (tamanho >= tamanhoNecessario) {
+            arquivo.seek(4);
+            arquivo.writeLong(-1);
+            return endereco;
+        }
+        return -1;
     }
 
     public void close() throws Exception {
         arquivo.close();
         indiceDireto.close();
     }
-
-
 }
