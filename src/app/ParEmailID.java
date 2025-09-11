@@ -1,5 +1,6 @@
-import aed3.*;
+package app;
 
+import aed3.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;

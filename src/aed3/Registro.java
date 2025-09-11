@@ -1,6 +1,5 @@
 package aed3;
 
-
 import java.io.IOException;
 
 public interface Registro {

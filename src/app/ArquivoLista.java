@@ -1,54 +1,62 @@
+package app;
+
 import aed3.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ArquivoLista extends Arquivo<Lista> {
 
-    // private ArvoreBMais<ParNomeID> indiceNome; // Descomente quando tiver a Árvore B+
+    private ArvoreBMais<ParUsuarioLista> indiceUsuarioLista;
 
     public ArquivoLista() throws Exception {
         super("listas", Lista.class.getConstructor());
-        // indiceNome = new ArvoreBMais<>(ParNomeID.class.getConstructor(), 5, "listas.nome.idx");
+        indiceUsuarioLista = new ArvoreBMais<>(ParUsuarioLista.class.getConstructor(), 5, "dados/listas/usuarioLista.idx");
     }
 
-    /**
-     * Retorna todas as listas que pertencem a um usuário específico.
-     * ATENÇÃO: Esta é uma implementação temporária que lê o arquivo inteiro.
-     * A versão final deve usar um índice (Hash ou Árvore B+) no ID do usuário 
-     * para otimizar essa busca.
-     * @param idUsuario O ID do usuário logado.
-     * @return Uma lista de Listas.
-     */
     public List<Lista> readAll(int idUsuario) throws Exception {
         List<Lista> listasDoUsuario = new ArrayList<>();
-        arquivo.seek(TAM_CABECALHO); // Pula o cabeçalho do arquivo
+        ArrayList<ParUsuarioLista> pares = indiceUsuarioLista.read(new ParUsuarioLista(idUsuario, -1));
         
-        while (arquivo.getFilePointer() < arquivo.length()) {
-            byte lapide = arquivo.readByte();
-            short tam = arquivo.readShort();
-            byte[] dados = new byte[tam];
-            arquivo.read(dados);
-
-            if (lapide == ' ') {
-                Lista l = construtor.newInstance();
-                l.fromByteArray(dados);
-                if (l.getIdUsuario() == idUsuario) {
-                    listasDoUsuario.add(l);
-                }
+        for (ParUsuarioLista par : pares) {
+            Lista lista = super.read(par.getIdLista());
+            if (lista != null) {
+                listasDoUsuario.add(lista);
             }
         }
+        
         return listasDoUsuario;
     }
     
-    // O método create precisará ser ajustado para atualizar o índice da Árvore B+
     @Override
     public int create(Lista obj) throws Exception {
-        // Gera o código único antes de salvar
         obj.setCodigoCompartilhavel(NanoID.generate());
-        int id = super.create(obj);
-        // indiceNome.create(new ParNomeID(obj.getNome(), id)); // Descomente quando tiver a Árvore B+
-        return id;
+        int idLista = super.create(obj);
+        obj.setId(idLista);
+        
+        // Aqui verificamos se a inserção no índice foi bem-sucedida.
+        boolean inseridoNoIndice = indiceUsuarioLista.create(new ParUsuarioLista(obj.getIdUsuario(), idLista));
+        
+        if (!inseridoNoIndice) {
+            // Se a inserção no índice falhar, desfaz a criação no arquivo principal
+            // para manter a consistência dos dados.
+            super.delete(idLista);
+            throw new Exception("Não foi possível inserir a lista no índice da Árvore B+. A operação foi cancelada.");
+        }
+        
+        return idLista;
     }
 
-    // Os métodos delete e update também precisarão atualizar o índice da Árvore B+
+    @Override
+    public boolean delete(int idLista) throws Exception {
+        Lista lista = super.read(idLista);
+        if (lista == null) {
+            return false;
+        }
+
+        if (super.delete(idLista)) {
+            return indiceUsuarioLista.delete(new ParUsuarioLista(lista.getIdUsuario(), idLista));
+        }
+        
+        return false;
+    }
 }

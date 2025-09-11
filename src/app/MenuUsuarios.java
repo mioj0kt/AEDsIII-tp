@@ -1,3 +1,5 @@
+package app;
+
 import java.util.Scanner;
 import java.security.MessageDigest;
 
@@ -53,7 +55,6 @@ public class MenuUsuarios {
 
         } catch(Exception e) {
             System.out.println("Erro ao incluir usuário: " + e.getMessage());
-            e.printStackTrace(); // Adicionado para facilitar a depuração
         }
     }
 
@@ -90,43 +91,48 @@ public class MenuUsuarios {
             }
         } catch(Exception e) {
             System.out.println("Erro no login: " + e.getMessage());
-            e.printStackTrace(); // Adicionado para facilitar a depuração
         }
     }
     
     private void menuPrincipalUsuario() {
         char opcao;
         do {
-            System.out.println("\nPresenteFácil 1.0");
+            System.out.println("\n\nPresenteFácil 1.0");
             System.out.println("-----------------");
             System.out.println("> Início");
             System.out.println("\n(1) Meus dados");
             System.out.println("(2) Minhas listas");
             System.out.println("(3) Produtos");
             System.out.println("(4) Buscar lista");
-            System.out.println("(S) Sair");
+            System.out.println("\n(S) Sair");
     
             System.out.print("\nOpção: ");
             String entrada = console.nextLine().trim().toUpperCase();
             opcao = entrada.isEmpty() ? ' ' : entrada.charAt(0);
     
             switch (opcao) {
-                case '1': mostraUsuario(usuarioAtivo); 
+                case '1':
+                    mostraUsuario(usuarioAtivo); 
                     break;
                 case '2': 
-                    System.out.println("Funcionalidade Minhas listas ainda não implementada."); 
+                    // ----> ESTA É A MUDANÇA <----
+                    // A linha antiga foi substituída por estas duas,
+                    // que passam o controle para o menu de listas.
+                    ControleLista controleLista = new ControleLista(usuarioAtivo);
+                    controleLista.executa();
                     break;
                 case '3': 
-                    System.out.println("Funcionalidade Produtos ainda não implementada."); 
+                    System.out.println("\nFuncionalidade Produtos (TP2) ainda não implementada."); 
                     break;
                 case '4': 
-                    System.out.println("Funcionalidade Buscar lista ainda não implementada."); 
+                    System.out.println("\nFuncionalidade Buscar lista ainda não implementada."); 
                     break;
                 case 'S': 
-                    System.out.println("Saindo..."); 
+                    System.out.println("\nSaindo da sua conta..."); 
                     usuarioAtivo = null;
                     break;
-                default: System.out.println("Opção inválida!"); 
+                default: 
+                    System.out.println("\nOpção inválida!"); 
                     break;
             }
     
