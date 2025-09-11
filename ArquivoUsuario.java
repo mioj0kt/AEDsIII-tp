@@ -2,45 +2,46 @@ import aed3.*;
 
 public class ArquivoUsuario extends Arquivo<Usuario> {
 
-    HashExtensivel<ParIDEmail> indiceIndiretoEmail;
+    HashExtensivel<ParEmailID> indiceIndiretoEmail;
 
     public ArquivoUsuario() throws Exception {
         super("usuarios", Usuario.class.getConstructor());
-        indiceIndiretoEmail = new HashExtensivel<>(ParIDEmail.class.getConstructor(), 4,
+        indiceIndiretoEmail = new HashExtensivel<>(ParEmailID.class.getConstructor(), 4,
                 ".\\dados\\usuarios\\indiceEmail.d.db",
                 ".\\dados\\usuarios\\indiceEmail.c.db");
     }
 
-    public void printIndiceEmail() {
-        try {
-            System.out.println("\n--- Índice de Emails ---");
-            indiceIndiretoEmail.print(); // usa o print já existente no HashExtensivel
-            System.out.println("------------------------\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     
-
+    //Cria um novo usuário no arquivo de dados e atualiza o índice de emails.
     @Override
     public int create(Usuario u) throws Exception {
         int id = super.create(u);
-        indiceIndiretoEmail.create(new ParIDEmail(u.getEmail(), id));
-        printIndiceEmail(); // pra jogar na minha cara que ta tudo errado
+        u.setId(id);
+        indiceIndiretoEmail.create(new ParEmailID(u.getEmail(), u.getId()));
         return id;
     }
 
+    
+    //Lê um usuário do arquivo buscando pelo email.
     public Usuario read(String email) throws Exception {
-        ParIDEmail pie = indiceIndiretoEmail.read(ParIDEmail.hash(email));
-        if (pie == null) return null;
-        return read(pie.getId());
+        ParEmailID p = new ParEmailID(email, -1);
+        p = indiceIndiretoEmail.read(p.hashCode());
+        
+        if (p == null)
+            return null;
+        else
+            return super.read(p.getID());
     }
 
+    
+    //Deleta um usuário do arquivo buscando pelo email.
     public boolean delete(String email) throws Exception {
-        ParIDEmail pie = indiceIndiretoEmail.read(ParIDEmail.hash(email));
-        if (pie != null) {
-            if (super.delete(pie.getId())) {
-                return indiceIndiretoEmail.delete(ParIDEmail.hash(email));
+        ParEmailID p = new ParEmailID(email, -1);
+        p = indiceIndiretoEmail.read(p.hashCode());
+
+        if (p != null) {
+            if (super.delete(p.getID())) {
+                return indiceIndiretoEmail.delete(p.hashCode());
             }
         }
         return false;
@@ -48,11 +49,20 @@ public class ArquivoUsuario extends Arquivo<Usuario> {
 
     @Override
     public boolean update(Usuario novoUsuario) throws Exception {
-        Usuario velhoUsuario = read(novoUsuario.getEmail());
+        // Primeiro, lemos o usuário antigo pelo ID para obter o email antigo
+        Usuario velhoUsuario = super.read(novoUsuario.getId());
+        if (velhoUsuario == null) {
+            return false;
+        }
+
+        // Realiza o update no arquivo principal
         if (super.update(novoUsuario)) {
+            // Se o email foi alterado, precisamos atualizar o índice
             if (!novoUsuario.getEmail().equals(velhoUsuario.getEmail())) {
-                indiceIndiretoEmail.delete(ParIDEmail.hash(velhoUsuario.getEmail()));
-                indiceIndiretoEmail.create(new ParIDEmail(novoUsuario.getEmail(), novoUsuario.getId()));
+                // Deleta o índice do email antigo
+                indiceIndiretoEmail.delete(new ParEmailID(velhoUsuario.getEmail(), -1).hashCode());
+                // Cria o índice para o novo email
+                indiceIndiretoEmail.create(new ParEmailID(novoUsuario.getEmail(), novoUsuario.getId()));
             }
             return true;
         }

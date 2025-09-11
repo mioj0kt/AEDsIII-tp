@@ -53,6 +53,7 @@ public class MenuUsuarios {
 
         } catch(Exception e) {
             System.out.println("Erro ao incluir usuário: " + e.getMessage());
+            e.printStackTrace(); // Adicionado para facilitar a depuração
         }
     }
 
@@ -89,6 +90,7 @@ public class MenuUsuarios {
             }
         } catch(Exception e) {
             System.out.println("Erro no login: " + e.getMessage());
+            e.printStackTrace(); // Adicionado para facilitar a depuração
         }
     }
     
@@ -112,7 +114,7 @@ public class MenuUsuarios {
                 case '1': mostraUsuario(usuarioAtivo); 
                     break;
                 case '2': 
-                    
+                    System.out.println("Funcionalidade Minhas listas ainda não implementada."); 
                     break;
                 case '3': 
                     System.out.println("Funcionalidade Produtos ainda não implementada."); 
@@ -131,7 +133,6 @@ public class MenuUsuarios {
         } while (opcao != 'S');
     }
     
-
     public void mostraUsuario(Usuario u) {
         if (u == null) return;
         System.out.println("\n--- Dados do usuário ---");
