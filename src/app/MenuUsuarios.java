@@ -115,9 +115,6 @@ public class MenuUsuarios {
                     mostraUsuario(usuarioAtivo); 
                     break;
                 case '2': 
-                    // ----> ESTA É A MUDANÇA <----
-                    // A linha antiga foi substituída por estas duas,
-                    // que passam o controle para o menu de listas.
                     ControleLista controleLista = new ControleLista(usuarioAtivo);
                     controleLista.executa();
                     break;

@@ -38,7 +38,6 @@ public class ParUsuarioLista implements RegistroArvoreBMais<ParUsuarioLista> {
         if (this.idUsuario != outro.idUsuario) {
             return this.idUsuario - outro.idUsuario;
         }
-        // A versão do professor compara `this.num2` com -1, vamos seguir o padrão
         return (this.idLista == -1) ? 0 : this.idLista - outro.idLista;
     }
 
