@@ -1,3 +1,4 @@
+
 import aed3.*;
 
 public class ArquivoUsuario extends Arquivo<Usuario> {
