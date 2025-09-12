@@ -3,37 +3,14 @@ package Menus;
 import java.util.Scanner;
 import Arquivo.ArquivoUsuario;
 import Entidades.Usuario;
+
 import java.security.MessageDigest;
 
-public class MenuUsuarios{
+public class MenuUsuarios {
+
     ArquivoUsuario arqUsuarios;
     private Usuario usuarioAtivo;
     private static Scanner console = new Scanner(System.in);
-
-    public boolean menu(){
-        char opcao;
-        do{ 
-                System.out.println("PresenteFácil 1.0 \n" + 
-                                   "------------------\n" +
-                                   "\n(1) Login\n" +
-                                   "(2) Novo usuário\n" +
-                                   "\n(S) Sair\n");
-
-            System.out.print("Opção: ");
-
-            String entrada = console.nextLine().trim().toUpperCase();
-            opcao = entrada.isEmpty() ? ' ' : entrada.charAt(0);
-
-            switch(opcao){
-                case '1': login(); if(usuarioAtivo != null){ return true; } break;
-                case '2': incluirUsuario(); break;
-                case 'S': System.out.println("Saindo...\n"); return false;
-                default: System.out.println("Opção inválida!"); break;
-            }
-        } while (opcao != 'S');
-
-        return false;
-    }
 
     public MenuUsuarios() throws Exception {
         arqUsuarios = new ArquivoUsuario();
@@ -77,7 +54,7 @@ public class MenuUsuarios{
 
             Usuario u = new Usuario(-1, nome, email, hash, pergunta, resposta);
             int id = arqUsuarios.create(u);
-            System.out.println("Usuário cadastrado com sucesso. ID interno: " + id + "\n");
+            System.out.println("Usuário cadastrado com sucesso. ID interno: " + id);
 
         } catch(Exception e) {
             System.out.println("Erro ao incluir usuário: " + e.getMessage());
@@ -100,73 +77,25 @@ public class MenuUsuarios{
         try {
             Usuario u = arqUsuarios.read(email);
             if (u == null) {
-                System.out.println("Usuário não encontrado.\n");
+                System.out.println("Usuário não encontrado.");
                 return;
             }
     
             String hash = hashSenha(senha);
             if (hash.equals(u.getHashSenha())) {
                 usuarioAtivo = u; // define usuário ativo
-                System.out.println("Login bem-sucedido. Bem-vindo, " + u.getNome() + "!\n");
+                System.out.println("Login bem-sucedido. Bem-vindo, " + u.getNome() + "!");
     
                 // Exibe o menu principal do usuário
-                //menuPrincipalUsuario();
+                MenuPrincipal menu = new MenuPrincipal(usuarioAtivo);
+                menu.executa();
     
             } else {
-                System.out.println("Senha incorreta.\n");
+                System.out.println("Senha incorreta.");
             }
         } catch(Exception e) {
-            System.out.println("Erro no login: " + e.getMessage() + "\n");
+            System.out.println("Erro no login: " + e.getMessage());
         }
-    }
-    
-    /*private void menuPrincipalUsuario() {
-        char opcao; 
-        do {
-            System.out.println("\nPresenteFácil 1.0");
-            System.out.println("-----------------");
-            System.out.println("> Início");
-            System.out.println("\n(1) Meus dados");
-            System.out.println("(2) Minhas listas");
-            System.out.println("(3) Produtos");
-            System.out.println("(4) Buscar lista");
-            System.out.println("(S) Sair");
-    
-            System.out.print("\nOpção: ");
-            String entrada = console.nextLine().trim().toUpperCase();
-            opcao = entrada.isEmpty() ? ' ' : entrada.charAt(0);
-    
-            switch (opcao) {
-                case '1': mostraUsuario(usuarioAtivo); 
-                    break;
-                case '2': 
-                    
-                    break;
-                case '3': 
-                    System.out.println("Funcionalidade Produtos ainda não implementada."); 
-                    break;
-                case '4': 
-                    System.out.println("Funcionalidade Buscar lista ainda não implementada."); 
-                    break;
-                case 'S': 
-                    System.out.println("Saindo..."); 
-                    usuarioAtivo = null;
-                    break;
-                default: System.out.println("Opção inválida!"); 
-                    break;
-            }
-    
-        } while (opcao != 'S');
-    }*/
-    
-    public void mostraUsuario(Usuario u) {
-        if (u == null) return;
-        System.out.println("\n--- Dados do usuário ---");
-        System.out.println("ID: " + u.getId());
-        System.out.println("Nome: " + u.getNome());
-        System.out.println("Email: " + u.getEmail());
-        System.out.println("Pergunta secreta: " + u.getPerguntaSecreta());
-        System.out.println("-------------------------\n");
     }
 
     // SHA-256 hex

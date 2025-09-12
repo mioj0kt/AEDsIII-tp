@@ -11,8 +11,8 @@ public class ArquivoUsuario extends Arquivo<Usuario> {
     public ArquivoUsuario() throws Exception {
         super("usuarios", Usuario.class.getConstructor());
         indiceIndiretoEmail = new HashExtensivel<>(ParEmailID.class.getConstructor(), 4,
-                ".\\dados\\usuarios\\indiceEmail.d.db",
-                ".\\dados\\usuarios\\indiceEmail.c.db");
+                "Dados/usuarios/indiceEmail.d.db",
+                "Dados/usuarios/indiceEmail.c.db");
     }
 
     

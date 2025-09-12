@@ -1,57 +1,50 @@
-import java.util.*;
-import Menus.*;
+import java.util.Scanner;
+import Menus.MenuUsuarios;
 
 public class Main{
-    public static void main(String[] args){
-        Scanner sc;
 
-        try{
-            sc = new Scanner(System.in);
-            MenuUsuarios menu = new MenuUsuarios();
+    public static void main(String[] args) {
 
-            // Primeiro: login ou criação de usuário
-            boolean usuarioLogado = menu.menu();
-            if(!usuarioLogado){
-                System.out.println("Programa encerrado. Nenhum usuário logado.");
-                return;
-            }
+        Scanner console = new Scanner(System.in);
+        MenuUsuarios menuUsuarios;
 
-            int x = -1;
-            String tmp;
-            do{ 
-                System.out.println("PresenteFácil 1.0 \n" + 
-                                   "------------------\n" +
-                                   "> Início\n" +
-                                   "\n(1) Meus dados\n" +
-                                   "(2) Minhas listas\n" +
-                                   "(3) Produtos\n" +
-                                   "(4) Buscar listas\n" +
-                                   "\n(S) Sair\n");
+        try {
+            menuUsuarios = new MenuUsuarios();
 
-                System.out.print("Opcao: ");
-                tmp = sc.nextLine();
+            char opcao;
+            do {
 
-                if(tmp.equalsIgnoreCase("S")){
-                    System.out.println("Finalizado.");
-                    break;
+                System.out.println("\n\nPresente Fácil 1.0");
+                System.out.println("------------------");
+                System.out.println("\n(1) Login");
+                System.out.println("(2) Novo usuário");
+                System.out.println("(S) Sair");
+
+                System.out.print("\nOpção: ");
+                String entrada = console.nextLine().trim().toUpperCase();
+                opcao = entrada.isEmpty() ? ' ' : entrada.charAt(0);
+
+                switch (opcao) {
+                    case '1':
+                        menuUsuarios.login();
+                        break;
+                    case '2':
+                        menuUsuarios.incluirUsuario();
+                        break;
+                    case 'S':
+                        System.out.println("Saindo...");
+                        break;
+                    default:
+                        System.out.println("Opção inválida!");
+                        break;
                 }
 
-                try{
-                    x = Integer.valueOf(tmp);
-                } catch(NumberFormatException e){
-                    x = -1; 
-                }
-                switch(x){
-                    case 1: menu.mostraUsuario(menu.getUsuarioAtivo()); break;
-                    case 2: gerenciarListas(menu.getUsuarioAtivo().getId());; break;
-                    case 3: System.out.println("Não implementado.\n"); break;
-                    case 4: System.out.println("Buscar listas.\n"); break;
-                    default: System.out.println("Opcao Invalida\n"); break;
-                }
-            } while(true);
+            } while (opcao != 'S');
 
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            console.close();
         }
     }
 }
