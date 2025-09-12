@@ -94,15 +94,18 @@ public class MenuUsuarios {
         }
     }
     
-    private void menuPrincipalUsuario() {
+        private void menuPrincipalUsuario() {
         char opcao;
+        boolean contaExcluida = false;
         do {
+            ConsoleUtils.limparTela(); // limpa tela
+
             System.out.println("\n\nPresenteFácil 1.0");
             System.out.println("-----------------");
             System.out.println("> Início");
             System.out.println("\n(1) Meus dados");
             System.out.println("(2) Minhas listas");
-            System.out.println("(3) Produtos");
+            System.out.println("(3) Produtos (Funcionalidade Produtos (TP2) ainda não implementada.)");
             System.out.println("(4) Buscar lista");
             System.out.println("\n(S) Sair");
     
@@ -112,18 +115,32 @@ public class MenuUsuarios {
     
             switch (opcao) {
                 case '1':
-                    mostraUsuario(usuarioAtivo); 
+                    try {
+                        ControleUsuario controleUsuario = new ControleUsuario(usuarioAtivo);
+                        if (controleUsuario.executa()) {
+                            contaExcluida = true; // Marca que a conta foi excluída
+                        }
+                    } catch(Exception e) {
+                        System.out.println("Erro ao gerenciar dados do usuário: " + e.getMessage());
+                    }
                     break;
                 case '2': 
-                    ControleLista controleLista = new ControleLista(usuarioAtivo);
-                    controleLista.executa();
+                    try {
+                        ControleLista controleLista = new ControleLista(usuarioAtivo);
+                        controleLista.executa();
+                    } catch(Exception e) {
+                        System.out.println("Erro ao iniciar o módulo de listas: " + e.getMessage());
+                    }
                     break;
                 case '3': 
-                    System.out.println("\nFuncionalidade Produtos (TP2) ainda não implementada."); 
                     break;
                 case '4': 
-                    ControleBuscaLista controleBusca = new ControleBuscaLista();
-                    controleBusca.executa();
+                    try {
+                        ControleBuscaLista controleBusca = new ControleBuscaLista();
+                        controleBusca.executa();
+                    } catch(Exception e) {
+                        System.out.println("Erro ao iniciar o módulo de busca: " + e.getMessage());
+                    }
                     break;
                 case 'S': 
                     System.out.println("\nSaindo da sua conta..."); 
@@ -134,17 +151,11 @@ public class MenuUsuarios {
                     break;
             }
     
-        } while (opcao != 'S');
-    }
-    
-    public void mostraUsuario(Usuario u) {
-        if (u == null) return;
-        System.out.println("\n--- Dados do usuário ---");
-        System.out.println("ID: " + u.getId());
-        System.out.println("Nome: " + u.getNome());
-        System.out.println("Email: " + u.getEmail());
-        System.out.println("Pergunta secreta: " + u.getPerguntaSecreta());
-        System.out.println("-------------------------");
+        } while (opcao != 'S' && !contaExcluida);
+
+        if (contaExcluida) {
+            usuarioAtivo = null; // Garante que o usuário seja deslogado
+        }
     }
 
     // SHA-256 hex

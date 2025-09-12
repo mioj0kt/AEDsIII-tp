@@ -7,6 +7,8 @@ public class VisaoBuscaLista {
     private static Scanner console = new Scanner(System.in);
 
     public String leCodigo() {
+        ConsoleUtils.limparTela(); // limpa tela
+
         System.out.println("\n\nPresenteFácil 1.0");
         System.out.println("-----------------");
         System.out.println("> Buscar Lista");
@@ -26,7 +28,8 @@ public class VisaoBuscaLista {
         System.out.println("DATA LIMITE: " + l.getDataLimiteFormatada());
         System.out.println("\n(Em breve: visualizar produtos da lista)");
         System.out.println("----------------------");
-        System.out.print("\nPressione ENTER para continuar...");
+        
+        ConsoleUtils.pausar();
         console.nextLine();
     }
 }

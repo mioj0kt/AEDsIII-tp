@@ -16,6 +16,8 @@ public class VisaoLista {
      * @return A opção digitada pelo usuário (pode ser um número ou uma letra).
      */
     public String mostraMenuPrincipalListas(List<Lista> listas) {
+        ConsoleUtils.limparTela(); // limpa tela
+        
         System.out.println("\n\nPresenteFácil 1.0");
         System.out.println("-----------------");
         System.out.println("> Início > Minhas listas");
@@ -40,7 +42,9 @@ public class VisaoLista {
      * @return O caractere da opção escolhida.
      */
     public char mostraMenuDetalheLista(Lista l) {
-        System.out.println("\n\nPresenteFácil 1.0");
+        ConsoleUtils.limparTela();
+        
+        System.out.println("PresenteFácil 1.0");
         System.out.println("-----------------");
         System.out.println("> Início > Minhas listas > " + l.getNome());
         System.out.println("\nCÓDIGO: " + l.getCodigoCompartilhavel());
@@ -48,9 +52,11 @@ public class VisaoLista {
         System.out.println("DESCRIÇÃO: " + l.getDescricao());
         System.out.println("DATA DE CRIAÇÃO: " + l.getDataCriacaoFormatada());
         System.out.println("DATA LIMITE: " + l.getDataLimiteFormatada());
+
         System.out.println("\n(1) Gerenciar produtos da lista");
         System.out.println("(2) Alterar dados da lista");
         System.out.println("(3) Excluir lista");
+        System.out.println("(4) Copiar código de compartilhamento");
         System.out.println("\n(R) Retornar ao menu anterior");
         System.out.print("\nOpção: ");
         String entrada = console.nextLine().trim().toUpperCase();
@@ -112,5 +118,6 @@ public class VisaoLista {
 
     public void exibeMensagem(String msg) {
         System.out.println("\n" + msg);
+        ConsoleUtils.pausar();
     }
 }

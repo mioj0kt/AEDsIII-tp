@@ -14,6 +14,7 @@ public class Principal {
 
             char opcao;
             do {
+                ConsoleUtils.limparTela(); // limpa tela
 
                 System.out.println("\n\nPresente Fácil 1.0");
                 System.out.println("------------------");

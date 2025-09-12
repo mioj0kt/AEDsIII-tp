@@ -19,9 +19,8 @@ public class ControleLista {
         this.usuarioLogado = usuarioLogado;
     }
 
-    /**
-     * Inicia a tela principal de "Minhas Listas".
-     */
+    
+    //Inicia a tela principal de "Minhas Listas"
     public void executa() {
         String opcao;
         do {
@@ -73,7 +72,6 @@ public class ControleLista {
             opcao = visao.mostraMenuDetalheLista(lista);
             switch (opcao) {
                 case '1':
-                    visao.exibeMensagem("Funcionalidade 'Gerenciar produtos' (TP2) ainda não implementada.");
                     break;
                 case '2':
                     alterarLista(lista);
@@ -83,6 +81,16 @@ public class ControleLista {
                         return; // Retorna ao menu anterior se a lista foi excluída
                     }
                     break;
+                case '4':
+                    try {
+                        String codigo = lista.getCodigoCompartilhavel();
+                        ConsoleUtils.copiarParaClipboard(codigo);
+                        visao.exibeMensagem("Código \"" + codigo + "\" copiado para a área de transferência!");
+                    } catch(Exception e) {
+                        // Trata o erro caso o sistema não tenha interface gráfica
+                        visao.exibeMensagem("Erro: Não foi possível copiar para a área de transferência neste ambiente.");
+                    }
+                break;
                 case 'R':
                     break;
                 default:
