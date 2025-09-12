@@ -8,23 +8,24 @@ import java.io.IOException;
 import java.util.Arrays;
 import Registro.RegistroHashExtensivel;
 
-public class ParIDEmail implements RegistroHashExtensivel<ParIDEmail> {
+public class ParEmailID implements RegistroHashExtensivel<ParEmailID> {
 
     private String email;
     private int id;
-    private final short TAMANHO = 72; // 64 bytes para email + 4 para ID + padding
+    // O tamanho fixo é mantido pois a sua versão do HashExtensivel.java exige registros de tamanho fixo.
+    private final short TAMANHO = 68; // 64 bytes para email + 4 para ID
 
-    public ParIDEmail() {
+    public ParEmailID() {
         this.email = "";
         this.id = -1;
     }
 
-    public ParIDEmail(String email, int id) {
+    public ParEmailID(String email, int id) {
         this.email = email;
         this.id = id;
     }
 
-    public int getId() {
+    public int getID() {
         return id;
     }
 
@@ -32,19 +33,29 @@ public class ParIDEmail implements RegistroHashExtensivel<ParIDEmail> {
         return email;
     }
 
-    @Override
-    public int hashCode() {
-        return hash(email);
-    }
-
     public short size() {
         return TAMANHO;
     }
 
+    @Override
+    public int hashCode() {
+        String emailNormalizado = (this.email == null) ? "" : this.email.trim().toLowerCase();
+        if (emailNormalizado.isEmpty()) {
+            return 0;
+        }
+        long hashValue = 0;
+        for (int i = 0; i < emailNormalizado.length(); i++) {
+            hashValue = (hashValue * 31 + emailNormalizado.charAt(i)) % 1000000007;
+        }
+        return (int) Math.abs(hashValue);
+    }
+    
+    @Override
     public String toString() {
-        return "(" + email + ";" + id + ")";
+        return "(" + this.email + ";" + this.id + ")";
     }
 
+    @Override
     public byte[] toByteArray() throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream dos = new DataOutputStream(baos);
@@ -54,16 +65,16 @@ public class ParIDEmail implements RegistroHashExtensivel<ParIDEmail> {
         Arrays.fill(bufferEmail, (byte) 0);
 
         // copia os bytes do email para dentro do buffer zerado
-        byte[] emailBytes = email.getBytes("UTF-8");
+        byte[] emailBytes = this.email.getBytes("UTF-8");
         System.arraycopy(emailBytes, 0, bufferEmail, 0, Math.min(emailBytes.length, 64));
 
         dos.write(bufferEmail);
-        dos.writeInt(id);
+        dos.writeInt(this.id);
 
         return baos.toByteArray();
     }
 
-    
+    @Override
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
@@ -72,23 +83,10 @@ public class ParIDEmail implements RegistroHashExtensivel<ParIDEmail> {
         dis.readFully(bufferEmail);
     
         // remove caracteres nulos (\u0000) e espaços extras
-        email = new String(bufferEmail, "UTF-8")
+        this.email = new String(bufferEmail, "UTF-8")
                     .replace("\u0000", "")
                     .trim();
     
-        id = dis.readInt();
+        this.id = dis.readInt();
     }
-    
-    
-
-    public static int hash(String email) {
-        if (email == null || email.isEmpty()) throw new IllegalArgumentException("Email não pode ser nulo ou vazio.");
-        email = email.trim().toLowerCase(); // normalização
-        long hashValue = 0;
-        for (int i = 0; i < email.length(); i++) {
-            hashValue = (hashValue * 31 + email.charAt(i)) % 1000000007;
-        }
-        return (int) Math.abs(hashValue);
-    }
-    
 }

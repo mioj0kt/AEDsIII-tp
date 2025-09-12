@@ -43,7 +43,7 @@ public class Main{
                 }
                 switch(x){
                     case 1: menu.mostraUsuario(menu.getUsuarioAtivo()); break;
-                    case 2: new MenuMinhasListas().menu(sc); break;
+                    case 2: gerenciarListas(menu.getUsuarioAtivo().getId());; break;
                     case 3: System.out.println("Não implementado.\n"); break;
                     case 4: System.out.println("Buscar listas.\n"); break;
                     default: System.out.println("Opcao Invalida\n"); break;

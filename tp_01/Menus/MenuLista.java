@@ -1,49 +1,117 @@
-package Menus;
-
+package Menus;  
+  
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Scanner;
+import Entidades.Lista;
 
-public class MenuLista{
-    public void menu(Scanner sc){
-        String opcao;
-        int x;
+public class MenuLista {
 
-        do{
-            System.out.println("PresenteFácil 1.0\n" + 
-                            "------------------\n" +
-                            "> Início > Minhas listas > Aniversario\n" + 
+    private static Scanner console = new Scanner(System.in);
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-                            // Ajustar para exibir os detalhes da lista selecionada
-                            "\nCÓDIGO: " + "tdfd9as8bp" + 
-                            "\nNOME: " + "Aniversário 2025  " +
-                            "\nDESCRIÇAO: " + "Sugestões de presentes para o meu aniversário, que será comemorado na cervejaria." +
-                            "\nDATA CRIAÇ˜AO: " + "30/07/2025" +
-                            "\nDATA LIMITE: " + "31/10/2025" + "\n" +
-
-                            "\n(1) Gerenciar produtos da lista\n" +
-                            "(2) Alterar dados da lista\n" +
-                            "(3) Excluir lista\n" + 
-                            "\n(R) Retornar ao menu anterior\n");
-
-            System.out.print("\nOpcao: ");
-            opcao = sc.nextLine().trim();
-
-            if(opcao.equalsIgnoreCase("R")){
-                System.out.println("Retornando ao menu anterior...\n");
-                return;
+    /**
+     * Mostra o menu principal de listas, construído dinamicamente.
+     * @param listas As listas do usuário a serem exibidas.
+     * @return A opção digitada pelo usuário (pode ser um número ou uma letra).
+     */
+    public String mostraMenuPrincipalListas(List<Lista> listas) {
+        System.out.println("\n\nPresenteFácil 1.0");
+        System.out.println("-----------------");
+        System.out.println("> Início > Minhas listas");
+        System.out.println("\nLISTAS");
+        if (listas.isEmpty()) {
+            System.out.println("Nenhuma lista cadastrada.");
+        } else {
+            for (int i = 0; i < listas.size(); i++) {
+                Lista l = listas.get(i);
+                System.out.printf("(%d) %s - %s\n", i + 1, l.getNome(), l.getDataLimiteFormatada());
             }
+        }
+        System.out.println("\n(N) Nova lista");
+        System.out.println("(R) Retornar ao menu anterior");
+        System.out.print("\nOpção: ");
+        return console.nextLine().trim().toUpperCase();
+    }
 
-            try{
-                x = Integer.parseInt(opcao);
-            } catch(NumberFormatException e){
-                x = -1;
+    /**
+     * Mostra os detalhes de uma lista específica e o submenu de ações.
+     * @param l A lista a ser detalhada.
+     * @return O caractere da opção escolhida.
+     */
+    public char mostraMenuDetalheLista(Lista l) {
+        System.out.println("\n\nPresenteFácil 1.0");
+        System.out.println("-----------------");
+        System.out.println("> Início > Minhas listas > " + l.getNome());
+        System.out.println("\nCÓDIGO: " + l.getCodigoCompartilhavel());
+        System.out.println("NOME: " + l.getNome());
+        System.out.println("DESCRIÇÃO: " + l.getDescricao());
+        System.out.println("DATA DE CRIAÇÃO: " + l.getDataCriacaoFormatada());
+        System.out.println("DATA LIMITE: " + l.getDataLimiteFormatada());
+        System.out.println("\n(1) Gerenciar produtos da lista");
+        System.out.println("(2) Alterar dados da lista");
+        System.out.println("(3) Excluir lista");
+        System.out.println("\n(R) Retornar ao menu anterior");
+        System.out.print("\nOpção: ");
+        String entrada = console.nextLine().trim().toUpperCase();
+        return entrada.isEmpty() ? ' ' : entrada.charAt(0);
+    }
+    
+    /**
+     * Lê do console os dados para uma nova lista.
+     * @return um objeto Lista preenchido (sem IDs).
+     */
+    public Lista leLista() {
+        System.out.println("\n-- Nova Lista --");
+        System.out.print("Nome: ");
+        String nome = console.nextLine();
+        System.out.print("Descrição: ");
+        String descricao = console.nextLine();
+        System.out.print("Data limite (dd/mm/aaaa, opcional): ");
+        String dataStr = console.nextLine();
+        long dataLimite = 0;
+        if (!dataStr.isEmpty()) {
+            try {
+                dataLimite = sdf.parse(dataStr).getTime();
+            } catch (ParseException e) {
+                System.out.println("Formato de data inválido. A data limite não será definida.");
             }
+        }
+        return new Lista(-1, -1, nome, descricao, dataLimite, "");
+    }
 
-            switch(x){
-                case 1: System.out.println("Ainda não implementado"); break;
-                case 2: System.out.println("Alterar dados da lista"); break;
-                case 3: System.out.println("Excluir a lista"); break;
-                default: System.out.println("Opcao Invalida\n"); break;
+    /**
+     * Lê do console os dados para alterar uma lista existente.
+     * @param l A lista original a ser alterada.
+     */
+    public void leAlteracaoLista(Lista l) {
+        System.out.println("\n-- Alterar Lista (deixe em branco para manter o valor atual) --");
+        System.out.print("Nome ["+l.getNome()+"]: ");
+        String nome = console.nextLine();
+        if(!nome.isEmpty()) l.setNome(nome);
+
+        System.out.print("Descrição ["+l.getDescricao()+"]: ");
+        String descricao = console.nextLine();
+        if(!descricao.isEmpty()) l.setDescricao(descricao);
+        
+        System.out.print("Data limite ["+l.getDataLimiteFormatada()+"]: ");
+        String dataStr = console.nextLine();
+        if (!dataStr.isEmpty()) {
+            try {
+                l.setDataLimite(sdf.parse(dataStr).getTime());
+            } catch (ParseException e) {
+                System.out.println("Formato de data inválido. A data limite não será alterada.");
             }
-        } while(true);
+        }
+    }
+
+    public boolean confirmaExclusao() {
+        System.out.print("\nTem certeza que deseja excluir esta lista? (S/N): ");
+        return console.nextLine().trim().toUpperCase().equals("S");
+    }
+
+    public void exibeMensagem(String msg) {
+        System.out.println("\n" + msg);
     }
 }

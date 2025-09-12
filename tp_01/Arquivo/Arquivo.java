@@ -9,19 +9,20 @@ import Registro.Registro;
 
 public class Arquivo<T extends Registro> {
 
-    final int TAM_CABECALHO = 12;
-    RandomAccessFile arquivo;
+    protected final int TAM_CABECALHO = 12;
+    protected RandomAccessFile arquivo;
+    
     String nomeArquivo;
-    Constructor<T> construtor;
+    protected Constructor<T> construtor;
     HashExtensivel<ParIDEndereco> indiceDireto;
 
-    public Arquivo(String na, Constructor<T> c) throws Exception{
-        File pasta = new File("tp_01/Dados/" + na);
-        if(!pasta.exists()){
-            pasta.mkdirs(); // cria toda a árvore de pastas
-        }
+    public Arquivo(String na, Constructor<T> c) throws Exception {
+        File d = new File(".\\dados");
+        if (!d.exists()) d.mkdir();
+        d = new File(".\\dados\\" + na);
+        if (!d.exists()) d.mkdir();
 
-        this.nomeArquivo = "tp_01/Dados/" + na + "/" + na + ".db";
+        this.nomeArquivo = ".\\dados\\" + na + "\\" + na + ".db";
         this.construtor = c;
         arquivo = new RandomAccessFile(this.nomeArquivo, "rw");
 
@@ -30,12 +31,9 @@ public class Arquivo<T extends Registro> {
             arquivo.writeLong(-1); // lista de registros marcados para exclusão
         }
 
-        indiceDireto = new HashExtensivel<>(
-            ParIDEndereco.class.getConstructor(),
-            4,
-            "tp_01//Dados/" + na + "/" + na + ".d.db",
-            "tp_01//Dados/" + na + "/" + na + ".c.db"
-        );
+        indiceDireto = new HashExtensivel<>(ParIDEndereco.class.getConstructor(), 4,
+                ".\\dados\\" + na + "\\" + na + ".d.db",
+                ".\\dados\\" + na + "\\" + na + ".c.db");
     }
 
     public int create(T obj) throws Exception {
