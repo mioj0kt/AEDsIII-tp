@@ -144,19 +144,22 @@ Define contratos para que entidades e registros possam ser gerenciados pelo sist
 ## Telas do Sistema
 
 1. **Menu Inicial**  
-   ![Tela de Login / Novo Usuário](screenshot1.png)
+   ![Tela de Login / Novo Usuário](img/tela_login.jpeg)
 
-2. **Menu Principal do Usuário Logado**  
-   ![Menu principal](screenshot2.png)
+2. **Tela de Detalhes do Usuário**  
+   ![Menu principal](img/tela_detalhe_usuario.jpeg)
 
-3. **Tela "Minhas Listas"**  
-   ![Listas ordenadas](screenshot3.png)
+3. **Menu Principal do Usuário Logado**  
+   ![Menu principal](img/tela_menu_principal.jpeg)
 
-4. **Tela de Detalhes da Lista**  
-   ![Detalhes + código compartilhável](screenshot4.png)
+4. **Tela "Minhas Listas"**  
+   ![Listas ordenadas](img/tela_minhas_listas.jpeg)
 
-5. **Tela de Busca de Lista**  
-   ![Busca pelo código compartilhável](screenshot5.png)
+5. **Tela de Detalhes da Lista**  
+   ![Detalhes + código compartilhável](img/tela_detalhe_lista.jpeg)
+
+6. **Tela de Busca de Lista**  
+   ![Busca pelo código compartilhável](img/tela_buscar_lista.jpeg)
 
 ---
 
