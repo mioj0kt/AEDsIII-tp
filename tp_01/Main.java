@@ -3,9 +3,7 @@ import java.util.Scanner;
 import Controles.ConsoleUtils;
 import Menus.MenuUsuarios;
 
-public class Main {
-
-    public static void main(String[] args) {
+public static void main(String[] args) {
 
         Scanner console = new Scanner(System.in);
         MenuUsuarios menuUsuarios;
@@ -39,6 +37,7 @@ public class Main {
                         break;
                     default:
                         System.out.println("Opção inválida!");
+                        ConsoleUtils.pausar();
                         break;
                 }
 
