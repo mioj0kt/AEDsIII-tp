@@ -1,7 +1,12 @@
 package Menus;
 
 import java.util.Scanner;
+
 import Arquivo.ArquivoUsuario;
+import Controles.ConsoleUtils;
+import Controles.ControleBuscaLista;
+import Controles.ControleLista;
+import Controles.ControleUsuario;
 import Entidades.Usuario;
 
 import java.security.MessageDigest;
@@ -87,14 +92,77 @@ public class MenuUsuarios {
                 System.out.println("Login bem-sucedido. Bem-vindo, " + u.getNome() + "!");
     
                 // Exibe o menu principal do usuário
-                MenuPrincipal menu = new MenuPrincipal(usuarioAtivo);
-                menu.executa();
+                menuPrincipalUsuario();
     
             } else {
                 System.out.println("Senha incorreta.");
             }
         } catch(Exception e) {
             System.out.println("Erro no login: " + e.getMessage());
+        }
+    }
+    
+        private void menuPrincipalUsuario() {
+        char opcao;
+        boolean contaExcluida = false;
+        do {
+            ConsoleUtils.limparTela(); // limpa tela
+
+            System.out.println("\n\nPresenteFácil 1.0");
+            System.out.println("-----------------");
+            System.out.println("> Início");
+            System.out.println("\n(1) Meus dados");
+            System.out.println("(2) Minhas listas");
+            System.out.println("(3) Produtos (Funcionalidade Produtos (TP2) ainda não implementada.)");
+            System.out.println("(4) Buscar lista");
+            System.out.println("\n(S) Sair");
+    
+            System.out.print("\nOpção: ");
+            String entrada = console.nextLine().trim().toUpperCase();
+            opcao = entrada.isEmpty() ? ' ' : entrada.charAt(0);
+    
+            switch (opcao) {
+                case '1':
+                    try {
+                        ControleUsuario controleUsuario = new ControleUsuario(usuarioAtivo);
+                        if (controleUsuario.executa()) {
+                            contaExcluida = true; // Marca que a conta foi excluída
+                        }
+                    } catch(Exception e) {
+                        System.out.println("Erro ao gerenciar dados do usuário: " + e.getMessage());
+                    }
+                    break;
+                case '2': 
+                    try {
+                        ControleLista controleLista = new ControleLista(usuarioAtivo);
+                        controleLista.executa();
+                    } catch(Exception e) {
+                        System.out.println("Erro ao iniciar o módulo de listas: " + e.getMessage());
+                    }
+                    break;
+                case '3': 
+                    break;
+                case '4': 
+                    try {
+                        ControleBuscaLista controleBusca = new ControleBuscaLista();
+                        controleBusca.executa();
+                    } catch(Exception e) {
+                        System.out.println("Erro ao iniciar o módulo de busca: " + e.getMessage());
+                    }
+                    break;
+                case 'S': 
+                    System.out.println("\nSaindo da sua conta..."); 
+                    usuarioAtivo = null;
+                    break;
+                default: 
+                    System.out.println("\nOpção inválida!"); 
+                    break;
+            }
+    
+        } while (opcao != 'S' && !contaExcluida);
+
+        if (contaExcluida) {
+            usuarioAtivo = null; // Garante que o usuário seja deslogado
         }
     }
 

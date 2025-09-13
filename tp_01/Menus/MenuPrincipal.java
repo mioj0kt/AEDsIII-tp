@@ -1,6 +1,8 @@
 package Menus;
 
 import java.util.Scanner;
+
+import Controles.ControleBuscaLista;
 import Controles.ControleLista;
 import Entidades.Usuario;
 
@@ -41,7 +43,8 @@ public class MenuPrincipal{
                     System.out.println("\nFuncionalidade Produtos (TP2) ainda não implementada."); 
                     break;
                 case '4': 
-                    System.out.println("\nFuncionalidade Buscar lista ainda não implementada."); 
+                    ControleBuscaLista controleBusca = new ControleBuscaLista();
+                    controleBusca.executa();
                     break;
                 case 'S': 
                     System.out.println("\nSaindo da sua conta..."); 

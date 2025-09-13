@@ -1,7 +1,9 @@
 import java.util.Scanner;
+
+import Controles.ConsoleUtils;
 import Menus.MenuUsuarios;
 
-public class Main{
+public class Main {
 
     public static void main(String[] args) {
 
@@ -13,6 +15,7 @@ public class Main{
 
             char opcao;
             do {
+                ConsoleUtils.limparTela(); // limpa tela
 
                 System.out.println("\n\nPresente Fácil 1.0");
                 System.out.println("------------------");

@@ -5,12 +5,12 @@ import java.util.List;
 import Arquivo.ArquivoLista;
 import Entidades.Lista;
 import Entidades.Usuario;
-import Menus.MenuLista;
+import Views.VisaoLista;
 
 public class ControleLista {
 
     private ArquivoLista arqListas;
-    private MenuLista visao;
+    private VisaoLista visao;
     private Usuario usuarioLogado;
 
     public ControleLista(Usuario usuarioLogado) {
@@ -19,13 +19,12 @@ public class ControleLista {
         } catch(Exception e) { 
             e.printStackTrace(); 
         }
-        this.visao = new MenuLista();
+        this.visao = new VisaoLista();
         this.usuarioLogado = usuarioLogado;
     }
 
-    /**
-     * Inicia a tela principal de "Minhas Listas".
-     */
+    
+    //Inicia a tela principal de "Minhas Listas"
     public void executa() {
         String opcao;
         do {
@@ -77,7 +76,6 @@ public class ControleLista {
             opcao = visao.mostraMenuDetalheLista(lista);
             switch (opcao) {
                 case '1':
-                    visao.exibeMensagem("Funcionalidade 'Gerenciar produtos' (TP2) ainda não implementada.");
                     break;
                 case '2':
                     alterarLista(lista);
@@ -87,6 +85,16 @@ public class ControleLista {
                         return; // Retorna ao menu anterior se a lista foi excluída
                     }
                     break;
+                case '4':
+                    try {
+                        String codigo = lista.getCodigoCompartilhavel();
+                        ConsoleUtils.copiarParaClipboard(codigo);
+                        visao.exibeMensagem("Código \"" + codigo + "\" copiado para a área de transferência!");
+                    } catch(Exception e) {
+                        // Trata o erro caso o sistema não tenha interface gráfica
+                        visao.exibeMensagem("Erro: Não foi possível copiar para a área de transferência neste ambiente.");
+                    }
+                break;
                 case 'R':
                     break;
                 default:
