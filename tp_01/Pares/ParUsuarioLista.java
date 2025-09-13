@@ -2,7 +2,7 @@ package Pares;
 
 import java.io.*;
 
-import Registro.RegistroArvoreBMais;
+import Registros.RegistroArvoreBMais;
 
 public class ParUsuarioLista implements RegistroArvoreBMais<ParUsuarioLista> {
 
@@ -19,20 +19,25 @@ public class ParUsuarioLista implements RegistroArvoreBMais<ParUsuarioLista> {
         this.idLista = idLista;
     }
 
-    public int getIdUsuario() { return this.idUsuario; }
-    public int getIdLista() { return this.idLista; }
+    public int getIdUsuario() {
+        return this.idUsuario;
+    }
+
+    public int getIdLista() {
+        return this.idLista;
+    }
 
     @Override
     public short size() {
         return this.TAMANHO;
     }
-    
+
     @Override
     public ParUsuarioLista clone() {
         return new ParUsuarioLista(this.idUsuario, this.idLista);
     }
 
-    //Compara dois pares. A comparação primária é pelo idUsuario.
+    // Compara dois pares. A comparação primária é pelo idUsuario.
     @Override
     public int compareTo(ParUsuarioLista outro) {
         if (this.idUsuario != outro.idUsuario) {

@@ -1,4 +1,4 @@
-package Controles;
+package Menus;
 
 // Imports para copiar automaticamente o código de compartilhamento de uma lista
 import java.awt.Toolkit;
@@ -13,8 +13,7 @@ public class ConsoleUtils {
     // Adicionamos um Scanner estático para não precisar criá-lo toda vez
     private static Scanner console = new Scanner(System.in);
 
-    
-    //Limpa a tela do console. Funciona em Windows, Linux e macOS.
+    // Limpa a tela do console. Funciona em Windows, Linux e macOS.
     public static void limparTela() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
@@ -31,7 +30,8 @@ public class ConsoleUtils {
         }
     }
 
-    // Método para "pausar" assim será possivel que as mensagens de erro não sumam assim que aparecem
+    // Método para "pausar" assim será possivel que as mensagens de erro não sumam
+    // assim que aparecem
     public static void pausar() {
         System.out.print("\nPressione ENTER para continuar...");
         console.nextLine();

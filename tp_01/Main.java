@@ -1,9 +1,9 @@
 import java.util.Scanner;
-
-import Controles.ConsoleUtils;
+import Menus.ConsoleUtils;
 import Menus.MenuUsuarios;
 
-public static void main(String[] args) {
+public class Main {
+    public static void main(String[] args) {
 
         Scanner console = new Scanner(System.in);
         MenuUsuarios menuUsuarios;

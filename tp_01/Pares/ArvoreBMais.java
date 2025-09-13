@@ -3,7 +3,7 @@ package Pares;
 import java.io.*;
 import java.util.ArrayList;
 
-import Registro.RegistroArvoreBMais;
+import Registros.RegistroArvoreBMais;
 
 import java.lang.reflect.Constructor;
 

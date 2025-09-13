@@ -5,8 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
-import Controles.ConsoleUtils;
 import Entidades.Lista;
+import Menus.ConsoleUtils;
 
 public class VisaoLista {
 

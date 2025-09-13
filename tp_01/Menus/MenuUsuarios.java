@@ -1,5 +1,9 @@
 package Menus;
 
+import Arquivo.*;
+import Entidades.*;
+import Controles.*;
+
 import java.util.Scanner;
 import java.security.MessageDigest;
 
@@ -53,9 +57,11 @@ public class MenuUsuarios {
             
             arqUsuarios.create(new Usuario(-1, nome, email, hash, pergunta, resposta));
             System.out.println("Usuário cadastrado com sucesso.");
+            ConsoleUtils.pausar();
 
         } catch(Exception e) {
             System.out.println("Erro ao incluir usuário: " + e.getMessage());
+            ConsoleUtils.pausar();
         }
     }
 
@@ -83,7 +89,7 @@ public class MenuUsuarios {
             String hash = hashSenha(senha);
             if (hash.equals(u.getHashSenha())) {
                 usuarioAtivo = u; // define usuário ativo
-                System.out.println("Login bem-sucedido. Bem-vindo, " + u.getNome() + "!");
+                System.out.println("\nLogin bem-sucedido. Bem-vindo, " + u.getNome() + "!");
                 ConsoleUtils.pausar();
 
                 // Exibe o menu principal do usuário

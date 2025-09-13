@@ -2,8 +2,8 @@ package Views;
 
 import java.util.Scanner;
 
-import Controles.ConsoleUtils;
 import Entidades.Usuario;
+import Menus.ConsoleUtils;
 
 public class VisaoUsuario {
 

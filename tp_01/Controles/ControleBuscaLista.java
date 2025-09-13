@@ -4,7 +4,6 @@ import Arquivo.ArquivoLista;
 import Entidades.Lista;
 import Views.VisaoBuscaLista;
 
-
 public class ControleBuscaLista {
 
     private ArquivoLista arqListas;

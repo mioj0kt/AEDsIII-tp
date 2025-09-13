@@ -7,7 +7,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import Registro.RegistroHashExtensivel;
+
+import Registros.RegistroHashExtensivel;
+
 import java.lang.reflect.Constructor;
 
 public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
