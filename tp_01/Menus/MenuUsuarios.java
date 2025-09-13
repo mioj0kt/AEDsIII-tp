@@ -1,14 +1,6 @@
 package Menus;
 
 import java.util.Scanner;
-
-import Arquivo.ArquivoUsuario;
-import Controles.ConsoleUtils;
-import Controles.ControleBuscaLista;
-import Controles.ControleLista;
-import Controles.ControleUsuario;
-import Entidades.Usuario;
-
 import java.security.MessageDigest;
 
 public class MenuUsuarios {
@@ -43,6 +35,7 @@ public class MenuUsuarios {
             // verifica existência
             if (arqUsuarios.read(email) != null) {
                 System.out.println("Email já cadastrado.");
+                ConsoleUtils.pausar();
                 return;
             }
 
@@ -57,9 +50,9 @@ public class MenuUsuarios {
 
             String hash = hashSenha(senha);
 
-            Usuario u = new Usuario(-1, nome, email, hash, pergunta, resposta);
-            int id = arqUsuarios.create(u);
-            System.out.println("Usuário cadastrado com sucesso. ID interno: " + id);
+            
+            arqUsuarios.create(new Usuario(-1, nome, email, hash, pergunta, resposta));
+            System.out.println("Usuário cadastrado com sucesso.");
 
         } catch(Exception e) {
             System.out.println("Erro ao incluir usuário: " + e.getMessage());
@@ -83,6 +76,7 @@ public class MenuUsuarios {
             Usuario u = arqUsuarios.read(email);
             if (u == null) {
                 System.out.println("Usuário não encontrado.");
+                ConsoleUtils.pausar();
                 return;
             }
     
@@ -90,15 +84,18 @@ public class MenuUsuarios {
             if (hash.equals(u.getHashSenha())) {
                 usuarioAtivo = u; // define usuário ativo
                 System.out.println("Login bem-sucedido. Bem-vindo, " + u.getNome() + "!");
-    
+                ConsoleUtils.pausar();
+
                 // Exibe o menu principal do usuário
                 menuPrincipalUsuario();
     
             } else {
                 System.out.println("Senha incorreta.");
+                ConsoleUtils.pausar();
             }
         } catch(Exception e) {
             System.out.println("Erro no login: " + e.getMessage());
+            ConsoleUtils.pausar();
         }
     }
     
@@ -130,6 +127,7 @@ public class MenuUsuarios {
                         }
                     } catch(Exception e) {
                         System.out.println("Erro ao gerenciar dados do usuário: " + e.getMessage());
+                        ConsoleUtils.pausar();
                     }
                     break;
                 case '2': 
@@ -138,6 +136,7 @@ public class MenuUsuarios {
                         controleLista.executa();
                     } catch(Exception e) {
                         System.out.println("Erro ao iniciar o módulo de listas: " + e.getMessage());
+                        ConsoleUtils.pausar();
                     }
                     break;
                 case '3': 
@@ -148,6 +147,7 @@ public class MenuUsuarios {
                         controleBusca.executa();
                     } catch(Exception e) {
                         System.out.println("Erro ao iniciar o módulo de busca: " + e.getMessage());
+                        ConsoleUtils.pausar();
                     }
                     break;
                 case 'S': 
@@ -156,6 +156,7 @@ public class MenuUsuarios {
                     break;
                 default: 
                     System.out.println("\nOpção inválida!"); 
+                    ConsoleUtils.pausar();
                     break;
             }
     
@@ -164,6 +165,7 @@ public class MenuUsuarios {
         if (contaExcluida) {
             usuarioAtivo = null; // Garante que o usuário seja deslogado
         }
+        
     }
 
     // SHA-256 hex
