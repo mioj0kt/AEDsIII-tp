@@ -1,4 +1,4 @@
-package Pares;
+package Estruturas;
 
 import java.io.*;
 import java.util.ArrayList;

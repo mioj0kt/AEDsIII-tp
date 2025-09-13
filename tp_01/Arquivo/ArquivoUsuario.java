@@ -4,7 +4,7 @@ import java.util.List;
 
 import Entidades.Lista;
 import Entidades.Usuario;
-import Hash.HashExtensivel;
+import Estruturas.HashExtensivel;
 import Pares.ParEmailID;
 
 public class ArquivoUsuario extends Arquivo<Usuario> {

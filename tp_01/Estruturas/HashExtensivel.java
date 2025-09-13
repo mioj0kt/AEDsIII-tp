@@ -1,4 +1,4 @@
-package Hash;
+package Estruturas;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
