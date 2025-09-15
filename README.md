@@ -2,9 +2,9 @@
 
 ## Alunos participantes
 
+* [Domynic Barros Lima](https://github.com/DomynicBl)
 * [Felipe Rivetti Mizher](https://github.com/FelipeMizher)
 * [Matheus Felipe Cavalcanti Xavier](https://github.com/mioj0kt)
-* [Domynic Barros Lima](https://github.com/DomynicBl)
 
 ## Professor responsável
 
