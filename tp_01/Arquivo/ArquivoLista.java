@@ -3,13 +3,8 @@ package Arquivo;
 import java.util.ArrayList;
 import java.util.List;
 import Entidades.Lista;
-<<<<<<< HEAD
-import Hash.HashExtensivel;
-import Pares.ArvoreBMais;
-=======
 import Estruturas.ArvoreBMais;
 import Estruturas.HashExtensivel;
->>>>>>> main
 import Pares.ParCodigoLista;
 import Pares.ParUsuarioLista;
 

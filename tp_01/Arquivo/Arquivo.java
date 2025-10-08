@@ -3,9 +3,10 @@ package Arquivo;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
-import Hash.HashExtensivel;
+
+import Estruturas.HashExtensivel;
 import Pares.ParIDEndereco;
-import Registro.Registro;
+import Registros.Registro;
 
 public class Arquivo<T extends Registro> {
 

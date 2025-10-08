@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:tp_01/Registro/RegistroHashExtensivel.java
-package Registro;
-========
 package Registros;
->>>>>>>> main:tp_01/Registros/RegistroHashExtensivel.java
 
 import java.io.IOException;
 

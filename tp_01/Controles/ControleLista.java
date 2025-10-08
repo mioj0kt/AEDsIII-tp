@@ -5,10 +5,7 @@ import java.util.List;
 import Arquivo.ArquivoLista;
 import Entidades.Lista;
 import Entidades.Usuario;
-<<<<<<< HEAD
-=======
 import Menus.ConsoleUtils;
->>>>>>> main
 import Views.VisaoLista;
 
 public class ControleLista {
@@ -18,28 +15,16 @@ public class ControleLista {
     private Usuario usuarioLogado;
 
     public ControleLista(Usuario usuarioLogado) {
-<<<<<<< HEAD
-        try { 
-            this.arqListas = new ArquivoLista(); 
-        } catch(Exception e) { 
-            e.printStackTrace(); 
-=======
         try {
             this.arqListas = new ArquivoLista();
         } catch (Exception e) {
             e.printStackTrace();
->>>>>>> main
         }
         this.visao = new VisaoLista();
         this.usuarioLogado = usuarioLogado;
     }
 
-<<<<<<< HEAD
-    
-    //Inicia a tela principal de "Minhas Listas"
-=======
     // Inicia a tela principal de "Minhas Listas"
->>>>>>> main
     public void executa() {
         String opcao;
         do {
@@ -51,11 +36,7 @@ public class ControleLista {
                 visao.exibeMensagem("Erro ao ler as listas: " + e.getMessage());
                 listas = new java.util.ArrayList<>();
             }
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> main
             // 2. Ordena as listas por nome
             listas.sort(Comparator.comparing(Lista::getNome));
 
@@ -109,20 +90,12 @@ public class ControleLista {
                         String codigo = lista.getCodigoCompartilhavel();
                         ConsoleUtils.copiarParaClipboard(codigo);
                         visao.exibeMensagem("Código \"" + codigo + "\" copiado para a área de transferência!");
-<<<<<<< HEAD
-                    } catch(Exception e) {
-                        // Trata o erro caso o sistema não tenha interface gráfica
-                        visao.exibeMensagem("Erro: Não foi possível copiar para a área de transferência neste ambiente.");
-                    }
-                break;
-=======
                     } catch (Exception e) {
                         // Trata o erro caso o sistema não tenha interface gráfica
                         visao.exibeMensagem(
                                 "Erro: Não foi possível copiar para a área de transferência neste ambiente.");
                     }
                     break;
->>>>>>> main
                 case 'R':
                     break;
                 default:
@@ -152,11 +125,7 @@ public class ControleLista {
             visao.exibeMensagem("Erro ao alterar lista: " + e.getMessage());
         }
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> main
     private boolean excluirLista(Lista lista) {
         if (visao.confirmaExclusao()) {
             try {

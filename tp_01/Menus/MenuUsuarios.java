@@ -1,22 +1,10 @@
 package Menus;
 
-<<<<<<< HEAD
-import java.util.Scanner;
-
-import Arquivo.ArquivoUsuario;
-import Controles.ConsoleUtils;
-import Controles.ControleBuscaLista;
-import Controles.ControleLista;
-import Controles.ControleUsuario;
-import Entidades.Usuario;
-
-=======
 import Arquivo.*;
 import Entidades.*;
 import Controles.*;
 
 import java.util.Scanner;
->>>>>>> main
 import java.security.MessageDigest;
 
 public class MenuUsuarios {
@@ -51,10 +39,7 @@ public class MenuUsuarios {
             // verifica existência
             if (arqUsuarios.read(email) != null) {
                 System.out.println("Email já cadastrado.");
-<<<<<<< HEAD
-=======
                 ConsoleUtils.pausar();
->>>>>>> main
                 return;
             }
 
@@ -69,14 +54,6 @@ public class MenuUsuarios {
 
             String hash = hashSenha(senha);
 
-<<<<<<< HEAD
-            Usuario u = new Usuario(-1, nome, email, hash, pergunta, resposta);
-            int id = arqUsuarios.create(u);
-            System.out.println("Usuário cadastrado com sucesso. ID interno: " + id);
-
-        } catch(Exception e) {
-            System.out.println("Erro ao incluir usuário: " + e.getMessage());
-=======
             
             arqUsuarios.create(new Usuario(-1, nome, email, hash, pergunta, resposta));
             System.out.println("Usuário cadastrado com sucesso.");
@@ -85,7 +62,6 @@ public class MenuUsuarios {
         } catch(Exception e) {
             System.out.println("Erro ao incluir usuário: " + e.getMessage());
             ConsoleUtils.pausar();
->>>>>>> main
         }
     }
 
@@ -106,40 +82,26 @@ public class MenuUsuarios {
             Usuario u = arqUsuarios.read(email);
             if (u == null) {
                 System.out.println("Usuário não encontrado.");
-<<<<<<< HEAD
-=======
                 ConsoleUtils.pausar();
->>>>>>> main
                 return;
             }
     
             String hash = hashSenha(senha);
             if (hash.equals(u.getHashSenha())) {
                 usuarioAtivo = u; // define usuário ativo
-<<<<<<< HEAD
-                System.out.println("Login bem-sucedido. Bem-vindo, " + u.getNome() + "!");
-    
-=======
                 System.out.println("\nLogin bem-sucedido. Bem-vindo, " + u.getNome() + "!");
                 ConsoleUtils.pausar();
 
->>>>>>> main
                 // Exibe o menu principal do usuário
                 menuPrincipalUsuario();
     
             } else {
                 System.out.println("Senha incorreta.");
-<<<<<<< HEAD
-            }
-        } catch(Exception e) {
-            System.out.println("Erro no login: " + e.getMessage());
-=======
                 ConsoleUtils.pausar();
             }
         } catch(Exception e) {
             System.out.println("Erro no login: " + e.getMessage());
             ConsoleUtils.pausar();
->>>>>>> main
         }
     }
     
@@ -171,10 +133,7 @@ public class MenuUsuarios {
                         }
                     } catch(Exception e) {
                         System.out.println("Erro ao gerenciar dados do usuário: " + e.getMessage());
-<<<<<<< HEAD
-=======
                         ConsoleUtils.pausar();
->>>>>>> main
                     }
                     break;
                 case '2': 
@@ -183,10 +142,7 @@ public class MenuUsuarios {
                         controleLista.executa();
                     } catch(Exception e) {
                         System.out.println("Erro ao iniciar o módulo de listas: " + e.getMessage());
-<<<<<<< HEAD
-=======
                         ConsoleUtils.pausar();
->>>>>>> main
                     }
                     break;
                 case '3': 
@@ -197,10 +153,7 @@ public class MenuUsuarios {
                         controleBusca.executa();
                     } catch(Exception e) {
                         System.out.println("Erro ao iniciar o módulo de busca: " + e.getMessage());
-<<<<<<< HEAD
-=======
                         ConsoleUtils.pausar();
->>>>>>> main
                     }
                     break;
                 case 'S': 
@@ -209,10 +162,7 @@ public class MenuUsuarios {
                     break;
                 default: 
                     System.out.println("\nOpção inválida!"); 
-<<<<<<< HEAD
-=======
                     ConsoleUtils.pausar();
->>>>>>> main
                     break;
             }
     
@@ -221,10 +171,7 @@ public class MenuUsuarios {
         if (contaExcluida) {
             usuarioAtivo = null; // Garante que o usuário seja deslogado
         }
-<<<<<<< HEAD
-=======
         
->>>>>>> main
     }
 
     // SHA-256 hex
@@ -240,8 +187,4 @@ public class MenuUsuarios {
             throw new RuntimeException(e);
         }
     }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> main

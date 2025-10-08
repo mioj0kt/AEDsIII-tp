@@ -1,12 +1,8 @@
 package Entidades;
 
 import java.io.*;
-<<<<<<< HEAD
-import Registro.Registro;
-=======
 
 import Registros.Registro;
->>>>>>> main
 
 public class Usuario implements Registro {
 

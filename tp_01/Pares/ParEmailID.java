@@ -6,12 +6,8 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
-<<<<<<< HEAD
-import Registro.RegistroHashExtensivel;
-=======
 
 import Registros.RegistroHashExtensivel;
->>>>>>> main
 
 public class ParEmailID implements RegistroHashExtensivel<ParEmailID> {
 
@@ -54,11 +50,7 @@ public class ParEmailID implements RegistroHashExtensivel<ParEmailID> {
         }
         return (int) Math.abs(hashValue);
     }
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> main
     @Override
     public String toString() {
         return "(" + this.email + ";" + this.id + ")";
@@ -87,17 +79,6 @@ public class ParEmailID implements RegistroHashExtensivel<ParEmailID> {
     public void fromByteArray(byte[] ba) throws IOException {
         ByteArrayInputStream bais = new ByteArrayInputStream(ba);
         DataInputStream dis = new DataInputStream(bais);
-<<<<<<< HEAD
-    
-        byte[] bufferEmail = new byte[64];
-        dis.readFully(bufferEmail);
-    
-        // remove caracteres nulos (\u0000) e espaços extras
-        this.email = new String(bufferEmail, "UTF-8")
-                    .replace("\u0000", "")
-                    .trim();
-    
-=======
 
         byte[] bufferEmail = new byte[64];
         dis.readFully(bufferEmail);
@@ -107,7 +88,6 @@ public class ParEmailID implements RegistroHashExtensivel<ParEmailID> {
                 .replace("\u0000", "")
                 .trim();
 
->>>>>>> main
         this.id = dis.readInt();
     }
 }

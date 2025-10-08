@@ -1,17 +1,8 @@
 import java.util.Scanner;
-<<<<<<< HEAD
-
-import Controles.ConsoleUtils;
-import Menus.MenuUsuarios;
-
-public class Main {
-
-=======
 import Menus.ConsoleUtils;
 import Menus.MenuUsuarios;
 
 public class Main {
->>>>>>> main
     public static void main(String[] args) {
 
         Scanner console = new Scanner(System.in);
@@ -46,10 +37,7 @@ public class Main {
                         break;
                     default:
                         System.out.println("Opção inválida!");
-<<<<<<< HEAD
-=======
                         ConsoleUtils.pausar();
->>>>>>> main
                         break;
                 }
 

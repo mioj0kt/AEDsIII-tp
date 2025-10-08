@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:tp_01/Hash/HashExtensivel.java
-package Hash;
-========
 package Estruturas;
->>>>>>>> main:tp_01/Estruturas/HashExtensivel.java
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,13 +7,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-<<<<<<<< HEAD:tp_01/Hash/HashExtensivel.java
-import Registro.RegistroHashExtensivel;
-========
 
 import Registros.RegistroHashExtensivel;
 
->>>>>>>> main:tp_01/Estruturas/HashExtensivel.java
 import java.lang.reflect.Constructor;
 
 public class HashExtensivel<T extends RegistroHashExtensivel<T>> {
