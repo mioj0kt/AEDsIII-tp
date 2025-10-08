@@ -1,8 +1,14 @@
 package Views;
 
 import java.util.Scanner;
+<<<<<<< HEAD
 import Controles.ConsoleUtils;
 import Entidades.Lista;
+=======
+
+import Entidades.Lista;
+import Menus.ConsoleUtils;
+>>>>>>> main
 
 public class VisaoBuscaLista {
     
@@ -21,6 +27,10 @@ public class VisaoBuscaLista {
     public void mostraListaEncontrada(Lista l) {
         if (l == null) {
             System.out.println("\nNenhuma lista encontrada com este código.");
+<<<<<<< HEAD
+=======
+            ConsoleUtils.pausar();
+>>>>>>> main
             return;
         }
 
@@ -32,6 +42,9 @@ public class VisaoBuscaLista {
         System.out.println("----------------------");
         
         ConsoleUtils.pausar();
+<<<<<<< HEAD
         console.nextLine();
+=======
+>>>>>>> main
     }
 }

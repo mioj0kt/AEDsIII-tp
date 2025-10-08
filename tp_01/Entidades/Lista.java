@@ -3,7 +3,12 @@ package Entidades;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+<<<<<<< HEAD
 import Registro.Registro;
+=======
+
+import Registros.Registro;
+>>>>>>> main
 
 public class Lista implements Registro {
 

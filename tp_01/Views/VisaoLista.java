@@ -5,8 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 
+<<<<<<< HEAD
 import Controles.ConsoleUtils;
 import Entidades.Lista;
+=======
+import Entidades.Lista;
+import Menus.ConsoleUtils;
+>>>>>>> main
 
 public class VisaoLista {
 

@@ -7,6 +7,11 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import Registro.RegistroHashExtensivel;
 
+<<<<<<< HEAD
+=======
+import Registros.RegistroHashExtensivel;
+
+>>>>>>> main
 public class ParIDEndereco implements RegistroHashExtensivel<ParIDEndereco> {
 
     private int id;

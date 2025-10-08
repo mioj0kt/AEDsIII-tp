@@ -3,7 +3,11 @@ package Pares;
 import java.io.*;
 import java.util.Objects;
 
+<<<<<<< HEAD
 import Registro.RegistroHashExtensivel;
+=======
+import Registros.RegistroHashExtensivel;
+>>>>>>> main
 
 public class ParCodigoLista implements RegistroHashExtensivel<ParCodigoLista> {
 
@@ -21,8 +25,18 @@ public class ParCodigoLista implements RegistroHashExtensivel<ParCodigoLista> {
         this.idLista = idLista;
     }
 
+<<<<<<< HEAD
     public String getCodigo() { return this.codigo.trim(); }
     public int getIdLista() { return this.idLista; }
+=======
+    public String getCodigo() {
+        return this.codigo.trim();
+    }
+
+    public int getIdLista() {
+        return this.idLista;
+    }
+>>>>>>> main
 
     @Override
     public short size() {
@@ -33,11 +47,21 @@ public class ParCodigoLista implements RegistroHashExtensivel<ParCodigoLista> {
     public int hashCode() {
         return this.codigo.trim().hashCode();
     }
+<<<<<<< HEAD
     
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
+=======
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+>>>>>>> main
         ParCodigoLista that = (ParCodigoLista) obj;
         return Objects.equals(this.getCodigo(), that.getCodigo());
     }
