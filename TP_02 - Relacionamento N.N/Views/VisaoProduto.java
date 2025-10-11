@@ -11,7 +11,7 @@ public class VisaoProduto {
 
     public char mostraMenuProdutos() {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 1.0");
+        System.out.println("PresenteFácil 2.0");
         System.out.println("-----------------");
         System.out.println("> Início > Produtos");
         System.out.println("\n(1) Buscar produto por GTIN-13");
@@ -116,7 +116,7 @@ public class VisaoProduto {
 
     public String mostraListaPaginadaProdutos(List<Produto> produtosNaPagina, int paginaAtual, int totalPaginas) {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 1.0");
+        System.out.println("PresenteFácil 2.0");
         System.out.println("-----------------");
         System.out.println("> Início > Produtos > Listagem");
         System.out.printf("\nPágina %d de %d\n\n", paginaAtual, totalPaginas);
@@ -136,7 +136,7 @@ public class VisaoProduto {
 
     public char mostraMenuDetalheProdutoCompleto(Produto p, List<String> minhasListas, int outrasListasCount) {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 1.0");
+        System.out.println("PresenteFácil 2.0");
         System.out.println("-----------------");
         System.out.println("> Início > Produtos > Listagem > " + p.getNome());
 

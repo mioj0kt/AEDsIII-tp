@@ -5,19 +5,12 @@ import java.util.List;
 import Arquivo.ArquivoProduto;
 import Entidades.Produto;
 import Views.VisaoProduto;
-import Menus.ConsoleUtils;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import Arquivo.ArquivoLista;
 import Arquivo.ArquivoListaProduto;
-import Arquivo.ArquivoProduto;
 import Entidades.Lista;
 import Entidades.ListaProduto;
-import Entidades.Produto;
 import Entidades.Usuario;
-import Menus.ConsoleUtils;
-import Views.VisaoProduto;
 
 public class ControleProduto {
 

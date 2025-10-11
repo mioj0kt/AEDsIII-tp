@@ -117,7 +117,7 @@ public class MenuUsuarios {
         do {
             ConsoleUtils.limparTela(); // limpa tela
 
-            System.out.println("\n\nPresenteFácil 1.0");
+            System.out.println("\n\nPresenteFácil 2.0");
             System.out.println("-----------------");
             System.out.println("> Início");
             System.out.println("\n(1) Meus dados");

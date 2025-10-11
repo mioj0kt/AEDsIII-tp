@@ -15,7 +15,7 @@ public class Main {
             do {
                 ConsoleUtils.limparTela(); // limpa tela
 
-                System.out.println("\n\nPresente Fácil 1.0");
+                System.out.println("\n\nPresente Fácil 2.0");
                 System.out.println("------------------");
                 System.out.println("\n(1) Login");
                 System.out.println("(2) Novo usuário");
