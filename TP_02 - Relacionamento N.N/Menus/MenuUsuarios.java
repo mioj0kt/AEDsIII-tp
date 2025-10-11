@@ -153,7 +153,7 @@ public class MenuUsuarios {
                     break;
                 case '3':
                     try {
-                        ControleProduto controleProduto = new ControleProduto();
+                        ControleProduto controleProduto = new ControleProduto(usuarioAtivo);
                         controleProduto.executa();
                     } catch (Exception e) {
                         System.out.println("Erro ao iniciar o módulo de produtos: " + e.getMessage());

@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Map;
+import java.util.LinkedHashMap;
+import java.util.stream.Collectors;
 
 import Arquivo.ArquivoLista;
 import Arquivo.ArquivoListaProduto;
@@ -26,8 +29,8 @@ public class ControleLista {
     public ControleLista(Usuario usuarioLogado) {
         try {
             this.arqListas = new ArquivoLista();
-            this.arqProdutos = new ArquivoProduto(); // NOVO
-            this.arqListaProduto = new ArquivoListaProduto(); // NOVO
+            this.arqProdutos = new ArquivoProduto();
+            this.arqListaProduto = new ArquivoListaProduto();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -156,20 +159,32 @@ public class ControleLista {
     private void gerenciarProdutosDaLista(Lista lista) {
         char opcao;
         do {
-            List<String> nomesProdutos = new ArrayList<>();
-            List<ListaProduto> associacoes = new ArrayList<>();
+            Map<ListaProduto, Produto> mapaProdutos = new LinkedHashMap<>();
             try {
-                associacoes = arqListaProduto.readByIdLista(lista.getId());
+                List<ListaProduto> associacoes = arqListaProduto.readByIdLista(lista.getId());
                 for (ListaProduto lp : associacoes) {
                     Produto p = arqProdutos.read(lp.getIdProduto());
                     if (p != null) {
-                        nomesProdutos.add(p.getNome() + " (x" + lp.getQuantidade() + ")");
-                    } else {
-                        nomesProdutos.add("Produto não encontrado (ID: " + lp.getIdProduto() + ")");
+                        mapaProdutos.put(lp, p);
                     }
                 }
             } catch (Exception e) {
                 visao.exibeMensagem("Erro ao carregar produtos: " + e.getMessage());
+            }
+
+            Map<ListaProduto, Produto> mapaOrdenado = mapaProdutos.entrySet().stream()
+                    .sorted(Map.Entry
+                            .comparingByValue(Comparator.comparing(Produto::getNome, String.CASE_INSENSITIVE_ORDER)))
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+                            LinkedHashMap::new));
+
+            List<String> nomesProdutos = new ArrayList<>();
+            List<ListaProduto> associacoesOrdenadas = new ArrayList<>(mapaOrdenado.keySet());
+
+            for (ListaProduto lp : associacoesOrdenadas) {
+                Produto p = mapaOrdenado.get(lp);
+                String status = p.isAtivo() ? "" : " (INATIVO)";
+                nomesProdutos.add(p.getNome() + " (x" + lp.getQuantidade() + ")" + status);
             }
 
             String entrada = visao.mostraMenuProdutosDaLista(lista, nomesProdutos).trim().toUpperCase();
@@ -184,8 +199,8 @@ public class ControleLista {
                 default:
                     try {
                         int numProduto = Integer.parseInt(entrada) - 1;
-                        if (numProduto >= 0 && numProduto < associacoes.size()) {
-                            gerenciarProdutoSelecionado(associacoes.get(numProduto));
+                        if (numProduto >= 0 && numProduto < associacoesOrdenadas.size()) {
+                            gerenciarProdutoSelecionado(associacoesOrdenadas.get(numProduto));
                         } else {
                             visao.exibeMensagem("Opção inválida!");
                         }
@@ -244,34 +259,51 @@ public class ControleLista {
     private Produto selecionarProdutoDeListaGeral() throws Exception {
         List<Produto> produtos = arqProdutos.readAll();
         produtos.removeIf(p -> !p.isAtivo()); // Remove inativos
-        produtos.sort(Comparator.comparing(Produto::getNome));
+        produtos.sort(Comparator.comparing(Produto::getNome, String.CASE_INSENSITIVE_ORDER));
 
         if (produtos.isEmpty()) {
             visao.exibeMensagem("Nenhum produto ativo cadastrado.");
             return null;
         }
 
-        System.out.println("\n-- Selecione um Produto --");
-        for (int i = 0; i < produtos.size(); i++) {
-            System.out.printf("(%d) %s\n", i + 1, produtos.get(i).getNome());
-        }
-        System.out.print("\nOpção (ou 'R' para voltar): ");
-        String entrada = new Scanner(System.in).nextLine().trim().toUpperCase();
+        int paginaAtual = 1;
+        int produtosPorPagina = 10;
+        int totalPaginas = (int) Math.ceil((double) produtos.size() / produtosPorPagina);
 
-        if (entrada.equals("R"))
-            return null;
+        String opcao;
+        do {
+            int inicio = (paginaAtual - 1) * produtosPorPagina;
+            int fim = Math.min(inicio + produtosPorPagina, produtos.size());
+            List<Produto> produtosNaPagina = produtos.subList(inicio, fim);
 
-        try {
-            int indice = Integer.parseInt(entrada) - 1;
-            if (indice >= 0 && indice < produtos.size()) {
-                return produtos.get(indice);
+            opcao = visao.mostraSelecaoPaginadaProdutos(produtosNaPagina, paginaAtual, totalPaginas);
+
+            switch (opcao.toUpperCase()) {
+                case "A":
+                    if (paginaAtual > 1)
+                        paginaAtual--;
+                    break;
+                case "B":
+                    if (paginaAtual < totalPaginas)
+                        paginaAtual++;
+                    break;
+                case "R":
+                    return null;
+                default:
+                    try {
+                        int numProduto = Integer.parseInt(opcao);
+                        if (numProduto >= 1 && numProduto <= produtosNaPagina.size()) {
+                            // Retorna o produto selecionado
+                            return produtosNaPagina.get(numProduto - 1);
+                        } else {
+                            visao.exibeMensagem("Opção inválida!");
+                        }
+                    } catch (NumberFormatException e) {
+                        visao.exibeMensagem("Opção inválida!");
+                    }
+                    break;
             }
-        } catch (NumberFormatException e) {
-            // ignora
-        }
-
-        visao.exibeMensagem("Opção inválida.");
-        return null;
+        } while (true);
     }
 
     private void gerenciarProdutoSelecionado(ListaProduto lp) {

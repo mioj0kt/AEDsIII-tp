@@ -32,21 +32,21 @@ public class VisaoProduto {
         System.out.println("\n-- Novo Produto (digite 'R' a qualquer momento para cancelar) --");
         String gtin;
         do {
-            System.out.print("GTIN-13 (apenas números): ");
+            System.out.print("GTIN-13 (exatamente 13 números): ");
             gtin = console.nextLine().trim();
             if (gtin.equalsIgnoreCase("R"))
                 return null; // Aborta a operação
-            if (!gtin.matches("\\d+")) {
-                System.err.println("Erro: O GTIN-13 deve conter apenas números.");
+            if (!gtin.matches("\\d{13}")) {
+                System.err.println("Erro: O GTIN-13 deve conter exatamente 13 números.");
             }
-        } while (!gtin.matches("\\d+"));
+        } while (!gtin.matches("\\d{13}")); 
 
         String nome;
         do {
             System.out.print("Nome (obrigatório): ");
             nome = console.nextLine().trim();
             if (nome.equalsIgnoreCase("R"))
-                return null; // Aborta a operação
+                return null; 
             if (nome.isEmpty()) {
                 System.err.println("Erro: O nome é obrigatório.");
             }
@@ -57,7 +57,7 @@ public class VisaoProduto {
             System.out.print("Descrição (obrigatório): ");
             descricao = console.nextLine().trim();
             if (descricao.equalsIgnoreCase("R"))
-                return null; // Aborta a operação
+                return null;
             if (descricao.isEmpty()) {
                 System.err.println("Erro: A descrição é obrigatória.");
             }
@@ -112,5 +112,57 @@ public class VisaoProduto {
     public void exibeMensagem(String msg) {
         System.out.println("\n" + msg);
         ConsoleUtils.pausar();
+    }
+
+    public String mostraListaPaginadaProdutos(List<Produto> produtosNaPagina, int paginaAtual, int totalPaginas) {
+        ConsoleUtils.limparTela();
+        System.out.println("PresenteFácil 1.0");
+        System.out.println("-----------------");
+        System.out.println("> Início > Produtos > Listagem");
+        System.out.printf("\nPágina %d de %d\n\n", paginaAtual, totalPaginas);
+
+        for (int i = 0; i < produtosNaPagina.size(); i++) {
+            Produto p = produtosNaPagina.get(i);
+            String status = p.isAtivo() ? "" : " (INATIVO)";
+            System.out.printf("(%d) %s%s\n", (i + 1), p.getNome(), status);
+        }
+
+        System.out.println("\n(A) Página anterior");
+        System.out.println("(B) Próxima página");
+        System.out.println("\n(R) Retornar ao menu anterior");
+        System.out.print("\nOpção: ");
+        return console.nextLine().trim();
+    }
+
+    public char mostraMenuDetalheProdutoCompleto(Produto p, List<String> minhasListas, int outrasListasCount) {
+        ConsoleUtils.limparTela();
+        System.out.println("PresenteFácil 1.0");
+        System.out.println("-----------------");
+        System.out.println("> Início > Produtos > Listagem > " + p.getNome());
+
+        System.out.printf("\nNOME         : %s\n", p.getNome());
+        System.out.printf("GTIN-13      : %s\n", p.getGtin13());
+        System.out.printf("DESCRIÇÃO    : %s\n", p.getDescricao());
+        System.out.printf("STATUS       : %s\n", p.isAtivo() ? "Ativo" : "Inativo");
+
+        System.out.print("\nAparece nas minhas listas: ");
+        if (minhasListas.isEmpty()) {
+            System.out.println("Nenhuma.");
+        } else {
+            System.out.println(String.join(" - ", minhasListas));
+        }
+
+        System.out.printf("Aparece também em mais %d lista(s) de outras pessoas.\n", outrasListasCount);
+
+        System.out.println("\n(1) Alterar os dados do produto");
+        if (p.isAtivo()) {
+            System.out.println("(2) Inativar o produto");
+        } else {
+            System.out.println("(2) Reativar o produto");
+        }
+        System.out.println("\n(R) Retornar ao menu anterior");
+        System.out.print("\nOpção: ");
+        String entrada = console.nextLine().trim().toUpperCase();
+        return entrada.isEmpty() ? ' ' : entrada.charAt(0);
     }
 }

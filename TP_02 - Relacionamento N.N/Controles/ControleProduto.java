@@ -6,15 +6,29 @@ import Arquivo.ArquivoProduto;
 import Entidades.Produto;
 import Views.VisaoProduto;
 import Menus.ConsoleUtils;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+import Arquivo.ArquivoLista;
+import Arquivo.ArquivoListaProduto;
+import Arquivo.ArquivoProduto;
+import Entidades.Lista;
+import Entidades.ListaProduto;
+import Entidades.Produto;
+import Entidades.Usuario;
+import Menus.ConsoleUtils;
+import Views.VisaoProduto;
 
 public class ControleProduto {
 
     private ArquivoProduto arqProdutos;
     private VisaoProduto visao;
+    private Usuario usuarioLogado;
 
-    public ControleProduto() throws Exception {
+    public ControleProduto(Usuario usuarioLogado) throws Exception {
         this.arqProdutos = new ArquivoProduto();
         this.visao = new VisaoProduto();
+        this.usuarioLogado = usuarioLogado;
     }
 
     public void executa() {
@@ -65,35 +79,7 @@ public class ControleProduto {
                 visao.exibeMensagem("Produto não encontrado.");
                 return;
             }
-
-            char opcao;
-            do {
-                visao.mostraProduto(p);
-                opcao = visao.mostraMenuDetalheProduto(p);
-                switch (opcao) {
-                    case '1':
-                        alterarProduto(p); // <-- MUDANÇA AQUI
-                        break;
-                    case '2':
-                        if (p.isAtivo()) {
-                            // A verificação se o produto pode ser inativado (se está em listas)
-                            // deveria ser feita aqui. Por simplicidade, vamos apenas inativar.
-                            arqProdutos.delete(p.getId());
-                            visao.exibeMensagem("Produto inativado com sucesso.");
-                        } else {
-                            arqProdutos.reativar(p.getId());
-                            visao.exibeMensagem("Produto reativado com sucesso.");
-                        }
-                        p = arqProdutos.read(gtin);
-                        break;
-                    case 'R':
-                        break;
-                    default:
-                        visao.exibeMensagem("Opção inválida!");
-                        break;
-                }
-            } while (opcao != 'R');
-
+            visualizarDetalheProduto(p);
         } catch (Exception e) {
             visao.exibeMensagem("Erro ao buscar produto: " + e.getMessage());
         }
@@ -112,18 +98,102 @@ public class ControleProduto {
     private void listarTodos() {
         try {
             List<Produto> produtos = arqProdutos.readAll();
-            // Ordena primeiro por status, ativos primeiro, e depois por ID
-            produtos.sort(Comparator.comparing(Produto::isAtivo).reversed()
-                    .thenComparing(Produto::getId));
 
-            System.out.println("\n-- Todos os Produtos --");
-            for (Produto p : produtos) {
-                System.out.printf("ID %d | %s | %s [%s]\n", p.getId(), p.getGtin13(), p.getNome(),
-                        (p.isAtivo() ? "Ativo" : "Inativo"));
+            produtos.sort(Comparator.comparing(Produto::isAtivo).reversed()
+                    .thenComparing(Produto::getNome, String.CASE_INSENSITIVE_ORDER));
+
+            int paginaAtual = 1;
+            int produtosPorPagina = 10;
+            int totalPaginas = (int) Math.ceil((double) produtos.size() / produtosPorPagina);
+
+            if (totalPaginas == 0) {
+                visao.exibeMensagem("Nenhum produto cadastrado.");
+                return;
             }
-            ConsoleUtils.pausar();
+
+            String opcao;
+            do {
+                int inicio = (paginaAtual - 1) * produtosPorPagina;
+                int fim = Math.min(inicio + produtosPorPagina, produtos.size());
+                List<Produto> produtosNaPagina = produtos.subList(inicio, fim);
+
+                opcao = visao.mostraListaPaginadaProdutos(produtosNaPagina, paginaAtual, totalPaginas);
+
+                switch (opcao.toUpperCase()) {
+                    case "A":
+                        if (paginaAtual > 1)
+                            paginaAtual--;
+                        break;
+                    case "B":
+                        if (paginaAtual < totalPaginas)
+                            paginaAtual++;
+                        break;
+                    case "R":
+                        break;
+                    default:
+                        try {
+                            int numProduto = Integer.parseInt(opcao);
+                            if (numProduto >= 1 && numProduto <= produtosNaPagina.size()) {
+                                visualizarDetalheProduto(produtosNaPagina.get(numProduto - 1));
+                            } else {
+                                visao.exibeMensagem("Opção inválida!");
+                            }
+                        } catch (NumberFormatException e) {
+                            visao.exibeMensagem("Opção inválida!");
+                        }
+                        break;
+                }
+            } while (!opcao.equalsIgnoreCase("R"));
         } catch (Exception e) {
             visao.exibeMensagem("Erro ao listar produtos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
+    private void visualizarDetalheProduto(Produto p) {
+    try {
+        ArquivoListaProduto arqLP = new ArquivoListaProduto();
+        ArquivoLista arqListas = new ArquivoLista();
+        List<ListaProduto> associacoes = arqLP.readByIdProduto(p.getId());
+        List<String> minhasListas = new ArrayList<>();
+        int outrasListasCount = 0;
+
+        for (ListaProduto lp : associacoes) {
+            Lista lista = arqListas.read(lp.getIdLista());
+            if (lista != null) {
+                if (lista.getIdUsuario() == usuarioLogado.getId()) {
+                    minhasListas.add(lista.getNome());
+                } else {
+                    outrasListasCount++;
+                }
+            }
+        }
+        
+        char opcao;
+        do {
+            opcao = visao.mostraMenuDetalheProdutoCompleto(p, minhasListas, outrasListasCount);
+            switch(opcao) {
+                case '1':
+                    alterarProduto(p);
+                    p = arqProdutos.read(p.getId());
+                    break;
+                case '2':
+                    if (p.isAtivo()) {
+                        arqProdutos.delete(p.getId()); // Inativa
+                        visao.exibeMensagem("Produto inativado com sucesso.");
+                    } else {
+                        arqProdutos.reativar(p.getId());
+                        visao.exibeMensagem("Produto reativado com sucesso.");
+                    }
+                    p = arqProdutos.read(p.getId());
+                case 'R': break;
+                default: visao.exibeMensagem("Opção inválida."); break;
+            }
+        } while (opcao != 'R');
+
+    } catch (Exception e) {
+        visao.exibeMensagem("Erro ao exibir detalhes do produto: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
 }

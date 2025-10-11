@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import Entidades.Lista;
 import Entidades.ListaProduto;
+import Entidades.Produto;
 import Menus.ConsoleUtils;
 
 public class VisaoLista {
@@ -211,5 +212,24 @@ public class VisaoLista {
         if (!obs.isEmpty()) {
             lp.setObservacoes(obs);
         }
+    }
+
+    public String mostraSelecaoPaginadaProdutos(List<Produto> produtosNaPagina, int paginaAtual, int totalPaginas) {
+        ConsoleUtils.limparTela();
+        System.out.println("PresenteFácil 1.0");
+        System.out.println("-----------------");
+        System.out.println("> ... > Acrescentar Produto > Listagem");
+        System.out.printf("\nPágina %d de %d\n\n", paginaAtual, totalPaginas);
+
+        for (int i = 0; i < produtosNaPagina.size(); i++) {
+            Produto p = produtosNaPagina.get(i);
+            System.out.printf("(%d) %s\n", (i + 1), p.getNome());
+        }
+
+        System.out.println("\n(A) Página anterior");
+        System.out.println("(B) Próxima página");
+        System.out.println("\n(R) Retornar ao menu anterior");
+        System.out.print("\nOpção: ");
+        return console.nextLine().trim();
     }
 }

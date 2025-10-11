@@ -27,23 +27,37 @@ public class VisaoUsuario {
         return entrada.isEmpty() ? ' ' : entrada.charAt(0);
     }
 
+    public String leRespostaParaConfirmacao() {
+        System.out.print("\nPara confirmar as alterações, digite sua Resposta Secreta atual: ");
+        return console.nextLine();
+    }
+
     public void leAlteracaoUsuario(Usuario u) {
         System.out.println("\n-- Alterar Dados (deixe em branco para manter o valor atual) --");
         System.out.print("Nome [" + u.getNome() + "]: ");
         String nome = console.nextLine();
-        if (!nome.isEmpty()) u.setNome(nome);
+        if (!nome.isEmpty())
+            u.setNome(nome);
 
         System.out.print("Email [" + u.getEmail() + "]: ");
         String email = console.nextLine();
-        if (!email.isEmpty()) u.setEmail(email);
+        if (!email.isEmpty())
+            u.setEmail(email);
+
+        System.out.print("Nova senha (opcional): ");
+        String senha = console.nextLine();
+        if (!senha.isEmpty())
+            u.setHashSenha(senha); // A hash será calculada no Controle
 
         System.out.print("Pergunta secreta [" + u.getPerguntaSecreta() + "]: ");
         String pergunta = console.nextLine();
-        if (!pergunta.isEmpty()) u.setPerguntaSecreta(pergunta);
-        
+        if (!pergunta.isEmpty())
+            u.setPerguntaSecreta(pergunta);
+
         System.out.print("Resposta secreta [oculta]: ");
         String resposta = console.nextLine();
-        if (!resposta.isEmpty()) u.setRespostaSecreta(resposta);
+        if (!resposta.isEmpty())
+            u.setRespostaSecreta(resposta);
     }
 
     public boolean confirmaExclusao() {

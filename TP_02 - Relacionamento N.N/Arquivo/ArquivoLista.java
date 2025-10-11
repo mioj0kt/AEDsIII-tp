@@ -11,6 +11,8 @@ import Pares.ParUsuarioLista;
 
 public class ArquivoLista extends Arquivo<Lista> {
 
+    private static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+
     private ArvoreBMais<ParUsuarioLista> indiceUsuarioLista;
     private HashExtensivel<ParCodigoLista> indiceCodigoLista;
 
@@ -18,9 +20,9 @@ public class ArquivoLista extends Arquivo<Lista> {
         super("listas", Lista.class.getConstructor());
 
         indiceUsuarioLista = new ArvoreBMais<>(ParUsuarioLista.class.getConstructor(), 5,
-                "dados/listas/usuarioLista.idx");
+                PATH_PREFIX + "Dados/listas/usuarioLista.idx");
         indiceCodigoLista = new HashExtensivel<>(ParCodigoLista.class.getConstructor(), 4,
-                "dados/listas/codigoLista.d.db", "dados/listas/codigoLista.c.db");
+                PATH_PREFIX + "Dados/listas/codigoLista.d.db", PATH_PREFIX + "Dados/listas/codigoLista.c.db");
     }
 
     /**

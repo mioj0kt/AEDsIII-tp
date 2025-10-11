@@ -9,14 +9,18 @@ import Pares.ParProdutoLista;
 
 public class ArquivoListaProduto extends Arquivo<ListaProduto> {
 
+    private static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+
     private ArvoreBMais<ParListaProduto> indiceListaProduto;
     private ArvoreBMais<ParProdutoLista> indiceProdutoLista;
 
     public ArquivoListaProduto() throws Exception {
         super("lista_produto", ListaProduto.class.getConstructor());
-        
-        indiceListaProduto = new ArvoreBMais<>(ParListaProduto.class.getConstructor(), 5, "Dados/lista_produto/lista_produto.idx");
-        indiceProdutoLista = new ArvoreBMais<>(ParProdutoLista.class.getConstructor(), 5, "Dados/lista_produto/produto_lista.idx");
+
+        indiceListaProduto = new ArvoreBMais<>(ParListaProduto.class.getConstructor(), 5,
+                PATH_PREFIX + "Dados/lista_produto/lista_produto.idx");
+        indiceProdutoLista = new ArvoreBMais<>(ParProdutoLista.class.getConstructor(), 5,
+                PATH_PREFIX + "Dados/lista_produto/produto_lista.idx");
     }
 
     @Override
@@ -31,8 +35,9 @@ public class ArquivoListaProduto extends Arquivo<ListaProduto> {
     @Override
     public boolean delete(int id) throws Exception {
         ListaProduto lp = super.read(id);
-        if (lp == null) return false;
-        
+        if (lp == null)
+            return false;
+
         if (super.delete(id)) {
             indiceListaProduto.delete(new ParListaProduto(lp.getIdLista(), id));
             indiceProdutoLista.delete(new ParProdutoLista(lp.getIdProduto(), id));

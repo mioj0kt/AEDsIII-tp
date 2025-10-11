@@ -9,15 +9,16 @@ import Pares.ParIDEndereco;
 
 public class ArquivoProduto extends Arquivo<Produto> {
 
+    private static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+
     HashExtensivel<ParGtinId> indiceGtin;
 
     public ArquivoProduto() throws Exception {
         super("produtos", Produto.class.getConstructor());
         indiceGtin = new HashExtensivel<>(
-            ParGtinId.class.getConstructor(), 4,
-            "Dados/produtos/indiceGtin.d.db",
-            "Dados/produtos/indiceGtin.c.db"
-        );
+                ParGtinId.class.getConstructor(), 4,
+                PATH_PREFIX + "Dados/produtos/indiceGtin.d.db",
+                PATH_PREFIX + "Dados/produtos/indiceGtin.c.db");
     }
 
     @Override
@@ -42,13 +43,13 @@ public class ArquivoProduto extends Arquivo<Produto> {
     public List<Produto> readAll() throws Exception {
         List<Produto> todosProdutos = new ArrayList<>();
         arquivo.seek(TAM_CABECALHO); // Pula o cabeçalho
-        
-        while(arquivo.getFilePointer() < arquivo.length()){
+
+        while (arquivo.getFilePointer() < arquivo.length()) {
             long endereco = arquivo.getFilePointer();
             byte lapide = arquivo.readByte();
             short tam = arquivo.readShort();
-            
-            if(lapide == ' '){
+
+            if (lapide == ' ') {
                 byte[] ba = new byte[tam];
                 arquivo.read(ba);
                 Produto p = construtor.newInstance();
@@ -61,12 +62,12 @@ public class ArquivoProduto extends Arquivo<Produto> {
         return todosProdutos;
     }
 
-
     // A exclusão de um produto (inativação)
     @Override
     public boolean delete(int id) throws Exception {
         Produto p = super.read(id);
-        if (p == null) return false;
+        if (p == null)
+            return false;
 
         // Verificar se o produto está em alguma lista, se sim, não permitir exclusão
         p.setAtivo(false);
@@ -75,7 +76,8 @@ public class ArquivoProduto extends Arquivo<Produto> {
 
     public boolean reativar(int id) throws Exception {
         Produto p = super.read(id);
-        if (p == null) return false;
+        if (p == null)
+            return false;
 
         p.setAtivo(true);
         return super.update(p);

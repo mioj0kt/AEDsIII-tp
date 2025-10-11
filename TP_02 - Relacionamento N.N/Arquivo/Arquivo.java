@@ -10,31 +10,40 @@ import Registros.Registro;
 
 public class Arquivo<T extends Registro> {
 
+    protected static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+
     protected final int TAM_CABECALHO = 12;
     protected RandomAccessFile arquivo;
-    
+
     String nomeArquivo;
     protected Constructor<T> construtor;
     HashExtensivel<ParIDEndereco> indiceDireto;
 
     public Arquivo(String na, Constructor<T> c) throws Exception {
-        File d = new File("Dados");
-        if (!d.exists()) d.mkdir();
-        d = new File("Dados/" + na);
-        if (!d.exists()) d.mkdir();
+        File tpDir = new File(PATH_PREFIX);
+        if (!tpDir.exists())
+            tpDir.mkdir();
 
-        this.nomeArquivo = "Dados/" + na + "/" + na + ".db";
+        File d = new File(PATH_PREFIX + "Dados");
+        if (!d.exists())
+            d.mkdir();
+
+        d = new File(PATH_PREFIX + "Dados/" + na);
+        if (!d.exists())
+            d.mkdir();
+
+        this.nomeArquivo = PATH_PREFIX + "Dados/" + na + "/" + na + ".db";
         this.construtor = c;
         arquivo = new RandomAccessFile(this.nomeArquivo, "rw");
 
         if (arquivo.length() < TAM_CABECALHO) {
-            arquivo.writeInt(0);   // último ID
+            arquivo.writeInt(0); // último ID
             arquivo.writeLong(-1); // lista de registros marcados para exclusão
         }
 
         indiceDireto = new HashExtensivel<>(ParIDEndereco.class.getConstructor(), 4,
-                "Dados/" + na + "/" + na + ".d.db",
-                "Dados/" + na + "/" + na + ".c.db");
+                PATH_PREFIX + "Dados/" + na + "/" + na + ".d.db",
+                PATH_PREFIX + "Dados/" + na + "/" + na + ".c.db");
     }
 
     public int create(T obj) throws Exception {
@@ -65,11 +74,13 @@ public class Arquivo<T extends Registro> {
 
     public T read(int id) throws Exception {
         ParIDEndereco pid = indiceDireto.read(id);
-        if (pid == null) return null;
+        if (pid == null)
+            return null;
 
         arquivo.seek(pid.getEndereco());
         byte lapide = arquivo.readByte();
-        if (lapide != ' ') return null;
+        if (lapide != ' ')
+            return null;
 
         short tam = arquivo.readShort();
         byte[] b = new byte[tam];
@@ -82,11 +93,13 @@ public class Arquivo<T extends Registro> {
 
     public boolean delete(int id) throws Exception {
         ParIDEndereco pie = indiceDireto.read(id);
-        if (pie == null) return false;
+        if (pie == null)
+            return false;
 
         arquivo.seek(pie.getEndereco());
         byte lapide = arquivo.readByte();
-        if (lapide != ' ') return false;
+        if (lapide != ' ')
+            return false;
 
         short tam = arquivo.readShort();
         indiceDireto.delete(id);
@@ -98,11 +111,13 @@ public class Arquivo<T extends Registro> {
 
     public boolean update(T obj) throws Exception {
         ParIDEndereco pie = indiceDireto.read(obj.getId());
-        if (pie == null) return false;
+        if (pie == null)
+            return false;
 
         arquivo.seek(pie.getEndereco());
         byte lapide = arquivo.readByte();
-        if (lapide != ' ') return false;
+        if (lapide != ' ')
+            return false;
 
         short tamAntigo = arquivo.readShort();
         byte[] bNovo = obj.toByteArray();
@@ -148,7 +163,8 @@ public class Arquivo<T extends Registro> {
     public long getDeleted(int tamanhoNecessario) throws Exception {
         arquivo.seek(4);
         long endereco = arquivo.readLong();
-        if (endereco == -1) return -1;
+        if (endereco == -1)
+            return -1;
 
         arquivo.seek(endereco + 1);
         short tamanho = arquivo.readShort();
