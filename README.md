@@ -1,244 +1,210 @@
-# PresenteFácil 1.0
-
+# PresenteFácil 2.0
 ## Alunos participantes
-
 * [Domynic Barros Lima](https://github.com/DomynicBl)
 * [Felipe Rivetti Mizher](https://github.com/FelipeMizher)
 * [Matheus Felipe Cavalcanti Xavier](https://github.com/mioj0kt)
 
 ## Professor responsável
-
 * Marcos Andre Silveira Kutova
 
 ## 📝 Descrição do Sistema
+PresenteFácil é um sistema de console robusto para gerenciamento de listas de presentes. Desenvolvido em Java, o projeto permite que usuários se cadastrem, criem múltiplas listas para diferentes ocasiões (aniversários, casamentos, etc.), adicionem produtos a elas e as compartilhem com amigos e familiares através de um código único.
 
-Nosso trabalho implementa um sistema de gerenciamento de listas, permitindo aos usuários criar, visualizar, atualizar e excluir listas de diferentes tipos, como listas de aniversários, listas de matérias ou listas de tarefas. O sistema oferece funcionalidades completas de CRUD (Create, Read, Update, Delete), garantindo organização e facilidade na manipulação dos dados dos usuários. Além disso, conta com autenticação de usuários e persistência dos dados em arquivos estruturados
-
----
-
-### Principais funcionalidades
-- **Gerenciamento de Usuários:**  
-  Cadastro de novos usuários com nome, e-mail, senha e perguntas de segurança.  
-  A senha é armazenada de forma segura utilizando **hash SHA-256**.
-
-- **Login de Usuário:**  
-  Autenticação de usuários através de e-mail e senha para acesso às funcionalidades personalizadas.
-
-- **Gerenciamento de Listas:**  
-  Criação, visualização, alteração e exclusão de listas de presentes.  
-  Cada lista possui nome, descrição, data de criação e uma data limite opcional.
-
-- **Visualização Ordenada:**  
-  As listas de um usuário são sempre exibidas em **ordem alfabética**.
-
-- **Código Compartilhável:**  
-  Cada lista criada gera automaticamente um código único de **10 caracteres (NanoID)**.
-
-- **Busca Pública de Listas:**  
-  Qualquer pessoa (logada ou não) pode buscar uma lista pelo código compartilhável.
-  
----
-
-## Arquitetura e Classes Criadas
-
-O sistema segue o padrão **MVC (Model-View-Controller)**.  
-A persistência dos dados é realizada em arquivos binários com **CRUD genérico**, utilizando **Hash Extensível** e **Árvore B+** para indexação.
-
-## 📂 Pacote **Entidades**
-Representa o núcleo do Modelo, contendo as classes que definem os objetos de negócio do sistema.
-
-- **Usuario.java** → Modela a entidade Usuário, com atributos como:  
-  `ID, nome, e-mail, hash da senha, pergunta secreta, resposta secreta, etc.`  
-
-- **Lista.java** → Modela a entidade Lista, com atributos como:  
-  `ID, ID do usuário, nome, descrição, código compartilhável, etc.`  
-
-
-## 📂 Pacote **Arquivo**
-Camada responsável pelo acesso direto e gerenciamento dos arquivos de dados, além da orquestração de seus índices.
-
-- **Arquivo.java** → Classe genérica de baixo nível que implementa CRUD para qualquer entidade, gerenciando:
-  - Lápide  
-  - Tamanho dos registros  
-  - Índice direto primário (ID → Endereço)  
-
-- **ArquivoUsuario.java** → Especialização de `Arquivo` para gerenciar o **usuarios.db**.  
-  Inclui:
-  - Índice indireto de e-mails (via `HashExtensivel`)  
-  - Regra de negócio que impede exclusão de usuários com listas vinculadas  
-
-- **ArquivoLista.java** → Especialização de `Arquivo` para gerenciar o **listas.db**.  
-  Implementa:
-  - Índices secundários  
-  - **Árvore B+** para o relacionamento 1:N  
-  - **Tabela Hash** para busca por código compartilhável  
-
-
-
-## 📂 Pacote **Views**
-Camada de **Visão**, responsável pela interação com o usuário via console.
-
-- **VisaoUsuario.java** → Exibe o menu **"Meus Dados"**, solicita dados para alteração e confirmações.  
-- **VisaoLista.java** → Exibe menus de listagem e detalhes das listas, além de ler dados para criação e alteração.  
-- **VisaoBuscaLista.java** → Exibe a interface de busca de listas por código.  
-
-
-
-## 📂 Pacote **Controles**
-Camada de **Controle**, que orquestra o fluxo da aplicação.  
-Os *Controllers* respondem às ações do usuário (capturadas pelas *Views*) e manipulam os dados (via *Model*).
-
-- **ControleUsuario.java** → Gerencia a lógica do menu **"Meus Dados"**, incluindo alteração e exclusão da conta.  
-- **ControleLista.java** → Gerencia a lógica de **CRUD** (criar, ler, alterar, deletar) das listas do usuário logado.  
-- **ControleBuscaLista.java** → Gerencia a lógica da busca global de listas por código.  
-
-
-
-## 📂 Pacote **Menus**
-Contém classes de navegação de alto nível e utilidades de interface.
-
-- **MenuUsuarios.java** → Atua como **controller principal**, gerenciando:
-  - Fluxo de login  
-  - Criação de conta  
-  - Menu principal pós-login (delegando ações para os *Controllers*)  
-
-- **ConsoleUtils.java** → Classe utilitária com métodos para:
-  - Limpar tela  
-  - Pausar console  
-  - Copiar texto para área de transferência  
-
-
-
-## 📂 Pacote **Estruturas**
-Contém os componentes genéricos e reutilizáveis que formam a base do sistema de persistência e indexação.
-
-- **HashExtensivel.java** → Implementação de *Hash Extensível*.  
-- **ArvoreBMais.java** → Implementação de **Árvore B+**.  
-
-
-
-## 📂 Pacote **Pares**
-Contém classes auxiliares que representam os registros de índices.
-
-- **ParCodigoLista.java** → Relaciona código de lista com lista.  
-- **ParEmailID.java** → Relaciona e-mail com ID de usuário.  
-- **ParIDEndereco.java** → Relaciona ID com endereço em arquivo.  
-- **ParUsuarioLista.java** → Relaciona usuário com listas.  
-
-
-
-## 📂 Pacote **Registros**
-Define contratos para que entidades e registros possam ser gerenciados pelo sistema de arquivos e índices.
-
-- **Registro.java** → Interface base para registros.  
-- **RegistroHashExtensivel.java** → Registro para *Hash Extensível*.  
-- **RegistroArvoreBMais.java** → Registro para *Árvore B+*.  
-
-
-
-## 📄 Classe Principal
-- **Main.java** → Classe de entrada da aplicação.  
-  Responsável por instanciar o menu inicial e iniciar o programa.  
+O sistema foi construído sobre uma arquitetura MVC, com um sistema de persistência de dados próprio que utiliza arquivos binários, índices em **Hash Extensível** para acesso rápido e **Árvores B+** para gerenciar os relacionamentos complexos entre as entidades.
 
 ---
 
-## Telas do Sistema
+### ✨ Principais Funcionalidades
 
-1. **Menu Inicial**  
-   ![Tela de Login / Novo Usuário](img/tela_login.jpeg)
+O sistema é dividido em três grandes áreas de gerenciamento:
 
-2. **Tela de Detalhes do Usuário**  
-   ![Menu principal](img/tela_detalhe_usuario.jpeg)
+#### **Para Usuários**
+* **Autenticação Segura:** Cadastro e login de usuários com emails e senhas, são armazenados com **hash SHA-256**.
+* **Gerenciamento de Conta:** Usuários podem alterar seus dados pessoais (nome, e-mail, pergunta/resposta secreta e senha).
+* **Recuperação de Senha:** Um fluxo seguro de recuperação de senha via pergunta e resposta secreta está disponível em caso de esquecimento.
 
-3. **Menu Principal do Usuário Logado**  
-   ![Menu principal](img/tela_menu_principal.jpeg)
+#### **Para Listas de Presentes**
+* **CRUD Completo:** Criação, edição e exclusão de múltiplas listas por usuário. Gerenciamento completo de produtos dentro de uma lista específica (adicionar, alterar quantidade/observações e remover).
+* **Estrutura da Lista** Cada lista possui nome, descrição, data de criação, uma data limite (opcional) e um código de indentificação unico (**NanoID**).
+* **Compartilhamento Fácil:** Geração automática de um código **NanoID** de 10 caracteres para cada lista.
+* **Busca Global:** Qualquer pessoa pode buscar uma lista pelo seu código **NanoID**, visualizando o autor e todos os seus produtos.
+* **Organização:** Listas são sempre exibidas em ordem alfabética para o usuário, sendo exibidos todos os produtos ativos, e posteriormente os inativos.
 
-4. **Tela "Minhas Listas"**  
-   ![Listas ordenadas](img/tela_minhas_listas.jpeg)
-
-5. **Tela de Detalhes da Lista**  
-   ![Detalhes + código compartilhável](img/tela_detalhe_lista.jpeg)
-
-6. **Tela de Busca de Lista**  
-   ![Busca pelo código compartilhável](img/tela_buscar_lista.jpeg)
-
----
-
-## 🔍 Operações Especiais Implementadas
-
-- **Persistência em Arquivo com Lápide:**  
-  - Dados salvos em `.db` com exclusão lógica, permitindo reaproveitamento de espaço.  
-
-- **Indexação para Acesso Rápido:**  
-  - **Login por E-mail:** Hash Extensível mapeando e-mail → idUsuario.  
-  - **Relação Usuário → Listas:** Árvore B+ para mapear idUsuario → idLista.  
-  - **Busca por Código Compartilhável:** Hash Extensível para código → idLista.
-
-- **Regra de Integridade Referencial:**
-  - Para garantir a consistência dos dados, foi implementada uma regra de negócio que impede a exclusão de um usuário caso ele possua uma ou mais listas de presentes ativas. O sistema primeiramente verifica a existência de listas vinculadas antes de permitir a operação de exclusão do usuário, prevenindo a existência de listas "órfãs" no banco de dados.
- 
-- **Cópia Automática do Código Compartilhável:**
-  - Para facilitar o compartilhamento das listas, ao visualizar os detalhes de uma lista, o sistema exibe o código único e disponibiliza uma opção para copiá-lo automaticamente para a área de transferência do usuário, melhorando a usabilidade.
- 
-- **Visualização Ordenada das Listas:**
-  - Para melhorar a experiência do usuário, o sistema não exibe as listas na ordem em que foram criadas. Em vez disso, a classe `ControleLista.java` sempre realiza uma ordenação alfabética pelo nome antes de exibir o menu "Minhas Listas". Isso garante que o usuário possa encontrar suas listas de forma rápida e intuitiva, especialmente quando possuir um grande número delas.
- 
+#### **Para Produtos**
+* **CRUD de Produtos:** Cadastro de novos produtos, busca por GTIN-13 e alteração das informações de produtos (nome e descrição).
+* **Validação Rigorosa:** Cada produto deve ter um GTIN-13 de exatamente 13 dígitos numéricos (não validamos se o GTIN-13 realmente existe ou corresponde a um produto real).
+* **Listagem Paginada:** Produtos são exibidos em páginas de 10 itens, com navegação intuitiva entre as páginas.
+* **Ordenação Inteligente:** A listagem de produtos prioriza itens ativos e os ordena alfabeticamente. Produtos inativos são agrupados no final, também em ordem alfabética.
+* **Relacionamento N:N:** Um produto pode ser adicionado a várias listas, e uma lista pode conter vários produtos.
+* **Gestão na Lista:** Dentro de uma lista, é possível adicionar, remover e alterar a quantidade e observações de cada produto.
+* **Inativação de Produtos:** Produtos podem ser inativados (ao invés de excluídos) e reativados. Produtos inativos são movidos para o final das listagens e não podem ser adicionados a novas listas, mas permanecem visíveis nas listas existentes.
+* **Visualização Detalhada:** Ao selecionar um produto, exibe nome, GTIN-13, descrição, status, e em quais listas do usuário logado ele aparece, além da contagem de outras listas em que está presente.
 
 ---
 
-## Checklist de Avaliação
+### 🚀 Recursos Avançados e Regras de Negócio
 
-Há um CRUD de usuários (que estende a classe Arquivo, acrescentando Tabelas Hash Extensíveis como índices) que funciona corretamente? ✅
+Para garantir a robustez, usabilidade e integridade dos dados, implementamos diversas operações especiais:
 
-**Sim.** A classe `ArquivoUsuario.java` gerencia o CRUD de usuários, utilizando um índice de Hash Extensível para o e-mail, permitindo buscas e login eficientes.  
+* **Persistência e Indexação:**
+    * O sistema utiliza um CRUD genérico sobre arquivos binários com **lápide** para reaproveitamento de espaço.
+    * Índices em **Hash Extensível** garantem acesso rápido a usuários (por e-mail), produtos (por GTIN-13) e listas (por código compartilhável).
+    * **Árvores B+** são utilizadas para gerenciar com eficiência os relacionamentos **1:N** (Usuário → Listas) e **N:N** (Listas ↔ Produtos).
 
----
+* **Integridade Referencial:**
+    1.  **Usuário → Lista:** Um usuário não pode ser excluído se possuir listas ativas, prevenindo listas "órfãs".
+    2.  **Lista → Produtos:** Ao excluir uma lista, todas as suas associações com produtos são removidas em cascata.
+    3.  **Inativação de Produtos:** Produtos não são excluídos fisicamente se estiverem em uso. Eles são **inativados**:
+        * Continuam visíveis nas listas onde já estavam (com a marcação `(INATIVO)`).
+        * Não podem ser adicionados a novas listas.
+        * Podem ser reativados a qualquer momento pelo menu de gerenciamento de produtos.
 
-Há um CRUD de listas (que estende a classe Arquivo, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices) que funciona corretamente? ✅
-
-**Sim.** A classe `ArquivoLista.java` gerencia o CRUD de listas. Ela utiliza uma Árvore B+ para o relacionamento 1:N com o usuário e uma Tabela Hash Extensível para a busca por código compartilhável.  
-
----
-
-As listas de presentes estão vinculadas aos usuários usando o idUsuario como chave estrangeira? ✅
-
-**Sim.** A classe `Lista.java` possui o atributo `idUsuario`, que funciona como chave estrangeira, garantindo que cada lista pertença a um único usuário.  
-
----
-
-Há uma árvore B+ que registre o relacionamento 1:N entre usuários e listas? ✅
-
-**Sim.** A classe `ArquivoLista.java` utiliza uma `ArvoreBMais<ParUsuarioLista>` que armazena pares `(idUsuario, idLista)`, implementando eficientemente a busca de todas as listas de um determinado usuário.  
-
----
-
-Há uma visualização das listas de outras pessoas por meio de um código NanoID? ✅
-
-**Sim.** A opção **"(4) Buscar lista"** do menu principal permite que qualquer pessoa insira um código de 10 caracteres e visualize os detalhes da lista correspondente, se ela existir.  
+* **Segurança e Usabilidade:**
+    * **Confirmação de Alterações:** Toda alteração nos dados do usuário exige a confirmação da **resposta secreta atual**, garantindo que apenas o dono da conta possa modificar informações sensíveis.
+    * **Validação de Entradas:** O cadastro de produtos exige um GTIN-13 com exatamente 13 dígitos numéricos e campos obrigatórios preenchidos.
+    * **Cancelamento de Operações:** O usuário pode cancelar o cadastro de um produto a qualquer momento digitando 'R' em qualquer campo.
+    * **Estrutura de Arquivos:** A pasta `Dados/` é gerada dentro do diretório do projeto (`TP_02/`), mantendo a organização.
 
 ---
 
-O trabalho compila corretamente? ✅
+## 🏗️ Estrutura do Projeto (Arquitetura MVC)
 
-**Sim.** O projeto foi estruturado com pacotes (`app` e `aed3`) e compila sem erros a partir do diretório raiz.  
+O projeto é organizado em pacotes que separam as responsabilidades, seguindo o padrão Model-View-Controller.
+
+* **`Entidades` (Model):** Representa o núcleo do Modelo, contendo as classes que definem os objetos de negócio do sistema.
+    * **`Usuario.java`**: Modela a entidade Usuário, com atributos como `ID, nome, e-mail, hash da senha, pergunta secreta, resposta secreta, etc.`.
+    * **`Lista.java`**: Modela a entidade Lista, com atributos como `ID, ID do usuário, nome, descrição, código compartilhável, etc.`.
+    * **`Produto.java`**: Modela a entidade Produto, com atributos `ID, GTIN-13, nome, descrição, e um status de ativo/inativo`.
+    * **`ListaProduto.java`**: Entidade de associação para o relacionamento N:N entre `Lista` e `Produto`, com atributos `ID, ID da Lista, ID do Produto, quantidade e observações`.
+
+* **`Arquivo` (Model/DAO):** Camada responsável pelo acesso direto e gerenciamento dos arquivos de dados, além da orquestração de seus índices. A pasta `Dados` agora é gerada dentro do diretório do TP ativo (`TP_02 - Relacionamento N.N/Dados`).
+    * **`Arquivo.java`**: Classe genérica de baixo nível que implementa CRUD para qualquer entidade, gerenciando **lápide**, **tamanho dos registros** e **índice direto primário** (ID → Endereço).
+    * **`ArquivoUsuario.java`**: Especialização de `Arquivo` para gerenciar o **usuarios.db**. Inclui um **índice indireto de e-mails** (via `HashExtensivel`) e a **regra de negócio que impede exclusão de usuários com listas vinculadas**.
+    * **`ArquivoLista.java`**: Especialização de `Arquivo` para gerenciar o **listas.db**. Implementa **índices secundários**, uma **Árvore B+** para o relacionamento 1:N (idUsuario → idLista) e uma **Tabela Hash** para busca por código compartilhável (código → idLista). Gerencia a **exclusão em cascata** de associações `ListaProduto`.
+    * **`ArquivoProduto.java`**: Especialização de `Arquivo` para gerenciar o **produtos.db**. Implementa um **índice indireto de GTIN-13** (via `HashExtensivel`) e as operações de **inativação/reativação** de produtos.
+    * **`ArquivoListaProduto.java`**: Especialização de `Arquivo` para gerenciar o **lista_produto.db**. Implementa **duas Árvores B+** para o relacionamento N:N: uma para buscar associações por `idLista` (`idLista` → `idListaProduto`) e outra por `idProduto` (`idProduto` → `idListaProduto`).
+    * **`ArquivoNanoID.java`**: Classe utilitária para geração de códigos compartilháveis.
+
+* **`Views` (View):** Camada de **Visão**, responsável pela interação com o usuário via console.
+    * **`VisaoUsuario.java`**: Exibe o menu **"Meus Dados"**, solicita dados para alteração e confirmações.
+    * **`VisaoLista.java`**: Exibe menus de listagem e detalhes das listas, além de ler dados para criação e alteração. Inclui menus para gerenciamento e adição de produtos na lista.
+    * **`VisaoBuscaLista.java`**: Exibe a interface de busca de listas por código, mostrando agora o autor e os produtos da lista.
+    * **`VisaoProduto.java`**: Exibe menus para o gerenciamento global de produtos, listagem paginada e detalhes completos de um produto.
+
+* **`Controles` (Controller):** Camada de **Controle**, que orquestra o fluxo da aplicação. Os *Controllers* respondem às ações do usuário (capturadas pelas *Views*) e manipulam os dados (via *Model*).
+    * **`ControleUsuario.java`**: Gerencia a lógica do menu **"Meus Dados"**, incluindo alteração e exclusão da conta, e a **confirmação por resposta secreta**.
+    * **`ControleLista.java`**: Gerencia a lógica de **CRUD** (criar, ler, alterar, deletar) das listas do usuário logado e orquestra o **gerenciamento de produtos na lista**.
+    * **`ControleBuscaLista.java`**: Gerencia a lógica da busca global de listas por código, buscando e exibindo informações detalhadas do autor e dos produtos.
+    * **`ControleProduto.java`**: Gerencia a lógica de **CRUD** de produtos (cadastro, busca, listagem, inativação/reativação), incluindo **listagem paginada** e **detalhes de produto** (com suas listas associadas).
+
+* **`Menus`:** Contém classes de navegação de alto nível e utilidades de interface.
+    * **`MenuUsuarios.java`**: Atua como **controller principal**, gerenciando o fluxo de login, a criação de conta e o menu principal pós-login, delegando ações para os *Controllers*.
+    * **`ConsoleUtils.java`**: Classe utilitária com métodos para limpar tela, pausar console e copiar texto para área de transferência.
+
+* **`Estruturas`:** Contém os componentes genéricos e reutilizáveis que formam a base do sistema de persistência e indexação.
+    * **`HashExtensivel.java`**: Implementação de *Hash Extensível*.
+    * **`ArvoreBMais.java`**: Implementação de **Árvore B+**.
+
+* **`Pares`:** Contém classes auxiliares que representam os registros de índices.
+    * **`ParCodigoLista.java`**: Relaciona código de lista com ID de lista.
+    * **`ParEmailID.java`**: Relaciona e-mail com ID de usuário.
+    * **`ParIDEndereco.java`**: Relaciona ID com endereço em arquivo.
+    * **`ParUsuarioLista.java`**: Relaciona ID de usuário com ID de lista (para o índice 1:N).
+    * **`ParGtinId.java`**: Relaciona GTIN-13 com ID de produto.
+    * **`ParListaProduto.java`**: Relaciona ID de lista com ID de associação ListaProduto (para o índice N:N).
+    * **`ParProdutoLista.java`**: Relaciona ID de produto com ID de associação ListaProduto (para o índice N:N).
+
+* **`Registros`:** Define contratos (interfaces) para que entidades e registros possam ser gerenciados pelo sistema de arquivos e índices.
+    * **`Registro.java`**: Interface base para entidades persistentes.
+    * **`RegistroHashExtensivel.java`**: Interface para registros compatíveis com Hash Extensível.
+    * **`RegistroArvoreBMais.java`**: Interface para registros compatíveis com Árvore B+.
+
+* **`Main.java`**: Classe de entrada da aplicação, responsável por instanciar o menu inicial e iniciar o programa.
 
 ---
 
-O trabalho está completo e funcionando sem erros de execução? ✅
+## 🖥️ Telas do Sistema
 
-**Sim.** Todas as funcionalidades descritas no escopo do TP1 foram implementadas e testadas, funcionando conforme o esperado e com tratamento de exceções para uma execução estável.  
+1.  **Menu Inicial** ![Menu Inicial com opções de login e cadastro](img/1%20-%20Tela_MenuInicial.png)
+2.  **Cadastro de Novo Usuário** ![Tela de cadastro de novo usuário](img/2%20-%20Tela_MenuInicial_Cadastro.png)
+3.  **Tela de Login** ![Tela de login do usuário](img/3%20-%20Tela_MenuInicial_Login.png)
+4.  **Menu Principal (Pós-Login)** ![Menu principal exibido após o login do usuário](img/4%20-%20Tela_MenuPrincipal_Logado.png)
+5.  **Tela "Meus Dados" do Usuário** ![Tela com as informações de cadastro do usuário e opções de gerenciamento](img/5%20-%20Tela_UsuarioMeusDados.png)
+6.  **Tela "Minhas Listas"**
+    ![Tela exibindo a listagem de todas as listas do usuário em ordem alfabética](img/6%20-%20Tela_UsuarioMinhasListas.png)
+7.  **Criação de Nova Lista** ![Tela de cadastro de uma nova lista de presentes](img/7%20-%20Tela_UsuarioMinhasListas_NovaLista.png)
+8.  **Detalhes de uma Lista Selecionada** ![Tela exibindo os detalhes de uma lista específica, com suas opções de gerenciamento](img/8%20-%20Tela_UsuarioMinhasListas_ListaSelecionada.png)
+9.  **Gerenciamento de Produtos na Lista Selecionada** ![Tela de gerenciamento de produtos dentro de uma lista, mostrando itens e opções](img/9%20-%20Tela_UsuarioMinhasListas_ListaSelecionada_Produtos.png)
+10. **Copiando Código de Compartilhamento de uma Lista** ![Tela mostrando a confirmação de que o código da lista foi copiado](img/10%20-%20Tela_UsuarioMinhasListas_CodigoLista.png)
+11. **Menu Principal de Produtos** ![Menu com as opções de gerenciamento de produtos](img/11%20-%20ProcurarProdutos.png)
+12. **Busca de Produto por GTIN** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/12%20-%20ProcurarProdutos_PorGTIN.png)
+13. **Listagem Paginada de Produtos** ![Listagem de produtos com paginação, mostrando ativos e inativos ordenados](img/13%20-%20ProcurarProdutos_Listando.png)
+14. **Busca Global de Lista por Código de Lista** ![Tela de busca de uma lista por seu código de compartilhamento](img/14%20-%20ProcurarListas_porCodigo.png)
+15. **Detalhes de um Produto Selecionada** ![Tela de detalhes de um produto selecionado, e mostrando em quais listas do usuário ele aparece](img/15%20-%20ProcurarProdutos_InfosProduto.png)
+---
+
+## Checklist de Avaliação (TP1 e TP2)
+
+### **TP1:**
+> **Há um CRUD de usuários (que estende a classe Arquivo, acrescentando Tabelas Hash Extensíveis como índices) que funciona corretamente?** ✅
+>
+> **Sim.** A classe `ArquivoUsuario.java` gerencia o CRUD de usuários, utilizando um índice de Hash Extensível para o e-mail, permitindo buscas e login eficientes.
+
+> **Há um CRUD de listas (que estende a classe Arquivo, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices) que funciona corretamente?** ✅
+>
+> **Sim.** A classe `ArquivoLista.java` gerencia o CRUD de listas. Ela utiliza uma Árvore B+ para o relacionamento 1:N com o usuário e uma Tabela Hash Extensível para a busca por código compartilhável.
+
+> **As listas de presentes estão vinculadas aos usuários usando o idUsuario como chave estrangeira?** ✅
+>
+> **Sim.** A classe `Lista.java` possui o atributo `idUsuario`, que funciona como chave estrangeira, garantindo que cada lista pertença a um único usuário.
+
+> **Há uma árvore B+ que registre o relacionamento 1:N entre usuários e listas?** ✅
+>
+> **Sim.** A classe `ArquivoLista.java` utiliza uma `ArvoreBMais<ParUsuarioLista>` que armazena pares `(idUsuario, idLista)`, implementando eficientemente a busca de todas as listas de um determinado usuário.
+
+> **Há uma visualização das listas de outras pessoas por meio de um código NanoID?** ✅
+>
+> **Sim.** A opção "(4) Buscar lista" do menu principal permite que qualquer pessoa insira um código de 10 caracteres e visualize os detalhes da lista, incluindo seu autor e produtos.
+
+### TP2
+
+> **Há um CRUD de produtos (que estende a classe Arquivo, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices diretos e indiretos conforme necessidade) que funciona corretamente?** ✅
+>
+> **Sim.** A classe `ArquivoProduto.java` gerencia o CRUD de produtos, com índice Hash para o GTIN-13. A "exclusão" é tratada como inativação para manter a integridade referencial.
+
+> **Há um CRUD da entidade de associação ListaProduto (que estende a classe Arquivo, acrescentando Tabelas Hash Extensíveis e Árvores B+ como índices diretos e indiretos conforme necessidade) que funciona corretamente?** ✅
+>
+> **Sim.** A classe `ArquivoListaProduto.java` gerencia o CRUD da entidade de associação, utilizando duas Árvores B+ para indexar o relacionamento N:N por `idLista` e por `idProduto`, permitindo a recuperação eficiente das associações.
+
+> **A visão de produtos está corretamente implementada e permite consultas as listas em que o produto aparece (apenas quantidade no caso de lista de outras pessoas)?** ✅
+>
+> **Sim.** A `VisaoProduto.java` e `ControleProduto.java` implementam a listagem paginada e, ao detalhar um produto, exibe em quais listas do usuário logado ele se encontra e a contagem de listas de outros usuários.
+
+> **A visão de listas funciona corretamente e permite a gestão dos produtos na lista?** ✅
+>
+> **Sim.** A `VisaoLista.java` e `ControleLista.java` permitem gerenciar produtos, incluindo adição (com busca paginada), alteração de quantidade/observações e remoção. A exibição dos produtos é ordenada alfabeticamente.
+
+> **A integridade do relacionamento entre listas e produtos está mantida em todas as operações?** ✅
+>
+> **Sim.** A integridade é garantida através de exclusão em cascata (Lista → ListaProduto), validações de dados (GTIN-13) e a lógica de inativação de produtos em vez de exclusão física.
+
+### Comuns a ambos
+
+> **O trabalho compila corretamente?** ✅
+> 
+> **Sim.** O projeto foi estruturado com pacotes e compila sem erros a partir do diretório raiz.
+
+> **O trabalho está completo e funcionando sem erros de execução?** ✅
+> 
+> **Sim.** Todas as funcionalidades descritas no escopo do TP1 e TP2 foram implementadas e testadas, funcionando conforme o esperado e com tratamento de exceções para uma execução estável.
+
+> **O trabalho é original e não a cópia de um trabalho de outro grupo?** ✅
+> 
+> **Sim.** O trabalho foi desenvolvido pelos participantes listados, com base nas estruturas de dados fornecidas e nos requisitos do enunciado.
 
 ---
 
-O trabalho é original e não a cópia de um trabalho de outro grupo? ✅
+## 🎥 Vídeo de Demonstração
 
-**Sim.** O trabalho foi desenvolvido pelos participantes listados, com base nas estruturas de dados fornecidas e nos requisitos do enunciado.  
-
-
----
-
-## Vídeo de Demonstração
-
-https://youtu.be/ZYMZ9jcaeK0
-
----
+* **TP1:** [https://youtu.be/ZYMZ9jcaeK0](https://youtu.be/ZYMZ9jcaeK0)
+* **TP2:** [https://youtu.be/GzxbBbwcHy0](https://youtu.be/GzxbBbwcHy0)
