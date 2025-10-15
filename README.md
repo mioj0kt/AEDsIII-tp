@@ -52,9 +52,9 @@ Para garantir a robustez, usabilidade e integridade dos dados, implementamos div
     * **Árvores B+** são utilizadas para gerenciar com eficiência os relacionamentos **1:N** (Usuário → Listas) e **N:N** (Listas ↔ Produtos).
 
 * **Integridade Referencial:**
-    1.  **Usuário → Lista:** Um usuário não pode ser excluído se possuir listas ativas, prevenindo listas "órfãs".
-    2.  **Lista → Produtos:** Ao excluir uma lista, todas as suas associações com produtos são removidas em cascata.
-    3.  **Inativação de Produtos:** Produtos não são excluídos fisicamente se estiverem em uso. Eles são **inativados**:
+    1. **Usuário → Lista:** Um usuário não pode ser excluído se possuir listas ativas, prevenindo listas "órfãs".
+    2. **Lista → Produtos:** Ao excluir uma lista, todas as suas associações com produtos são removidas em cascata.
+    3. **Inativação de Produtos:** Produtos não são excluídos fisicamente se estiverem em uso. Eles são **inativados**:
         * Continuam visíveis nas listas onde já estavam (com a marcação `(INATIVO)`).
         * Não podem ser adicionados a novas listas.
         * Podem ser reativados a qualquer momento pelo menu de gerenciamento de produtos.
