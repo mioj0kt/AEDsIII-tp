@@ -9,7 +9,7 @@ import Pares.ParProdutoLista;
 
 public class ArquivoListaProduto extends Arquivo<ListaProduto> {
 
-    private static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+    private static final String PATH_PREFIX = "TP_03 - Índice invertido/";
 
     private ArvoreBMais<ParListaProduto> indiceListaProduto;
     private ArvoreBMais<ParProdutoLista> indiceProdutoLista;

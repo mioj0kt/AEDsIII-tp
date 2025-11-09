@@ -1,4 +1,4 @@
-# PresenteFácil 2.0
+# PresenteFácil 3.0
 ## Alunos participantes
 * [Domynic Barros Lima](https://github.com/DomynicBl)
 * [Felipe Rivetti Mizher](https://github.com/FelipeMizher)
@@ -10,7 +10,7 @@
 ## 📝 Descrição do Sistema
 PresenteFácil é um sistema de console robusto para gerenciamento de listas de presentes. Desenvolvido em Java, o projeto permite que usuários se cadastrem, criem múltiplas listas para diferentes ocasiões (aniversários, casamentos, etc.), adicionem produtos a elas e as compartilhem com amigos e familiares através de um código único.
 
-O sistema foi construído sobre uma arquitetura MVC, com um sistema de persistência de dados próprio que utiliza arquivos binários, índices em **Hash Extensível** para acesso rápido e **Árvores B+** para gerenciar os relacionamentos complexos entre as entidades.
+O sistema foi construído sobre uma arquitetura MVC, com um sistema de persistência de dados próprio que utiliza arquivos binários, índices em **Hash Extensível** para acesso rápido e **Árvores B+** para gerenciar os relacionamentos complexos entre as entidades e um Índice Invertido (baseado em Árvore B+) para buscas por relevância (TF-IDF).
 
 ---
 
@@ -24,14 +24,17 @@ O sistema é dividido em três grandes áreas de gerenciamento:
 * **Recuperação de Senha:** Um fluxo seguro de recuperação de senha via pergunta e resposta secreta está disponível em caso de esquecimento.
 
 #### **Para Listas de Presentes**
-* **CRUD Completo:** Criação, edição e exclusão de múltiplas listas por usuário. Gerenciamento completo de produtos dentro de uma lista específica (adicionar, alterar quantidade/observações e remover).
+* **CRUD Completo:** Criação, edição e exclusão de múltiplas listas por usuário.
+* **Gerenciamento de Produtos na Lista:** Adição (com busca unificada), alteração de quantidade/observações e remoção de produtos.
 * **Estrutura da Lista** Cada lista possui nome, descrição, data de criação, uma data limite (opcional) e um código de indentificação unico (**NanoID**).
 * **Compartilhamento Fácil:** Geração automática de um código **NanoID** de 10 caracteres para cada lista.
 * **Busca Global:** Qualquer pessoa pode buscar uma lista pelo seu código **NanoID**, visualizando o autor e todos os seus produtos.
 * **Organização:** Listas são sempre exibidas em ordem alfabética para o usuário, sendo exibidos todos os produtos ativos, e posteriormente os inativos.
 
 #### **Para Produtos**
-* **CRUD de Produtos:** Cadastro de novos produtos, busca por GTIN-13 e alteração das informações de produtos (nome e descrição).
+* **Busca Unificada (GTIN-13 e Palavra-Chave):** Implementação de uma busca única que aceita um GTIN-13 (para busca direta) ou palavras-chave (para busca por relevância).
+* **Busca por Relevância (TF-IDF):** Ao buscar por palavras-chave, os resultados são ordenados por relevância usando o algoritmo **TF-IDF**, que prioriza termos mais raros e relevantes no nome dos produtos.
+* **CRUD de Produtos:** Cadastro de novos produtos e alteração de suas informações (nome e descrição).
 * **Validação Rigorosa:** Cada produto deve ter um GTIN-13 de exatamente 13 dígitos numéricos (não validamos se o GTIN-13 realmente existe ou corresponde a um produto real).
 * **Listagem Paginada:** Produtos são exibidos em páginas de 10 itens, com navegação intuitiva entre as páginas.
 * **Ordenação Inteligente:** A listagem de produtos prioriza itens ativos e os ordena alfabeticamente. Produtos inativos são agrupados no final, também em ordem alfabética.
@@ -50,6 +53,7 @@ Para garantir a robustez, usabilidade e integridade dos dados, implementamos div
     * O sistema utiliza um CRUD genérico sobre arquivos binários com **lápide** para reaproveitamento de espaço.
     * Índices em **Hash Extensível** garantem acesso rápido a usuários (por e-mail), produtos (por GTIN-13) e listas (por código compartilhável).
     * **Árvores B+** são utilizadas para gerenciar com eficiência os relacionamentos **1:N** (Usuário → Listas) e **N:N** (Listas ↔ Produtos).
+    * Um **Índice Invertido** (implementado com `ArvoreBMais<ParTermoProduto>`) gerencia o relacionamento "1-Termo-para-N-Produtos", permitindo a busca por relevância (TF-IDF).
 
 * **Integridade Referencial:**
     1. **Usuário → Lista:** Um usuário não pode ser excluído se possuir listas ativas, prevenindo listas "órfãs".
@@ -58,12 +62,14 @@ Para garantir a robustez, usabilidade e integridade dos dados, implementamos div
         * Continuam visíveis nas listas onde já estavam (com a marcação `(INATIVO)`).
         * Não podem ser adicionados a novas listas.
         * Podem ser reativados a qualquer momento pelo menu de gerenciamento de produtos.
+    4. **Sincronização do Índice de Busca:** O índice invertido é atualizado automaticamente. Os termos de um produto são removidos ao inativar/excluir e recalculados ao criar ou **alterar o nome**, garantindo a consistência da busca.
 
 * **Segurança e Usabilidade:**
     * **Confirmação de Alterações:** Toda alteração nos dados do usuário exige a confirmação da **resposta secreta atual**, garantindo que apenas o dono da conta possa modificar informações sensíveis.
     * **Validação de Entradas:** O cadastro de produtos exige um GTIN-13 com exatamente 13 dígitos numéricos e campos obrigatórios preenchidos.
     * **Cancelamento de Operações:** O usuário pode cancelar o cadastro de um produto a qualquer momento digitando 'R' em qualquer campo.
-    * **Estrutura de Arquivos:** A pasta `Dados/` é gerada dentro do diretório do projeto (`TP_02/`), mantendo a organização.
+    * **Processamento de Texto:** Nomes de produtos são processados antes da indexação (normalizados, sem acentos, sem *stop words*) pela classe `ProcessadorTexto`.
+    * **Estrutura de Arquivos:** A pasta `Dados/` é gerada dentro do diretório do projeto (`TP_0X/`), mantendo a organização.
 
 ---
 
@@ -77,11 +83,11 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
     * **`Produto.java`**: Modela a entidade Produto, com atributos `ID, GTIN-13, nome, descrição, e um status de ativo/inativo`.
     * **`ListaProduto.java`**: Entidade de associação para o relacionamento N:N entre `Lista` e `Produto`, com atributos `ID, ID da Lista, ID do Produto, quantidade e observações`.
 
-* **`Arquivo` (Model/DAO):** Camada responsável pelo acesso direto e gerenciamento dos arquivos de dados, além da orquestração de seus índices. A pasta `Dados` agora é gerada dentro do diretório do TP ativo (`TP_02 - Relacionamento N.N/Dados`).
+* **`Arquivo` (Model/DAO):** Camada responsável pelo acesso direto e gerenciamento dos arquivos de dados, além da orquestração de seus índices. A pasta `Dados` agora é gerada dentro do diretório do TP ativo (`TP_03 - Índice Invertido/Dados`).
     * **`Arquivo.java`**: Classe genérica de baixo nível que implementa CRUD para qualquer entidade, gerenciando **lápide**, **tamanho dos registros** e **índice direto primário** (ID → Endereço).
     * **`ArquivoUsuario.java`**: Especialização de `Arquivo` para gerenciar o **usuarios.db**. Inclui um **índice indireto de e-mails** (via `HashExtensivel`) e a **regra de negócio que impede exclusão de usuários com listas vinculadas**.
     * **`ArquivoLista.java`**: Especialização de `Arquivo` para gerenciar o **listas.db**. Implementa **índices secundários**, uma **Árvore B+** para o relacionamento 1:N (idUsuario → idLista) e uma **Tabela Hash** para busca por código compartilhável (código → idLista). Gerencia a **exclusão em cascata** de associações `ListaProduto`.
-    * **`ArquivoProduto.java`**: Especialização de `Arquivo` para gerenciar o **produtos.db**. Implementa um **índice indireto de GTIN-13** (via `HashExtensivel`) e as operações de **inativação/reativação** de produtos.
+    * **`ArquivoProduto.java`**: Especialização de `Arquivo` para gerenciar o **produtos.db**. Implementa um **índice indireto de GTIN-13** (via `HashExtensivel`) e as operações de **inativação/reativação** de produtos e gerencia o Índice Invertido **(`ArvoreBMais<ParTermoProduto>`)** para a busca por relevância (TF-IDF).
     * **`ArquivoListaProduto.java`**: Especialização de `Arquivo` para gerenciar o **lista_produto.db**. Implementa **duas Árvores B+** para o relacionamento N:N: uma para buscar associações por `idLista` (`idLista` → `idListaProduto`) e outra por `idProduto` (`idProduto` → `idListaProduto`).
     * **`ArquivoNanoID.java`**: Classe utilitária para geração de códigos compartilháveis.
 
@@ -89,17 +95,20 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
     * **`VisaoUsuario.java`**: Exibe o menu **"Meus Dados"**, solicita dados para alteração e confirmações.
     * **`VisaoLista.java`**: Exibe menus de listagem e detalhes das listas, além de ler dados para criação e alteração. Inclui menus para gerenciamento e adição de produtos na lista.
     * **`VisaoBuscaLista.java`**: Exibe a interface de busca de listas por código, mostrando agora o autor e os produtos da lista.
-    * **`VisaoProduto.java`**: Exibe menus para o gerenciamento global de produtos, listagem paginada e detalhes completos de um produto.
+    * **`VisaoProduto.java`**: Exibe menus para o gerenciamento global de produtos, incluindo a nova interface de busca unificada e detalhes completos de um produto.
 
 * **`Controles` (Controller):** Camada de **Controle**, que orquestra o fluxo da aplicação. Os *Controllers* respondem às ações do usuário (capturadas pelas *Views*) e manipulam os dados (via *Model*).
     * **`ControleUsuario.java`**: Gerencia a lógica do menu **"Meus Dados"**, incluindo alteração e exclusão da conta, e a **confirmação por resposta secreta**.
     * **`ControleLista.java`**: Gerencia a lógica de **CRUD** (criar, ler, alterar, deletar) das listas do usuário logado e orquestra o **gerenciamento de produtos na lista**.
     * **`ControleBuscaLista.java`**: Gerencia a lógica da busca global de listas por código, buscando e exibindo informações detalhadas do autor e dos produtos.
-    * **`ControleProduto.java`**: Gerencia a lógica de **CRUD** de produtos (cadastro, busca, listagem, inativação/reativação), incluindo **listagem paginada** e **detalhes de produto** (com suas listas associadas).
+    * **`ControleProduto.java`**: Gerencia a lógica de **CRUD** de produtos (cadastro, busca, listagem, inativação/reativação), incluindo **listagem paginada** e **detalhes de produto** (com suas listas associadas) e orquestra a **busca unificada**, decidindo se a consulta do usuário é um GTIN-13 ou palavras-chave para a busca TF-IDF..
 
 * **`Menus`:** Contém classes de navegação de alto nível e utilidades de interface.
     * **`MenuUsuarios.java`**: Atua como **controller principal**, gerenciando o fluxo de login, a criação de conta e o menu principal pós-login, delegando ações para os *Controllers*.
     * **`ConsoleUtils.java`**: Classe utilitária com métodos para limpar tela, pausar console e copiar texto para área de transferência.
+
+* **`Utils`:** Classes utilitárias de propósito geral.
+    * `ProcessadorTexto.java`: Classe responsável por normalizar, remover acentos, remover *stop words* e calcular o TF (Term Frequency) dos nomes de produtos antes da indexação.
 
 * **`Estruturas`:** Contém os componentes genéricos e reutilizáveis que formam a base do sistema de persistência e indexação.
     * **`HashExtensivel.java`**: Implementação de *Hash Extensível*.
@@ -113,6 +122,7 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
     * **`ParGtinId.java`**: Relaciona GTIN-13 com ID de produto.
     * **`ParListaProduto.java`**: Relaciona ID de lista com ID de associação ListaProduto (para o índice N:N).
     * **`ParProdutoLista.java`**: Relaciona ID de produto com ID de associação ListaProduto (para o índice N:N).
+    * **`ParTermoProduto.java`**: Par que representa a entrada do índice invertido, relacionando um `termo` a um `idProduto` e seu `TF` (Term Frequency).
 
 * **`Registros`:** Define contratos (interfaces) para que entidades e registros possam ser gerenciados pelo sistema de arquivos e índices.
     * **`Registro.java`**: Interface base para entidades persistentes.
@@ -143,7 +153,7 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
 15. **Detalhes de um Produto Selecionada** ![Tela de detalhes de um produto selecionado, e mostrando em quais listas do usuário ele aparece](img/15%20-%20ProcurarProdutos_InfosProduto.png)
 ---
 
-## Checklist de Avaliação (TP1 e TP2)
+## Checklist de Avaliação (TP1, TP2 e TP3)
 
 ### **TP1:**
 > **Há um CRUD de usuários (que estende a classe Arquivo, acrescentando Tabelas Hash Extensíveis como índices) que funciona corretamente?** ✅
@@ -188,6 +198,20 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
 >
 > **Sim.** A integridade é garantida através de exclusão em cascata (Lista → ListaProduto), validações de dados (GTIN-13) e a lógica de inativação de produtos em vez de exclusão física.
 
+### TP3
+
+> **O índice invertido com os termos dos nomes dos produtos foi criado usando a classe ListaInvertida?** ✅
+>
+> **Sim.** Como a classe `ListaInvertida` não foi fornecida, implementamos nossa própria estrutura de índice invertido utilizando a `ArvoreBMais` (disponibilizada na disciplina) e um novo par `Pares/ParTermoProduto.java`. Esta abordagem é ideal para o relacionamento 1:N (1 Termo → N Produtos) e se integra perfeitamente à arquitetura do projeto.
+
+> **É possível buscar produtos por palavras no menu de manutenção de produtos?** ✅
+>
+> **Sim.** A busca foi unificada no menu "Produtos". O sistema, através do `ControleProduto`, identifica se a entrada é um GTIN-13 ou palavras-chave. No segundo caso, ele chama o método `searchByTerms` de `ArquivoProduto`, que usa o índice invertido e o ranking TF-IDF para ordenar os resultados por relevância.
+
+> **É possível buscar produtos por palavras na hora de acrescentá-los às listas dos usuários?** ✅
+>
+> **Sim.** O menu "Acrescentar Produto" (dentro de "Minhas Listas") também foi unificado. Ao buscar por palavras, o `ControleLista` chama o mesmo `searchByTerms`, mas filtra os resultados para exibir **apenas produtos ativos**, mantendo a regra de negócio que impede a adição de itens inativos.
+
 ### Comuns a ambos
 
 > **O trabalho compila corretamente?** ✅
@@ -208,3 +232,4 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
 
 * **TP1:** [https://youtu.be/ZYMZ9jcaeK0](https://youtu.be/ZYMZ9jcaeK0)
 * **TP2:** [https://youtu.be/GzxbBbwcHy0](https://youtu.be/GzxbBbwcHy0)
+* **TP3:** [https://youtu.be/](https://youtu.be/)

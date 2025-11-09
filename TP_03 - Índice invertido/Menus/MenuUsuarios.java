@@ -117,7 +117,7 @@ public class MenuUsuarios {
         do {
             ConsoleUtils.limparTela(); // limpa tela
 
-            System.out.println("\n\nPresenteFácil 2.0");
+            System.out.println("\n\nPresenteFácil 3.0");
             System.out.println("-----------------");
             System.out.println("> Início");
             System.out.println("\n(1) Meus dados");
@@ -125,6 +125,10 @@ public class MenuUsuarios {
             System.out.println("(3) Produtos");
             System.out.println("(4) Buscar lista");
             System.out.println("\n(S) Sair");
+
+            // --- ADIÇÃO 1 (TEMPORÁRIA) ---
+            //System.out.println("\n(X) REINDEXAR PRODUTOS (TEMPORÁRIO)");
+            // --- FIM DA ADIÇÃO 1 ---
 
             System.out.print("\nOpção: ");
             String entrada = console.nextLine().trim().toUpperCase();
@@ -173,6 +177,32 @@ public class MenuUsuarios {
                     System.out.println("\nSaindo da sua conta...");
                     usuarioAtivo = null;
                     break;
+
+                // --- ADIÇÃO 2 (TEMPORÁRIA) ---
+                /*case 'X':
+                    try {
+                        System.out.println("\nIniciando reindexação...");
+                        // Deleta o índice antigo primeiro para evitar duplicatas
+                        java.io.File oldIndex = new java.io.File(
+                                "TP_02 - Relacionamento N.N/Dados/produtos/indiceInvertido.idx");
+                        if (oldIndex.exists()) {
+                            oldIndex.delete();
+                            System.out.println("Índice antigo removido.");
+                        }
+
+                        ArquivoProduto arqProd = new ArquivoProduto();
+                        arqProd.reindexarProdutos(); // Chama a rotina que criamos
+                        arqProd.close(); // Fecha o arquivo
+                        System.out.println("Reindexação concluída com sucesso!");
+
+                    } catch (Exception e) {
+                        System.out.println("\nERRO DURANTE A REINDEXAÇÃO: " + e.getMessage());
+                        e.printStackTrace();
+                    } 
+                    ConsoleUtils.pausar();
+                    break;*/
+                // --- FIM DA ADIÇÃO 2 ---
+
                 default:
                     System.out.println("\nOpção inválida!");
                     ConsoleUtils.pausar();

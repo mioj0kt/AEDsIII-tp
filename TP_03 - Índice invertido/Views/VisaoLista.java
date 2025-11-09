@@ -24,7 +24,7 @@ public class VisaoLista {
     public String mostraMenuPrincipalListas(List<Lista> listas) {
         ConsoleUtils.limparTela(); // limpa tela
 
-        System.out.println("\n\nPresenteFácil 2.0");
+        System.out.println("\n\nPresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Início > Minhas listas");
         System.out.println("\nLISTAS");
@@ -51,7 +51,7 @@ public class VisaoLista {
     public char mostraMenuDetalheLista(Lista l) {
         ConsoleUtils.limparTela();
 
-        System.out.println("PresenteFácil 2.0");
+        System.out.println("PresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Início > Minhas listas > " + l.getNome());
         System.out.println("\nCÓDIGO: " + l.getCodigoCompartilhavel());
@@ -134,7 +134,7 @@ public class VisaoLista {
 
     public String mostraMenuProdutosDaLista(Lista lista, List<String> nomesProdutos) {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 2.0");
+        System.out.println("PresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Início > Minhas listas > " + lista.getNome() + " > Produtos");
 
@@ -154,15 +154,25 @@ public class VisaoLista {
 
     public char mostraMenuAcrescentarProduto() {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 2.0");
+        System.out.println("PresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> ... > Acrescentar Produto");
-        System.out.println("\n(1) Buscar produto por GTIN-13");
+        System.out.println("\n(1) Buscar produto");
         System.out.println("(2) Listar todos os produtos");
         System.out.println("\n(R) Retornar");
         System.out.print("\nOpção: ");
         String entrada = console.nextLine().trim().toUpperCase();
         return entrada.isEmpty() ? ' ' : entrada.charAt(0);
+    }
+
+    public String leBuscaUnificada() {
+        System.out.print("\nDigite o GTIN-13 ou as palavras-chave: ");
+        return console.nextLine().trim();
+    }
+
+    public String leTermosBusca() {
+        System.out.print("\nDigite os termos para a busca: ");
+        return console.nextLine().trim();
     }
 
     public int leQuantidade() {
@@ -216,7 +226,7 @@ public class VisaoLista {
 
     public String mostraSelecaoPaginadaProdutos(List<Produto> produtosNaPagina, int paginaAtual, int totalPaginas) {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 2.0");
+        System.out.println("PresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> ... > Acrescentar Produto > Listagem");
         System.out.printf("\nPágina %d de %d\n\n", paginaAtual, totalPaginas);

@@ -11,7 +11,7 @@ import Pares.ParUsuarioLista;
 
 public class ArquivoLista extends Arquivo<Lista> {
 
-    private static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+    private static final String PATH_PREFIX = "TP_03 - Índice invertido/";
 
     private ArvoreBMais<ParUsuarioLista> indiceUsuarioLista;
     private HashExtensivel<ParCodigoLista> indiceCodigoLista;

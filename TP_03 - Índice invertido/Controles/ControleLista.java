@@ -7,7 +7,6 @@ import java.util.Scanner;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.stream.Collectors;
-
 import Arquivo.ArquivoLista;
 import Arquivo.ArquivoListaProduto;
 import Arquivo.ArquivoProduto;
@@ -220,11 +219,27 @@ public class ControleLista {
             try {
                 switch (opcao) {
                     case '1':
-                        System.out.print("Digite o GTIN-13: ");
-                        String gtin = new Scanner(System.in).nextLine();
-                        produtoSelecionado = arqProdutos.read(gtin);
-                        if (produtoSelecionado == null)
-                            visao.exibeMensagem("Produto não encontrado.");
+                        String consulta = visao.leBuscaUnificada();
+                        if (consulta.isEmpty()) {
+                            visao.exibeMensagem("Busca cancelada.");
+                            break;
+                        }
+
+                        if (consulta.matches("\\d{13}")) {
+                            // Lógica do GTIN
+                            produtoSelecionado = arqProdutos.read(consulta);
+                            if (produtoSelecionado == null)
+                                visao.exibeMensagem("Produto não encontrado.");
+                        } else {
+                            // Lógica da Palavra-chave
+                            List<Produto> produtosEncontrados = arqProdutos.searchByTerms(consulta);
+                            produtosEncontrados.removeIf(p -> !p.isAtivo());
+                            produtoSelecionado = selecionarProdutoDeListaGeral(produtosEncontrados);
+
+                            if (produtoSelecionado == null) {
+                                visao.exibeMensagem("Nenhum produto ativo encontrado para: \"" + consulta + "\"");
+                            }
+                        }
                         break;
                     case '2':
                         produtoSelecionado = selecionarProdutoDeListaGeral();
@@ -261,9 +276,12 @@ public class ControleLista {
         produtos.removeIf(p -> !p.isAtivo()); // Remove inativos
         produtos.sort(Comparator.comparing(Produto::getNome, String.CASE_INSENSITIVE_ORDER));
 
+        return selecionarProdutoDeListaGeral(produtos);
+    }
+
+    private Produto selecionarProdutoDeListaGeral(List<Produto> produtos) throws Exception {
         if (produtos.isEmpty()) {
-            visao.exibeMensagem("Nenhum produto ativo cadastrado.");
-            return null;
+            return null; // Retorna nulo se a lista de entrada estiver vazia
         }
 
         int paginaAtual = 1;
@@ -288,7 +306,7 @@ public class ControleLista {
                         paginaAtual++;
                     break;
                 case "R":
-                    return null;
+                    return null; // Usuário cancelou
                 default:
                     try {
                         int numProduto = Integer.parseInt(opcao);

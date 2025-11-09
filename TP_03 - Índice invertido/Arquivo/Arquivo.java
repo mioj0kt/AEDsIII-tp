@@ -10,7 +10,7 @@ import Registros.Registro;
 
 public class Arquivo<T extends Registro> {
 
-    protected static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+    protected static final String PATH_PREFIX = "TP_03 - Índice invertido/"; 
 
     protected final int TAM_CABECALHO = 12;
     protected RandomAccessFile arquivo;

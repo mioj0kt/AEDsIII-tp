@@ -9,7 +9,7 @@ import Pares.ParEmailID;
 
 public class ArquivoUsuario extends Arquivo<Usuario> {
 
-    private static final String PATH_PREFIX = "TP_02 - Relacionamento N.N/";
+    private static final String PATH_PREFIX = "TP_03 - Índice invertido/";
 
     HashExtensivel<ParEmailID> indiceIndiretoEmail;
 

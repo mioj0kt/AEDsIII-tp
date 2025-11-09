@@ -13,7 +13,7 @@ public class VisaoBuscaLista {
     public String leCodigo() {
         ConsoleUtils.limparTela(); // limpa tela
 
-        System.out.println("\n\nPresenteFácil 2.0");
+        System.out.println("\n\nPresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Buscar Lista");
         System.out.print("\nDigite o código compartilhável da lista (ou 'R' para retornar ao menu): ");

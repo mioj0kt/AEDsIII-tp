@@ -40,7 +40,6 @@ public class ParProdutoLista implements RegistroArvoreBMais<ParProdutoLista> {
             return this.idProduto - outro.idProduto;
         }
         // Se o ID da lista na busca for -1, considera como um 'match' para qualquer
-        // lista.
         return (this.idListaProduto == -1) ? 0 : this.idListaProduto - outro.idListaProduto;
     }
 

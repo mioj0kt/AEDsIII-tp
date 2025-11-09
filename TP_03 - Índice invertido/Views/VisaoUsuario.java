@@ -12,7 +12,7 @@ public class VisaoUsuario {
     public char mostraMenuDadosUsuario(Usuario u) {
         ConsoleUtils.limparTela(); // limpa tela
 
-        System.out.println("\n\nPresenteFácil 2.0");
+        System.out.println("\n\nPresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Início > Meus Dados");
         System.out.println("\nID: " + u.getId());

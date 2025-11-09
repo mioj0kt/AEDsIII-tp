@@ -11,16 +11,26 @@ public class VisaoProduto {
 
     public char mostraMenuProdutos() {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 2.0");
+        System.out.println("PresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Início > Produtos");
-        System.out.println("\n(1) Buscar produto por GTIN-13");
+        System.out.println("\n(1) Buscar produto");
         System.out.println("(2) Listar todos os produtos");
         System.out.println("(3) Cadastrar um novo produto");
         System.out.println("\n(R) Retornar ao menu anterior");
         System.out.print("\nOpção: ");
         String entrada = console.nextLine().trim().toUpperCase();
         return entrada.isEmpty() ? ' ' : entrada.charAt(0);
+    }
+
+    public String leBuscaUnificada() {
+        System.out.print("\nDigite o GTIN-13 ou as palavras-chave: ");
+        return console.nextLine().trim();
+    }
+
+    public String leTermosBusca() {
+        System.out.print("\nDigite os termos para a busca: ");
+        return console.nextLine().trim();
     }
 
     public String leGtin() {
@@ -39,14 +49,14 @@ public class VisaoProduto {
             if (!gtin.matches("\\d{13}")) {
                 System.err.println("Erro: O GTIN-13 deve conter exatamente 13 números.");
             }
-        } while (!gtin.matches("\\d{13}")); 
+        } while (!gtin.matches("\\d{13}"));
 
         String nome;
         do {
             System.out.print("Nome (obrigatório): ");
             nome = console.nextLine().trim();
             if (nome.equalsIgnoreCase("R"))
-                return null; 
+                return null;
             if (nome.isEmpty()) {
                 System.err.println("Erro: O nome é obrigatório.");
             }
@@ -116,7 +126,7 @@ public class VisaoProduto {
 
     public String mostraListaPaginadaProdutos(List<Produto> produtosNaPagina, int paginaAtual, int totalPaginas) {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 2.0");
+        System.out.println("PresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Início > Produtos > Listagem");
         System.out.printf("\nPágina %d de %d\n\n", paginaAtual, totalPaginas);
@@ -136,7 +146,7 @@ public class VisaoProduto {
 
     public char mostraMenuDetalheProdutoCompleto(Produto p, List<String> minhasListas, int outrasListasCount) {
         ConsoleUtils.limparTela();
-        System.out.println("PresenteFácil 2.0");
+        System.out.println("PresenteFácil 3.0");
         System.out.println("-----------------");
         System.out.println("> Início > Produtos > Listagem > " + p.getNome());
 
