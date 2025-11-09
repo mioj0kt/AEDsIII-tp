@@ -140,17 +140,19 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
 3.  **Tela de Login** ![Tela de login do usuário](img/3%20-%20Tela_MenuInicial_Login.png)
 4.  **Menu Principal (Pós-Login)** ![Menu principal exibido após o login do usuário](img/4%20-%20Tela_MenuPrincipal_Logado.png)
 5.  **Tela "Meus Dados" do Usuário** ![Tela com as informações de cadastro do usuário e opções de gerenciamento](img/5%20-%20Tela_UsuarioMeusDados.png)
-6.  **Tela "Minhas Listas"**
-    ![Tela exibindo a listagem de todas as listas do usuário em ordem alfabética](img/6%20-%20Tela_UsuarioMinhasListas.png)
+6.  **Tela "Minhas Listas"** ![Tela exibindo a listagem de todas as listas do usuário em ordem alfabética](img/6%20-%20Tela_UsuarioMinhasListas.png)
 7.  **Criação de Nova Lista** ![Tela de cadastro de uma nova lista de presentes](img/7%20-%20Tela_UsuarioMinhasListas_NovaLista.png)
 8.  **Detalhes de uma Lista Selecionada** ![Tela exibindo os detalhes de uma lista específica, com suas opções de gerenciamento](img/8%20-%20Tela_UsuarioMinhasListas_ListaSelecionada.png)
 9.  **Gerenciamento de Produtos na Lista Selecionada** ![Tela de gerenciamento de produtos dentro de uma lista, mostrando itens e opções](img/9%20-%20Tela_UsuarioMinhasListas_ListaSelecionada_Produtos.png)
 10. **Copiando Código de Compartilhamento de uma Lista** ![Tela mostrando a confirmação de que o código da lista foi copiado](img/10%20-%20Tela_UsuarioMinhasListas_CodigoLista.png)
 11. **Menu Principal de Produtos** ![Menu com as opções de gerenciamento de produtos](img/11%20-%20ProcurarProdutos.png)
 12. **Busca de Produto por GTIN** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/12%20-%20ProcurarProdutos_PorGTIN.png)
-13. **Listagem Paginada de Produtos** ![Listagem de produtos com paginação, mostrando ativos e inativos ordenados](img/13%20-%20ProcurarProdutos_Listando.png)
-14. **Busca Global de Lista por Código de Lista** ![Tela de busca de uma lista por seu código de compartilhamento](img/14%20-%20ProcurarListas_porCodigo.png)
-15. **Detalhes de um Produto Selecionada** ![Tela de detalhes de um produto selecionado, e mostrando em quais listas do usuário ele aparece](img/15%20-%20ProcurarProdutos_InfosProduto.png)
+13. **Detalhes de um Produto Selecionada** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/13%20-%20ProcurarProdutos_PorGTIN(Encontrado).png)
+14. **Busca de Produto por Palavra Chave** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/14%20-%20ProcurarProdutos_PorPalavraChave.png)
+15. **Produtos Encontrados pela Busca de Palavra Chave** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/15%20-%20ProcurarProdutos_PorPalavraChave(Encontrado).png)
+16. **Listagem Paginada de Produtos** ![Listagem de produtos com paginação, mostrando ativos e inativos ordenados](img/16%20-%20ProcurarProdutos_Listando.png)
+17. **Busca Global de Lista por Código de Lista** ![Tela de busca de uma lista por seu código de compartilhamento](img/17%20-%20ProcurarListas_porCodigo.png)
+
 ---
 
 ## Checklist de Avaliação (TP1, TP2 e TP3)
