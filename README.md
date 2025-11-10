@@ -234,4 +234,4 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
 
 * **TP1:** [https://youtu.be/ZYMZ9jcaeK0](https://youtu.be/ZYMZ9jcaeK0)
 * **TP2:** [https://youtu.be/GzxbBbwcHy0](https://youtu.be/GzxbBbwcHy0)
-* **TP3:** [https://youtu.be/](https://youtu.be/)
+* **TP3:** [https://youtu.be/TK6eKy3TGHQ](https://youtu.be/TK6eKy3TGHQ)

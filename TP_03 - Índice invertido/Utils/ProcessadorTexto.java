@@ -12,7 +12,7 @@ public class ProcessadorTexto {
     private static final Set<String> STOP_WORDS = new HashSet<>(Arrays.asList(
             "de", "a", "o", "que", "e", "do", "da", "em", "um", "para", "com", "não",
             "uma", "os", "as", "dos", "das", "por", "ao", "se", "ou", "mas", "foi",
-            "ser", "é", "são", "foi", "como", "quando", "seu", "sua", "pela", "pelo"));
+            "ser", "é", "são", "foi", "como", "quando", "seu", "sua", "pela", "peloclear"));
 
     public static Map<String, Double> calcularTF(String texto) {
         if (texto == null || texto.isEmpty()) {
