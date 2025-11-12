@@ -1,0 +1,251 @@
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body{
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #51555b;
+}
+
+.container{
+  width: 80%;
+  max-width: 900px;
+  background: #333;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1{
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #fff;
+}
+
+table{
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+thead{
+  background-color: #0078d7;
+  color: white;
+}
+
+th, td{
+  padding: 0.8rem;
+  border-bottom: 1px solid #ccc;
+}
+
+tbody tr{
+  background-color: #555;
+  color: white;
+}
+
+button{
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  color: black;
+}
+
+button.editar{
+  background-color: #0078d7;
+}
+
+button.excluir{
+  background-color: #d9534f;
+}
+
+button.editar:hover{
+  background-color: #0062b2;
+}
+
+button.excluir:hover{
+  background-color: #a53f3b;
+}
+
+form{
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+form input, form button{
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+}
+
+form input{
+  flex: 1;
+  min-width: 150px;
+  background-color: #444;
+  color: #fff;
+}
+
+form input::placeholder{
+  color: #aaa;
+}
+
+form button{
+  background-color: #0078d7;
+  color: white;
+  cursor: pointer;
+}
+
+form button:hover{
+  background-color: #005fa3;
+}
+
+.oculto{
+  display: none;
+}
+
+#busca{
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #444;
+  color: #fff;
+}
+
+#busca::placeholder{
+  color: #aaa;
+}
+
+.botoes-container{
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.botoes-container button{
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botoes-container button:hover{
+  background-color: #218838;
+}
+
+.oculto{
+  display: none;
+}
+
+.btn-adicionar-container{
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+#btn-adicionar{
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#btn-buscar{
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#btn-adicionar:hover{
+  background-color: #218838;
+}
+
+form{
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+form input, form button{
+  padding: 0.6rem;
+  border: none;
+  border-radius: 6px;
+}
+
+form input{
+  flex: 1;
+  min-width: 150px;
+}
+
+form button{
+  background-color: #0078d7;
+  color: white;
+  cursor: pointer;
+}
+
+form button:hover{
+  background-color: #005fa3;
+}
+
+.botoes-container{
+  display: flex;
+  justify-content: center;
+  gap: 1rem; 
+  margin-top: 1.5rem;
+}
+
+#btn-adicionar, #btn-buscar{
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#btn-adicionar:hover, #btn-buscar:hover{
+  background-color: #218838;
+}
+
+.ordenacao-container{
+  display: flex;
+  color: white;
+  font-weight: bold;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  justify-content: flex-end;
+}
+
+.ordenacao-container select{
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
