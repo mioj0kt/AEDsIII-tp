@@ -1,70 +1,70 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Lista de Produtos</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div class="container">
-            <h1>Gestão de Produtos</h1>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Produtos</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-            <!-- Ordenações -->
-            <div class="ordenacao-container">
-                <label for="ordenarPor">Ordenar por:</label>
-                <select id="ordenarPor">
-                    <option value="id">ID (padrão)</option>
-                    <option value="categoria">Categoria (A–Z)</option>
-                    <option value="precoAsc">Preço Crescente</option>
-                    <option value="precoDesc">Preço Decrescente</option>
-                </select>
-            </div>
+    <div class="container">
+        <h1>Gestão de Produtos</h1>
 
-            <!-- Formulário -->
-            <form id="form-produto" class="oculto">
-                <input type="hidden" id="id">
-                <input type="text" id="nome" placeholder="Nome do produto" required>
-                <input type="text" id="categoria" placeholder="Categoria" required>
-                <input type="number" id="preco" placeholder="Preço" step="0.01" required>
-                <button type="submit">Adicionar</button>
-            </form>
+        <!-- Tipos de ordenações -->
+        <div class="ordenacao-container">
+            <label for="ordenarPor">Ordenar por:</label>
+            <select id="ordenarPor">
+                <option value="id">ID</option>
+                <option value="gtin">GTIN</option>
+                <option value="nome">Nome (A–Z)</option>
+            </select>
+        </div>
 
-            <!-- Formulário para editar o produto -->
-            <form id="form-editar-produto" class="oculto">
-                <input type="hidden" id="editar-id">
-                <input type="text" id="editar-nome" placeholder="Nome do produto" required>
-                <input type="text" id="editar-categoria" placeholder="Categoria" required>
-                <input type="number" id="editar-preco" placeholder="Preço" step="0.01" required>
-                <button type="submit">Alterar</button>
-            </form>
+        <!-- Formulário de adicionar -->
+        <form id="form-produto" class="oculto">
+            <input type="hidden" id="id">
+            <input type="text" id="gtin" placeholder="GTIN (13 dígitos)" required>
+            <input type="text" id="nome" placeholder="Nome do produto" required>
+            <textarea id="descricao" placeholder="Descrição" required></textarea>
+            <button type="submit">Adicionar</button>
+        </form>
 
-            <!-- Campo de busca -->
-            <input type="text" id="busca" class="oculto" placeholder="Buscar produto...">   
+        <!-- Formulário de editar -->
+        <form id="form-editar-produto" class="oculto">
+            <input type="hidden" id="editar-id">
+            <input type="text" id="editar-gtin" placeholder="GTIN (13 dígitos)" required>
+            <input type="text" id="editar-nome" placeholder="Nome do produto" required>
+            <textarea id="editar-descricao" placeholder="Descrição" required></textarea>
+            <button type="submit">Alterar</button>
+        </form>
 
-            <!-- Tabela -->
-            <table id="tabela-produtos">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Categoria</th>
-                        <th>Preço</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
+        <!-- Campo de busca -->
+        <input type="text" id="busca" class="oculto" placeholder="Buscar produto...">   
 
-                <tbody>
-                </tbody>
-            </table>
+        <!-- Tabela -->
+        <table id="tabela-produtos">
+            <thead>
+                <tr>
+                    <th>GTIN</th>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
 
-            <!-- Botão para exibir o formulário e a busca -->
+            <tbody>
+                <!-- Linhas de produtos serão inseridas aqui dinamicamente -->
+            </tbody>
+        </table>
+
+        <!-- Botão para exibir o formulário e a busca -->
             <div class="btn-adicionar-container">
                 <button id="btn-adicionar">Adicionar Produto</button>
                 <button id="btn-buscar">Buscar Produto</button>
             </div>
         </div>
 
-        <script src="script.js"></script>
-    </body>
+        <script src="script.js"></script>   
+</body>
 </html>

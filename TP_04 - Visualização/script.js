@@ -2,54 +2,56 @@ function getProdutos(){
     return JSON.parse(localStorage.getItem("produtos")) || [];
 }
 
-
 function salvarProdutos(produtos){
     localStorage.setItem("produtos", JSON.stringify(produtos));
 }
 
-// Atualiza a tabela
+// Formartar GTIN
+function formatarGTIN(gtin){
+    gtin = gtin.replace(/\D/g, "");
+    return gtin.padStart(13, "0");
+}
+
+// Atualizar tabela
 function atualizarTabela(filtro = ""){
     const produtos = getProdutos().slice();
     const criterio = document.getElementById("ordenarPor") ? document.getElementById("ordenarPor").value : "id";
     const corpoTabela = document.querySelector("#tabela-produtos tbody");
 
-    // Ordena de acordo com o critério selecionado
+    // Ordenações
     produtos.sort((a, b) =>{
         if(criterio === "id"){
             return a.id - b.id;
-        }else if(criterio === "categoria"){
-            return a.categoria.localeCompare(b.categoria);
-        }else if(criterio === "precoAsc"){
-            return a.preco - b.preco;
-        }else if(criterio === "precoDesc"){
-            return b.preco - a.preco;
-        }else{
-            return 0;
         }
+        if(criterio === "nome"){
+            return a.nome.localeCompare(b.nome);
+        }
+        if(criterio === "gtin"){
+            return a.gtin.localeCompare(b.gtin);
+        }
+        return 0;
     });
 
-    // Limpa tabela
     corpoTabela.innerHTML = "";
 
-    // Filtra e preenche novamente
     produtos
         .filter(p => p.nome.toLowerCase().includes(filtro.toLowerCase()))
-        .forEach(p => {
+        .forEach(p =>{
         const row = document.createElement("tr");
 
-        // Cria células
-        const tdId = document.createElement("td");
-        tdId.textContent = p.id;
+        // GTIN
+        const tdGTIN = document.createElement("td");
+        tdGTIN.textContent = p.gtin;
 
+        // Nome
         const tdNome = document.createElement("td");
         tdNome.textContent = p.nome;
 
-        const tdCategoria = document.createElement("td");
-        tdCategoria.textContent = p.categoria;
+        // Descrição
+        const tdDescricao = document.createElement("td");
+        tdDescricao.textContent = p.descricao;
 
-        const tdPreco = document.createElement("td");
-        tdPreco.textContent = `R$ ${p.preco.toFixed(2)}`;
-
+        // Ações
         const tdAcoes = document.createElement("td");
 
         // Botão Editar
@@ -67,10 +69,9 @@ function atualizarTabela(filtro = ""){
         tdAcoes.appendChild(btnEditar);
         tdAcoes.appendChild(btnExcluir);
 
-        row.appendChild(tdId);
+        row.appendChild(tdGTIN);
         row.appendChild(tdNome);
-        row.appendChild(tdCategoria);
-        row.appendChild(tdPreco);
+        row.appendChild(tdDescricao);
         row.appendChild(tdAcoes);
 
         corpoTabela.appendChild(row);
@@ -127,31 +128,36 @@ if(formAdd){
     formAdd.addEventListener("submit", e =>{
         e.preventDefault();
 
-        const id = document.querySelector("#id").value;
+        const gtin = formatarGTIN(document.querySelector("#gtin").value);
         const nome = document.querySelector("#nome").value.trim();
-        const categoria = document.querySelector("#categoria").value.trim();
-        const preco = parseFloat(document.querySelector("#preco").value);
+        const descricao = document.querySelector("#descricao").value.trim();
 
         let produtos = getProdutos();
 
-        if(id){
-            const index = produtos.findIndex(p => p.id == id);
-            if(index !== -1) produtos[index] = { 
-                id: parseInt(id), nome, categoria, preco 
-            };
-        }else{
-            const novoId = produtos.length > 0 ? produtos[produtos.length - 1].id + 1 : 1;
-            produtos.push({ id: novoId, nome, categoria, preco });
+        if(produtos.some(p => p.gtin === gtin)){
+            alert("ERRO: Este GTIN já está cadastrado!");
+            return;
         }
+
+        // Cria novo ID
+        const novoId = produtos.length > 0 ? produtos[produtos.length - 1].id + 1 : 1;
+
+        // Adiciona produto
+        produtos.push({ id: novoId, gtin, nome, descricao });
 
         salvarProdutos(produtos);
         atualizarTabela();
+
+        // Limpa e fecha o formulário
         e.target.reset();
         document.querySelector("#id").value = "";
         formAdd.classList.add("oculto");
-        if(btnAdicionar){
+
+        if (btnAdicionar) {
             btnAdicionar.textContent = "Adicionar Produto";
         }
+
+        alert("Produto cadastrado com sucesso!");
     });
 }
 
@@ -161,20 +167,25 @@ function editarProduto(id){
     const produto = produtos.find(p => p.id === id);
 
     if(produto){
+        // Oculta o formulário de adicionar
         const formAdd = document.getElementById("form-produto");
-        if (formAdd){ 
+        if(formAdd){ 
             formAdd.classList.add("oculto");
         }
         if(btnAdicionar){ 
             btnAdicionar.textContent = "Adicionar Produto";
         }
 
+        // Mostra formulário de edição
         const formEditar = document.getElementById("form-editar-produto");
         formEditar.classList.remove("oculto");
+
+        // Preenche os campos
         document.getElementById("editar-id").value = produto.id;
+        document.getElementById("editar-gtin").value = produto.gtin;
+        document.getElementById("editar-gtin").disabled = true; // GTIN não pode ser editado
         document.getElementById("editar-nome").value = produto.nome;
-        document.getElementById("editar-categoria").value = produto.categoria;
-        document.getElementById("editar-preco").value = produto.preco;
+        document.getElementById("editar-descricao").value = produto.descricao;
     }
 }
 
@@ -187,21 +198,29 @@ document.addEventListener("DOMContentLoaded", () =>{
 
         const id = parseInt(document.getElementById("editar-id").value);
         const nome = document.getElementById("editar-nome").value.trim();
-        const categoria = document.getElementById("editar-categoria").value.trim();
-        const preco = parseFloat(document.getElementById("editar-preco").value);
+        const descricao = document.getElementById("editar-descricao").value.trim();
 
         const produtos = getProdutos();
         const index = produtos.findIndex(p => p.id === id);
 
         if(index !== -1){
-            produtos[index] = { id, nome, categoria, preco };
+            // Mantém o GTIN original
+            const gtinOriginal = produtos[index].gtin;
+
+            produtos[index] = { 
+                id, 
+                gtin: gtinOriginal,
+                nome, 
+                descricao 
+            };
+
             salvarProdutos(produtos);
             atualizarTabela();
 
             alert("Produto alterado com sucesso!");
         }
 
-            formEditar.classList.add("oculto");
+        formEditar.classList.add("oculto");
     });
 });
 
