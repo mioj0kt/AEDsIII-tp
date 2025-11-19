@@ -183,7 +183,7 @@ function editarProduto(id){
         // Preenche os campos
         document.getElementById("editar-id").value = produto.id;
         document.getElementById("editar-gtin").value = produto.gtin;
-        document.getElementById("editar-gtin").disabled = true; // GTIN não pode ser editado
+        document.getElementById("editar-gtin").disabled = true;
         document.getElementById("editar-nome").value = produto.nome;
         document.getElementById("editar-descricao").value = produto.descricao;
     }
@@ -223,6 +223,22 @@ document.addEventListener("DOMContentLoaded", () =>{
         formEditar.classList.add("oculto");
     });
 });
+
+document.getElementById("cancelar-edicao").addEventListener("click", () =>{
+    document.getElementById("form-editar-produto").classList.add("oculto");
+
+    const campoBusca = document.getElementById("campo-busca");
+    if(campoBusca){
+        campoBusca.classList.remove("oculto");
+    }
+    document.getElementById("form-editar-produto").reset();
+    const btnEditarPrincipal = document.getElementById("btn-editar-produto");
+    if(btnEditarPrincipal){
+        btnEditarPrincipal.textContent = "Buscar Produto";
+        delete btnEditarPrincipal.dataset.modo;
+    }
+});
+
 
 // Excluir produto 
 function excluirProduto(id){

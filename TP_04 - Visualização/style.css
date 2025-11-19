@@ -59,10 +59,13 @@ button{
 
 button.editar{
   background-color: #0078d7;
+  color: white;
 }
 
 button.excluir{
   background-color: #d9534f;
+  color: white;
+  margin-left: 5px;
 }
 
 button.editar:hover{
@@ -115,7 +118,7 @@ form button:hover{
 #busca{
   width: 100%;
   padding: 0.6rem;
-  margin-bottom: 1rem;
+  margin-bottom: 5px;
   border-radius: 6px;
   border: none;
   background-color: #444;
@@ -168,6 +171,10 @@ form button:hover{
   transition: 0.3s;
 }
 
+#btn-adicionar:hover{
+  background-color: #218838;
+}
+
 #btn-buscar{
   background-color: #28a745;
   color: white;
@@ -179,8 +186,31 @@ form button:hover{
   transition: 0.3s;
 }
 
-#btn-adicionar:hover{
-  background-color: #218838;
+#alterar-produto{
+  background-color: #0078d7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#alterar-produto:hover{
+  background-color: #005fa3;
+}
+
+#cancelar-edicao{
+  background-color: #d9534f;
+  padding: 0.6rem 1.2rem;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#cancelar-edicao:hover{
+  background-color: #a53f3b;
 }
 
 form{
@@ -200,16 +230,6 @@ form input, form button{
 form input{
   flex: 1;
   min-width: 150px;
-}
-
-form button{
-  background-color: #0078d7;
-  color: white;
-  cursor: pointer;
-}
-
-form button:hover{
-  background-color: #005fa3;
 }
 
 .botoes-container{
