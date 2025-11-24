@@ -1,4 +1,4 @@
-# PresenteFácil 3.0
+# PresenteFácil 4.0
 ## Alunos participantes
 * [Domynic Barros Lima](https://github.com/DomynicBl)
 * [Felipe Rivetti Mizher](https://github.com/FelipeMizher)
@@ -6,6 +6,14 @@
 
 ## Professor responsável
 * Marcos Andre Silveira Kutova
+
+---
+
+
+<br>
+<br>
+
+# 🖥️ Parte 1: Sistema de Console (TPs 1, 2 e 3)
 
 ## 📝 Descrição do Sistema
 PresenteFácil é um sistema de console robusto para gerenciamento de listas de presentes. Desenvolvido em Java, o projeto permite que usuários se cadastrem, criem múltiplas listas para diferentes ocasiões (aniversários, casamentos, etc.), adicionem produtos a elas e as compartilhem com amigos e familiares através de um código único.
@@ -135,23 +143,23 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
 
 ## 🖥️ Telas do Sistema
 
-1.  **Menu Inicial** ![Menu Inicial com opções de login e cadastro](img/1%20-%20Tela_MenuInicial.png)
-2.  **Cadastro de Novo Usuário** ![Tela de cadastro de novo usuário](img/2%20-%20Tela_MenuInicial_Cadastro.png)
-3.  **Tela de Login** ![Tela de login do usuário](img/3%20-%20Tela_MenuInicial_Login.png)
-4.  **Menu Principal (Pós-Login)** ![Menu principal exibido após o login do usuário](img/4%20-%20Tela_MenuPrincipal_Logado.png)
-5.  **Tela "Meus Dados" do Usuário** ![Tela com as informações de cadastro do usuário e opções de gerenciamento](img/5%20-%20Tela_UsuarioMeusDados.png)
-6.  **Tela "Minhas Listas"** ![Tela exibindo a listagem de todas as listas do usuário em ordem alfabética](img/6%20-%20Tela_UsuarioMinhasListas.png)
-7.  **Criação de Nova Lista** ![Tela de cadastro de uma nova lista de presentes](img/7%20-%20Tela_UsuarioMinhasListas_NovaLista.png)
-8.  **Detalhes de uma Lista Selecionada** ![Tela exibindo os detalhes de uma lista específica, com suas opções de gerenciamento](img/8%20-%20Tela_UsuarioMinhasListas_ListaSelecionada.png)
-9.  **Gerenciamento de Produtos na Lista Selecionada** ![Tela de gerenciamento de produtos dentro de uma lista, mostrando itens e opções](img/9%20-%20Tela_UsuarioMinhasListas_ListaSelecionada_Produtos.png)
-10. **Copiando Código de Compartilhamento de uma Lista** ![Tela mostrando a confirmação de que o código da lista foi copiado](img/10%20-%20Tela_UsuarioMinhasListas_CodigoLista.png)
-11. **Menu Principal de Produtos** ![Menu com as opções de gerenciamento de produtos](img/11%20-%20ProcurarProdutos.png)
-12. **Busca de Produto por GTIN** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/12%20-%20ProcurarProdutos_PorGTIN.png)
-13. **Detalhes de um Produto Selecionada** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/13%20-%20ProcurarProdutos_PorGTIN(Encontrado).png)
-14. **Busca de Produto por Palavra Chave** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/14%20-%20ProcurarProdutos_PorPalavraChave.png)
-15. **Produtos Encontrados pela Busca de Palavra Chave** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/15%20-%20ProcurarProdutos_PorPalavraChave(Encontrado).png)
-16. **Listagem Paginada de Produtos** ![Listagem de produtos com paginação, mostrando ativos e inativos ordenados](img/16%20-%20ProcurarProdutos_Listando.png)
-17. **Busca Global de Lista por Código de Lista** ![Tela de busca de uma lista por seu código de compartilhamento](img/17%20-%20ProcurarListas_porCodigo.png)
+1.  **Menu Inicial** ![Menu Inicial com opções de login e cadastro](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/1%20-%20Tela_MenuInicial.png)
+2.  **Cadastro de Novo Usuário** ![Tela de cadastro de novo usuário](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/2%20-%20Tela_MenuInicial_Cadastro.png)
+3.  **Tela de Login** ![Tela de login do usuário](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/3%20-%20Tela_MenuInicial_Login.png)
+4.  **Menu Principal (Pós-Login)** ![Menu principal exibido após o login do usuário](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/4%20-%20Tela_MenuPrincipal_Logado.png)
+5.  **Tela "Meus Dados" do Usuário** ![Tela com as informações de cadastro do usuário e opções de gerenciamento](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/5%20-%20Tela_UsuarioMeusDados.png)
+6.  **Tela "Minhas Listas"** ![Tela exibindo a listagem de todas as listas do usuário em ordem alfabética](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/6%20-%20Tela_UsuarioMinhasListas.png)
+7.  **Criação de Nova Lista** ![Tela de cadastro de uma nova lista de presentes](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/7%20-%20Tela_UsuarioMinhasListas_NovaLista.png)
+8.  **Detalhes de uma Lista Selecionada** ![Tela exibindo os detalhes de uma lista específica, com suas opções de gerenciamento](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/8%20-%20Tela_UsuarioMinhasListas_ListaSelecionada.png)
+9.  **Gerenciamento de Produtos na Lista Selecionada** ![Tela de gerenciamento de produtos dentro de uma lista, mostrando itens e opções](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/9%20-%20Tela_UsuarioMinhasListas_ListaSelecionada_Produtos.png)
+10. **Copiando Código de Compartilhamento de uma Lista** ![Tela mostrando a confirmação de que o código da lista foi copiado](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/10%20-%20Tela_UsuarioMinhasListas_CodigoLista.png)
+11. **Menu Principal de Produtos** ![Menu com as opções de gerenciamento de produtos](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/11%20-%20ProcurarProdutos.png)
+12. **Busca de Produto por GTIN** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/12%20-%20ProcurarProdutos_PorGTIN.png)
+13. **Detalhes de um Produto Selecionada** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/13%20-%20ProcurarProdutos_PorGTIN(Encontrado).png)
+14. **Busca de Produto por Palavra Chave** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/14%20-%20ProcurarProdutos_PorPalavraChave.png)
+15. **Produtos Encontrados pela Busca de Palavra Chave** ![Tela de busca de um produto específico pelo seu código GTIN-13](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/15%20-%20ProcurarProdutos_PorPalavraChave(Encontrado).png)
+16. **Listagem Paginada de Produtos** ![Listagem de produtos com paginação, mostrando ativos e inativos ordenados](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/16%20-%20ProcurarProdutos_Listando.png)
+17. **Busca Global de Lista por Código de Lista** ![Tela de busca de uma lista por seu código de compartilhamento](img/Parte%201%20(TP1,%20TP2%20e%20TP3)/17%20-%20ProcurarListas_porCodigo.png)
 
 ---
 
@@ -230,8 +238,100 @@ O projeto é organizado em pacotes que separam as responsabilidades, seguindo o 
 
 ---
 
+<br>
+<br>
+
+# 🌐 Parte 2: Visualizador Web (TP 4 - Projeto Extensionista)
+
+## 📝 Descrição do Projeto Extensionista
+O TP4 consiste em uma aplicação web **Single Page Application (SPA)** desenvolvida com HTML, CSS e JavaScript puro (Vanilla JS). O objetivo é pedagógico, permitir que os atuais e futuros alunos da disciplina de AEDS III visualizem, de forma interativa e gráfica, como os dados estruturados (registros de tamanho variável) são armazenados fisicamente em disco.
+
+Embora a aplicação rode no navegador, ela **simula fielmente** a estrutura de arquivos binários (`.db`) utilizada no projeto Java, oferecendo uma "visão de Raio-X" dos dados.
+
+### ✨ Funcionalidades Exclusivas
+
+* **Dashboard Interativo:** Interface moderna e responsiva para gestão de produtos.
+* **CRUD Completo no LocalStorage:** Os dados persistem no navegador do usuário, simulando um banco de dados.
+* **Gestão de Imagens:** Suporte a URLs de imagens externas ou geração automática de **Avatars com Iniciais** caso a imagem não seja fornecida.
+* **Simulador de Arquivo (Raio-X):** Um painel lateral exclusivo que exibe os dados em dois formatos:
+    * **JSON (Lógico):** Como os dados estão estruturados na memória/web.
+    * **Hex Dump (Físico):** Uma simulação byte-a-byte de como o arquivo Java seria escrito (Lápide, Indicador de Tamanho, IDs em 4 bytes, Strings UTF).
+* **Importação e Exportação (Backup):**
+    * **Baixar JSON:** Backup dos dados para portabilidade.
+    * **Baixar .DB:** Gera um arquivo binário real que pode ser aberto em editores Hexadecimais para fins didáticos.
+    * **Importar JSON:** Validação rigorosa e atômica ("tudo ou nada") para restaurar backups.
+* **Interface Avançada:**
+    * **Layout Redimensionável:** O usuário pode ajustar a largura do painel de código.
+    * **Modais:** Criação, edição e visualização detalhada em janelas sobrepostas.
+    * **Feedback Visual:** Toasts de sucesso/erro e validação de formulários.
+
+## 🖥️ Telas do Sistema
+
+1.  **Dashboard Inicial (Vazio)** ![Tela inicial sem produtos cadastrados.](img/Parte%202%20(TP4)/1%20-%20Dashboard%20Inicial%20(Vazio).png)
+2.  **Modal de Cadastro de Produto** ![O modal "Adicionar Produto" aberto, com alguns dados preenchidos.](img/Parte%202%20(TP4)/2%20-%20Modal%20de%20Cadastro%20de%20Produto.png)
+3.1.  **Listagem de Produtos (Produto Cadastrado - Json)** ![A tela principal com o produto de exemplo cadastrado, com os dados em Json.](img/Parte%202%20(TP4)/3.1%20-%20Listagem%20de%20Produtos%20(Produto%20Cadastrado%20-%20Json).png)
+3.2.  **Listagem de Produtos (Produto Cadastrado - Binário)** ![A tela principal com o produto de exemplo cadastrado, com os dados em Binário.](img/Parte%202%20(TP4)/3.2%20-%20Listagem%20de%20Produtos%20(Produto%20Cadastrado%20-%20Binário).png)
+4.**Visualização Detalhada do Produto** ![Modal de visualização (aquele que abre ao clicar na linha), mostrando a imagem e detalhes do produto.](img/Parte%202%20(TP4)/4%20-%20Visualização%20Detalhada%20do%20Produto.png)
+5.**Edição das Informações do Produto** ![Modal de edição, mostrando os detalhes do produto e permitindo a sua alteração.](img/Parte%202%20(TP4)/5%20-%20Edição%20das%20Informações%20do%20Produto.png)
+6.**Dashboard Inicial com Diversos Produtos Cadastrados** ![Tela principal com vários produtos cadastrados (População para teste).](img/Parte%202%20(TP4)/6%20-%20Dashboard%20Inicial%20com%20Diversos%20Produtos%20Cadastrados.png)
+7.1.**Busca de Produtos por Nome** ![Função de buscar produtos cadastrados a partir do seu nome](img/Parte%202%20(TP4)/7.1%20-%20Busca%20de%20Produtos%20por%20Nome.png)
+7.2.**Busca de Produtos por GTIN** ![Função de buscar produtos cadastrados a partir do seu GTIN](img/Parte%202%20(TP4)/7.2%20-%20Busca%20de%20Produtos%20por%20GTIN.png)
+8.1.**Ordenação de Produtos por ID** ![Função que ordena a lista de produtos por ID (Ordenação Padrão)](img/Parte%202%20(TP4)/8.1%20-%20Ordenação%20de%20Produtos%20por%20ID.png)
+8.2.**Ordenação de Produtos por Nome** ![Função que ordena a lista de produtos por Nome (A a Z)](img/Parte%202%20(TP4)/8.2%20-%20Ordenação%20de%20Produtos%20por%20Nome.png)
+8.3.**Ordenação de Produtos por GTIN** ![Função que ordena a lista de produtos por GTIN](img/Parte%202%20(TP4)/8.3%20-%20Ordenação%20de%20Produtos%20por%20GTIN.png)
+9.1.**Menu Lateral de Exibição dos Dados - Json** ![ Menu lateral que exibe os dados dos produto, visualização em Json](img/Parte%202%20(TP4)/9.1%20-%20Menu%20Lateral%20de%20Exibição%20dos%20Dados%20-%20Json.png)
+9.2.**Menu Lateral de Exibição dos Dados - Binário** ![ Menu lateral que exibe os dados dos produto, visualização em Binário](img/Parte%202%20(TP4)/9.2%20-%20Menu%20Lateral%20de%20Exibição%20dos%20Dados%20-%20Binário.png)
+10.**Arquivos Exportados** ![Print da área de trabalho com os dois arquivos possiveis para download - "backup.json" e "dados.db"](img/Parte%202%20(TP4)/10%20-%20Arquivos%20Exportados.png)
+
+---
+
+## 📊 Avaliação com Usuários (Teste de Usabilidade)
+
+### Checklist de Avaliação (TP4)
+Conforme requisito da atividade extensionista, o sistema foi testado por alunos do curso de Ciência da Computação. Abaixo apresentamos a média das avaliações (Escala Likert de 1 a 5):
+
+| Item | Afirmação resumida | Média das respostas |
+| :--- | :--- | :--- |
+| 1 | Eficiência da aplicação | x |
+| 2 | Facilidade de uso das funções | x |
+| 3 | Clareza das mensagens (Feedback) | x |
+| 4 | Intuitividade da Interface | x |
+| 5 | Satisfação geral | x |
+
+**Análise Qualitativa:**
+Os usuários elogiaram a visualização do "Hex Dump" lateral, considerando-a muito útil para entender como os bytes são organizados no arquivo. A interface moderna e o feedback visual (toasts) foram citados como pontos positivos que facilitaram o uso sem necessidade de treinamento prévio.
+
+---
+
+> **A página web com a visualização interativa do CRUD de produtos foi criada?** ✅
+>
+> **Sim.** A aplicação permite criar, ler, atualizar e excluir produtos em uma interface web moderna.
+
+> **Há um vídeo de até 3 minutos demonstrando o uso da visualização?** ✅
+>
+> **Sim.** (Link disponível na seção de vídeos abaixo).
+
+> **O relatório do trabalho foi entregue no APC?** ✅
+>
+> **** 
+
+> **O trabalho foi criado apenas com HTML, CSS e JS?** ✅
+>
+> **Sim.** Nenhuma biblioteca externa ou framework (como React/Vue) foi utilizado. Todo o CSS e a lógica de serialização binária foram feitos do zero.
+
+> **O trabalho está completo e funcionando sem erros de execução?** ✅
+>
+> **Sim.** Todas as funcionalidades, incluindo a lógica complexa de simulação de bytes e importação de arquivos, foram testadas e validadas.
+
+> **O trabalho é original e não a cópia de um trabalho de outro grupo?** ✅
+>
+> **Sim.** O layout e a lógica de "Simulador de Arquivo Binário" foram desenvolvidos exclusivamente por este grupo para atender ao viés extensionista.
+
+---
+
 ## 🎥 Vídeo de Demonstração
 
-* **TP1:** [https://youtu.be/ZYMZ9jcaeK0](https://youtu.be/ZYMZ9jcaeK0)
-* **TP2:** [https://youtu.be/GzxbBbwcHy0](https://youtu.be/GzxbBbwcHy0)
-* **TP3:** [https://youtu.be/TK6eKy3TGHQ](https://youtu.be/TK6eKy3TGHQ)
+* **TP1 (Console):** [https://youtu.be/ZYMZ9jcaeK0](https://youtu.be/ZYMZ9jcaeK0)
+* **TP2 (Console):** [https://youtu.be/GzxbBbwcHy0](https://youtu.be/GzxbBbwcHy0)
+* **TP3 (Console):** [https://youtu.be/TK6eKy3TGHQ](https://youtu.be/TK6eKy3TGHQ)
+* **TP4 (Web Visualizer):** [https://youtu.be/](https://youtu.be/)

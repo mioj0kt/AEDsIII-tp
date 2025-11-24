@@ -1,268 +1,448 @@
-function getProdutos(){
-    return JSON.parse(localStorage.getItem("produtos")) || [];
-}
+/* * PresenteFácil - TP4 Visualização
+ * Recursos Completos: CRUD, Importação/Exportação, Visualização, Simulação Binária, Avatars
+ */
 
-function salvarProdutos(produtos){
-    localStorage.setItem("produtos", JSON.stringify(produtos));
-}
+const KEY_STORAGE = "produtos_db";
+const elementos = {
+    // Tabela e Filtros
+    tabelaBody: document.querySelector("#tabela-produtos tbody"),
+    inputBusca: document.querySelector("#input-busca"),
+    selectOrdenacao: document.querySelector("#select-ordenacao"),
+    
+    // Sidebar
+    jsonViewer: document.querySelector("#json-viewer"),
+    hexViewer: document.querySelector("#hex-viewer"),
+    tabButtons: document.querySelectorAll(".tab-btn"),
+    codeContents: document.querySelectorAll(".code-content"),
+    emptyState: document.querySelector("#empty-state"),
+    resizer: document.querySelector("#resizer"),
+    
+    // Modais
+    modalProduto: document.querySelector("#modal-produto"),
+    modalVisualizar: document.querySelector("#modal-visualizar"),
+    
+    // Formulário
+    form: document.querySelector("#form-produto"),
+    tituloModal: document.querySelector("#modal-titulo"),
+    inputs: {
+        id: document.querySelector("#produto-id"),
+        gtin: document.querySelector("#produto-gtin"),
+        nome: document.querySelector("#produto-nome"),
+        descricao: document.querySelector("#produto-descricao"),
+        imagem: document.querySelector("#produto-imagem")
+    },
+    
+    // Visualização Detalhada
+    viewCampos: {
+        imgContainer: document.querySelector("#view-img-container"),
+        gtin: document.querySelector("#view-gtin"),
+        nome: document.querySelector("#view-nome"),
+        descricao: document.querySelector("#view-descricao")
+    },
+    
+    // Botões
+    btnNovo: document.querySelector("#btn-novo-produto"),
+    btnsFechar: document.querySelectorAll(".btn-fechar-modal"),
+    btnsCancelar: document.querySelectorAll(".btn-cancelar-modal"),
+    btnReset: document.querySelector("#btn-reset"),
+    btnDownload: document.querySelector("#btn-download"),
+    btnImportar: document.querySelector("#btn-importar"),
+    inputImportar: document.querySelector("#input-importar"),
+    btnViewEditar: document.querySelector("#btn-view-editar"),
+    btnViewExcluir: document.querySelector("#btn-view-excluir"),
+    
+    // Toast
+    toast: document.querySelector("#toast"),
+    toastMsg: document.querySelector("#toast-msg")
+};
 
-// Formartar GTIN
-function formatarGTIN(gtin){
-    gtin = gtin.replace(/\D/g, "");
-    return gtin.padStart(13, "0");
-}
-
-// Atualizar tabela
-function atualizarTabela(filtro = ""){
-    const produtos = getProdutos().slice();
-    const criterio = document.getElementById("ordenarPor") ? document.getElementById("ordenarPor").value : "id";
-    const corpoTabela = document.querySelector("#tabela-produtos tbody");
-
-    // Ordenações
-    produtos.sort((a, b) =>{
-        if(criterio === "id"){
-            return a.id - b.id;
+// --- MODEL ---
+const Model = {
+    ler() { return JSON.parse(localStorage.getItem(KEY_STORAGE)) || []; },
+    salvar(produtos) {
+        const jsonString = JSON.stringify(produtos, null, 2);
+        localStorage.setItem(KEY_STORAGE, jsonString);
+        View.atualizarPaineis(produtos, jsonString);
+    },
+    adicionar(produto) {
+        const produtos = this.ler();
+        if (produtos.some(p => p.gtin === produto.gtin)) throw new Error("Erro: Já existe um produto com este GTIN!");
+        produto.id = produtos.length > 0 ? Math.max(...produtos.map(p => p.id)) + 1 : 1;
+        produtos.push(produto);
+        this.salvar(produtos);
+    },
+    atualizar(produtoEditado) {
+        let produtos = this.ler();
+        const index = produtos.findIndex(p => p.id === parseInt(produtoEditado.id));
+        if (index !== -1) {
+            produtos[index] = { ...produtos[index], ...produtoEditado };
+            this.salvar(produtos);
         }
-        if(criterio === "nome"){
-            return a.nome.localeCompare(b.nome);
+    },
+    remover(id) {
+        const produtos = this.ler().filter(p => p.id !== id);
+        this.salvar(produtos);
+    },
+    limparTudo() { localStorage.removeItem(KEY_STORAGE); this.salvar([]); }
+};
+
+// --- SERIALIZER ---
+const Serializer = {
+    stringToBytes(str) {
+        if (!str) str = "";
+        const bytes = [];
+        for (let i = 0; i < str.length; i++) {
+            let code = str.charCodeAt(i);
+            bytes.push(code < 128 ? code : 63);
         }
-        if(criterio === "gtin"){
-            return a.gtin.localeCompare(b.gtin);
+        return bytes;
+    },
+    writeInt(array, num) {
+        array.push((num >> 24) & 0xFF, (num >> 16) & 0xFF, (num >> 8) & 0xFF, num & 0xFF);
+    },
+    writeUTF(array, str) {
+        const strBytes = this.stringToBytes(str);
+        const len = strBytes.length;
+        array.push((len >> 8) & 0xFF, len & 0xFF);
+        strBytes.forEach(b => array.push(b));
+    },
+    simularArquivoBinario(produtos) {
+        const arquivoBytes = [];
+        this.writeInt(arquivoBytes, produtos.length > 0 ? Math.max(...produtos.map(p=>p.id)) : 0);
+        produtos.forEach(p => {
+            const payloadTemp = [];
+            this.writeInt(payloadTemp, p.id);
+            this.writeUTF(payloadTemp, p.gtin);
+            this.writeUTF(payloadTemp, p.nome);
+            this.writeUTF(payloadTemp, p.descricao);
+            this.writeUTF(payloadTemp, p.imagem || "");
+            arquivoBytes.push(0x20); // Lápide
+            this.writeInt(arquivoBytes, payloadTemp.length);
+            payloadTemp.forEach(b => arquivoBytes.push(b));
+        });
+        return arquivoBytes;
+    }
+};
+
+// --- VIEW ---
+const View = {
+    timerToast: null,
+    formatarGTIN(valor) { return valor.replace(/\D/g, "").padStart(13, "0"); },
+    getIniciais(nome) {
+        const partes = nome.trim().split(" ");
+        if (partes.length === 0) return "?";
+        if (partes.length === 1) return partes[0].substring(0, 2).toUpperCase();
+        return (partes[0][0] + partes[1][0]).toUpperCase();
+    },
+    mostrarToast(mensagem, tipo = 'sucesso') {
+        elementos.toastMsg.textContent = mensagem;
+        elementos.toast.classList.remove("hidden", "erro");
+        if (tipo === 'erro') {
+            elementos.toast.classList.add("erro");
+            elementos.toast.querySelector(".toast-icon").textContent = "!";
+        } else {
+            elementos.toast.querySelector(".toast-icon").textContent = "✓";
         }
-        return 0;
-    });
-
-    corpoTabela.innerHTML = "";
-
-    produtos
-        .filter(p => p.nome.toLowerCase().includes(filtro.toLowerCase()))
-        .forEach(p =>{
-        const row = document.createElement("tr");
-
-        // GTIN
-        const tdGTIN = document.createElement("td");
-        tdGTIN.textContent = p.gtin;
-
-        // Nome
-        const tdNome = document.createElement("td");
-        tdNome.textContent = p.nome;
-
-        // Descrição
-        const tdDescricao = document.createElement("td");
-        tdDescricao.textContent = p.descricao;
-
-        // Ações
-        const tdAcoes = document.createElement("td");
-
-        // Botão Editar
-        const btnEditar = document.createElement("button");
-        btnEditar.className = "editar";
-        btnEditar.textContent = "Editar";
-        btnEditar.addEventListener("click", () => editarProduto(p.id));
-
-        // Botão Excluir
-        const btnExcluir = document.createElement("button");
-        btnExcluir.className = "excluir";
-        btnExcluir.textContent = "Excluir";
-        btnExcluir.addEventListener("click", () => excluirProduto(p.id));
-
-        tdAcoes.appendChild(btnEditar);
-        tdAcoes.appendChild(btnExcluir);
-
-        row.appendChild(tdGTIN);
-        row.appendChild(tdNome);
-        row.appendChild(tdDescricao);
-        row.appendChild(tdAcoes);
-
-        corpoTabela.appendChild(row);
-    });
-}
-
-const selOrdenar = document.getElementById("ordenarPor");
-if(selOrdenar){
-    selOrdenar.addEventListener("change", () => atualizarTabela(document.querySelector("#busca") ? document.querySelector("#busca").value : ""));
-}
-
-// Mostrar/ocultar formulário de adicionar
-const btnAdicionar = document.getElementById("btn-adicionar");
-if(btnAdicionar){
-    btnAdicionar.addEventListener("click", function (){
-        const form = document.getElementById("form-produto");
-        form.classList.toggle("oculto");
-
-        if(form.classList.contains("oculto")){
-            this.textContent = "Adicionar Produto";
-            form.reset();
-            document.querySelector("#id").value = "";
-        }else{
-            this.textContent = "Cancelar";
-            const formEditar = document.getElementById("form-editar-produto");
-            if(formEditar){ 
-                formEditar.classList.add("oculto");
-            }
-        }
-    });
-}
-
-// Mostrar/ocultar campo de busca
-const btnBuscar = document.getElementById("btn-buscar");
-if(btnBuscar){
-    btnBuscar.addEventListener("click", function (){
-        const campoBusca = document.getElementById("busca");
-        campoBusca.classList.toggle("oculto");
-
-        if(campoBusca.classList.contains("oculto")){
-            this.textContent = "Buscar Produto";
-            campoBusca.value = "";
-            atualizarTabela();
-        }else{
-            this.textContent = "Ocultar Busca";
-            campoBusca.focus();
-        }
-    });
-}
-
-// Adicionar produto
-const formAdd = document.querySelector("#form-produto");
-if(formAdd){
-    formAdd.addEventListener("submit", e =>{
-        e.preventDefault();
-
-        const gtin = formatarGTIN(document.querySelector("#gtin").value);
-        const nome = document.querySelector("#nome").value.trim();
-        const descricao = document.querySelector("#descricao").value.trim();
-
-        let produtos = getProdutos();
-
-        if(produtos.some(p => p.gtin === gtin)){
-            alert("ERRO: Este GTIN já está cadastrado!");
+        if (this.timerToast) clearTimeout(this.timerToast);
+        this.timerToast = setTimeout(() => elementos.toast.classList.add("hidden"), 4000);
+    },
+    renderizarTabela(produtos) {
+        elementos.tabelaBody.innerHTML = "";
+        
+        // Lógica de mensagem vazia
+        if (produtos.length === 0) {
+            const termo = elementos.inputBusca.value.trim();
+            const texto = termo ? "Nenhum produto encontrado." : "Nenhum produto cadastrado.";
+            elementos.emptyState.querySelector("p").textContent = texto;
+            
+            elementos.emptyState.classList.remove("hidden");
             return;
         }
+        
+        elementos.emptyState.classList.add("hidden");
+        produtos.forEach(p => {
+            const tr = document.createElement("tr");
+            
+            let avatarHtml;
+            const iniciais = this.getIniciais(p.nome);
+            if (p.imagem && p.imagem.trim() !== "") {
+                avatarHtml = `<img src="${p.imagem}" class="product-avatar-img" alt="${iniciais}" onerror="this.onerror=null; this.parentNode.innerHTML='${iniciais}';">`;
+            } else {
+                avatarHtml = iniciais;
+            }
 
-        // Cria novo ID
-        const novoId = produtos.length > 0 ? produtos[produtos.length - 1].id + 1 : 1;
+            tr.innerHTML = `
+                <td><span class="txt-gtin">${p.gtin}</span></td>
+                <td>
+                    <div class="product-name-wrapper">
+                        <div class="product-avatar">${avatarHtml}</div>
+                        <span class="txt-nome">${p.nome}</span>
+                    </div>
+                </td>
+                <td><span class="txt-desc" title="${p.descricao}">${p.descricao}</span></td>
+                <td class="text-center actions-cell">
+                    <button class="btn-action-new btn-edit-new" title="Editar">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                    </button>
+                    <button class="btn-action-new btn-delete-new" title="Excluir">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </td>
+            `;
+            
+            tr.addEventListener("click", (e) => {
+                if (!e.target.closest(".btn-action-new")) {
+                    Controller.abrirVisualizar(p.id);
+                }
+            });
 
-        // Adiciona produto
-        produtos.push({ id: novoId, gtin, nome, descricao });
+            tr.querySelector(".btn-edit-new").addEventListener("click", (e) => {
+                e.stopPropagation();
+                Controller.abrirEditar(p.id);
+            });
+            tr.querySelector(".btn-delete-new").addEventListener("click", (e) => {
+                e.stopPropagation();
+                Controller.excluir(p.id);
+            });
 
-        salvarProdutos(produtos);
-        atualizarTabela();
-
-        // Limpa e fecha o formulário
-        e.target.reset();
-        document.querySelector("#id").value = "";
-        formAdd.classList.add("oculto");
-
-        if (btnAdicionar) {
-            btnAdicionar.textContent = "Adicionar Produto";
+            elementos.tabelaBody.appendChild(tr);
+        });
+    },
+    atualizarPaineis(produtos, jsonString) {
+        elementos.jsonViewer.textContent = jsonString;
+        elementos.hexViewer.textContent = this.gerarHexDump(Serializer.simularArquivoBinario(produtos));
+    },
+    gerarHexDump(bytes) {
+        let output = "OFFSET   | 00 01 02 03 04 05 06 07 | ASCII\n---------|-------------------------|---------\n";
+        for (let i = 0; i < bytes.length; i += 8) {
+            let offset = i.toString(16).padStart(8, '0').toUpperCase();
+            let hexPart = "", asciiPart = "";
+            for (let j = 0; j < 8; j++) {
+                if (i + j < bytes.length) {
+                    let b = bytes[i + j];
+                    hexPart += b.toString(16).padStart(2, '0').toUpperCase() + " ";
+                    asciiPart += (b >= 32 && b <= 126) ? String.fromCharCode(b) : ".";
+                } else { hexPart += "   "; asciiPart += " "; }
+            }
+            output += `${offset} | ${hexPart.trimEnd().padEnd(23," ")} | ${asciiPart}\n`;
         }
-
-        alert("Produto cadastrado com sucesso!");
-    });
-}
-
-// Editar produto
-function editarProduto(id){
-    const produtos = getProdutos();
-    const produto = produtos.find(p => p.id === id);
-
-    if(produto){
-        // Oculta o formulário de adicionar
-        const formAdd = document.getElementById("form-produto");
-        if(formAdd){ 
-            formAdd.classList.add("oculto");
+        return output;
+    },
+    fecharTodosModais() {
+        document.querySelectorAll(".modal-overlay").forEach(m => m.classList.add("hidden"));
+    },
+    abrirModal(modal) {
+        this.fecharTodosModais();
+        modal.classList.remove("hidden");
+    },
+    preencherForm(p) {
+        elementos.inputs.id.value = p.id;
+        elementos.inputs.gtin.value = p.gtin;
+        elementos.inputs.nome.value = p.nome;
+        elementos.inputs.descricao.value = p.descricao;
+        elementos.inputs.imagem.value = p.imagem || "";
+        elementos.inputs.gtin.disabled = true;
+    },
+    preencherVisualizacao(p) {
+        const iniciais = this.getIniciais(p.nome);
+        if (p.imagem && p.imagem.trim() !== "") {
+            elementos.viewCampos.imgContainer.innerHTML = `<img src="${p.imagem}" alt="${iniciais}" onerror="this.onerror=null; this.parentNode.innerHTML='<div class=\\'view-avatar-large\\'>${iniciais}</div>';">`;
+        } else {
+            elementos.viewCampos.imgContainer.innerHTML = `<div class="view-avatar-large">${iniciais}</div>`;
         }
-        if(btnAdicionar){ 
-            btnAdicionar.textContent = "Adicionar Produto";
-        }
-
-        // Mostra formulário de edição
-        const formEditar = document.getElementById("form-editar-produto");
-        formEditar.classList.remove("oculto");
-
-        // Preenche os campos
-        document.getElementById("editar-id").value = produto.id;
-        document.getElementById("editar-gtin").value = produto.gtin;
-        document.getElementById("editar-gtin").disabled = true;
-        document.getElementById("editar-nome").value = produto.nome;
-        document.getElementById("editar-descricao").value = produto.descricao;
+        elementos.viewCampos.gtin.textContent = p.gtin;
+        elementos.viewCampos.nome.textContent = p.nome;
+        elementos.viewCampos.descricao.textContent = p.descricao;
     }
-}
+};
 
-document.addEventListener("DOMContentLoaded", () =>{
-    atualizarTabela();
+// --- CONTROLLER ---
+const Controller = {
+    modoDownload: 'json',
+    produtoVisualizadoId: null,
 
-    const formEditar = document.getElementById("form-editar-produto");
-    formEditar.addEventListener("submit", function (e){
+    init() {
+        this.atualizarLista();
+        this.configurarEventos();
+        this.initResizer();
+        const d = Model.ler();
+        View.atualizarPaineis(d, JSON.stringify(d, null, 2));
+    },
+
+    configurarEventos() {
+        // Busca e Ordenação
+        elementos.inputBusca.addEventListener("input", () => this.atualizarLista());
+        elementos.selectOrdenacao.addEventListener("change", () => this.atualizarLista());
+
+        // Fechar Modais
+        elementos.btnsFechar.forEach(b => b.addEventListener("click", () => View.fecharTodosModais()));
+        elementos.btnsCancelar.forEach(b => b.addEventListener("click", () => View.fecharTodosModais()));
+        
+        document.querySelectorAll(".modal-overlay").forEach(overlay => {
+            overlay.addEventListener("click", (e) => {
+                if(e.target === overlay) View.fecharTodosModais();
+            });
+        });
+
+        // Novo Produto
+        elementos.btnNovo.addEventListener("click", () => {
+            elementos.form.reset();
+            elementos.inputs.id.value = "";
+            elementos.inputs.gtin.disabled = false;
+            document.querySelector("#modal-titulo").textContent = "Adicionar Produto";
+            View.abrirModal(elementos.modalProduto);
+        });
+
+        // Salvar
+        elementos.form.addEventListener("submit", (e) => this.salvarFormulario(e));
+
+        // Ações Visualização
+        elementos.btnViewEditar.addEventListener("click", () => {
+            if(this.produtoVisualizadoId) this.abrirEditar(this.produtoVisualizadoId);
+        });
+        elementos.btnViewExcluir.addEventListener("click", () => {
+            if(this.produtoVisualizadoId) this.excluir(this.produtoVisualizadoId);
+        });
+
+        // Utils
+        elementos.inputs.gtin.addEventListener("input", (e) => e.target.value = e.target.value.replace(/\D/g, "").slice(0, 13));
+        elementos.btnReset.addEventListener("click", () => {
+            if(confirm("ATENÇÃO: Apagar tudo?")) { Model.limparTudo(); this.atualizarLista(); View.mostrarToast("Limpo!"); }
+        });
+
+        // Tabs e Download
+        elementos.tabButtons.forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                elementos.tabButtons.forEach(b => b.classList.remove("active"));
+                elementos.codeContents.forEach(c => c.classList.add("hidden"));
+                e.target.classList.add("active");
+                const tab = e.target.dataset.tab;
+                if(tab === 'json') { 
+                    elementos.jsonViewer.classList.remove("hidden"); 
+                    elementos.btnDownload.textContent = "⬇ Baixar (.json)"; 
+                    this.modoDownload = 'json'; 
+                } else { 
+                    elementos.hexViewer.classList.remove("hidden"); 
+                    elementos.btnDownload.textContent = "⬇ Baixar (.db)"; 
+                    this.modoDownload = 'db'; 
+                }
+            });
+        });
+
+        elementos.btnDownload.addEventListener("click", () => this.modoDownload === 'json' ? this.baixarJSON() : this.baixarDB());
+        
+        // Importação
+        elementos.btnImportar.addEventListener("click", () => elementos.inputImportar.click());
+        elementos.inputImportar.addEventListener("change", (e) => this.importarArquivo(e));
+    },
+
+    importarArquivo(e) {
+        const arq = e.target.files[0];
+        if(!arq) return;
+        if(arq.type !== "application/json" && !arq.name.endsWith('.json')) {
+            View.mostrarToast("Apenas arquivos .json são aceitos.", "erro"); e.target.value=""; return;
+        }
+        if(!confirm("Importar substituirá todos os dados atuais. Continuar?")) { e.target.value=""; return; }
+        
+        const r = new FileReader();
+        r.onload = (ev) => {
+            try {
+                const dados = JSON.parse(ev.target.result);
+                if(!Array.isArray(dados)) throw new Error("Arquivo não é uma lista válida.");
+                const validados = dados.map((d, i) => {
+                    if(!d.id || !d.gtin || !d.nome) throw new Error(`Item ${i+1} inválido.`);
+                    return { id: Number(d.id), gtin: String(d.gtin), nome: String(d.nome), descricao: String(d.descricao||""), imagem: String(d.imagem||"") };
+                });
+                Model.salvar(validados);
+                this.atualizarLista();
+                View.mostrarToast("Importado com sucesso!");
+            } catch(err) { View.mostrarToast("Erro: " + err.message, "erro"); }
+            finally { e.target.value = ""; }
+        };
+        r.readAsText(arq);
+    },
+
+    initResizer() {
+        let resizing = false;
+        elementos.resizer.addEventListener('mousedown', () => { resizing=true; document.body.classList.add('resizing'); elementos.resizer.classList.add('resizing'); });
+        document.addEventListener('mousemove', (e) => {
+            if(!resizing) return;
+            let w = window.innerWidth - e.clientX;
+            if(w<300) w=300; if(w>800) w=800; if(window.innerWidth-w<400) return;
+            document.documentElement.style.setProperty('--sidebar-width', `${w}px`);
+        });
+        document.addEventListener('mouseup', () => { resizing=false; document.body.classList.remove('resizing'); elementos.resizer.classList.remove('resizing'); });
+    },
+
+    atualizarLista() {
+        let p = Model.ler();
+        const t = elementos.inputBusca.value.toLowerCase().trim();
+        const c = elementos.selectOrdenacao.value;
+        if(t) p = p.filter(x => x.nome.toLowerCase().includes(t) || x.gtin.includes(t));
+        p.sort((a,b) => c==='nome' ? a.nome.localeCompare(b.nome) : c==='gtin' ? a.gtin.localeCompare(b.gtin) : a.id-b.id);
+        View.renderizarTabela(p);
+    },
+
+    salvarFormulario(e) {
         e.preventDefault();
-
-        const id = parseInt(document.getElementById("editar-id").value);
-        const nome = document.getElementById("editar-nome").value.trim();
-        const descricao = document.getElementById("editar-descricao").value.trim();
-
-        const produtos = getProdutos();
-        const index = produtos.findIndex(p => p.id === id);
-
-        if(index !== -1){
-            // Mantém o GTIN original
-            const gtinOriginal = produtos[index].gtin;
-
-            produtos[index] = { 
-                id, 
-                gtin: gtinOriginal,
-                nome, 
-                descricao 
+        try {
+            const id = elementos.inputs.id.value;
+            const dados = {
+                id: id,
+                gtin: View.formatarGTIN(elementos.inputs.gtin.value),
+                nome: elementos.inputs.nome.value.trim(),
+                descricao: elementos.inputs.descricao.value.trim(),
+                imagem: elementos.inputs.imagem.value.trim()
             };
+            id ? Model.atualizar(dados) : Model.adicionar(dados);
+            View.mostrarToast(id ? "Atualizado!" : "Cadastrado!");
+            View.fecharTodosModais();
+            this.atualizarLista();
+        } catch(err) { alert(err.message); }
+    },
 
-            salvarProdutos(produtos);
-            atualizarTabela();
-
-            alert("Produto alterado com sucesso!");
+    abrirEditar(id) {
+        const p = Model.ler().find(x => x.id === id);
+        if(p) {
+            View.fecharTodosModais();
+            document.querySelector("#modal-titulo").textContent = "Editar Produto";
+            View.preencherForm(p);
+            View.abrirModal(elementos.modalProduto);
         }
+    },
+    
+    abrirVisualizar(id) {
+        const p = Model.ler().find(x => x.id === id);
+        if(p) {
+            this.produtoVisualizadoId = id;
+            View.preencherVisualizacao(p);
+            View.abrirModal(elementos.modalVisualizar);
+        }
+    },
 
-        formEditar.classList.add("oculto");
-    });
-});
+    excluir(id) {
+        if(confirm("Excluir produto?")) {
+            Model.remover(id);
+            this.atualizarLista();
+            View.fecharTodosModais();
+            View.mostrarToast("Excluído!");
+        }
+    },
 
-document.getElementById("cancelar-edicao").addEventListener("click", () =>{
-    document.getElementById("form-editar-produto").classList.add("oculto");
-
-    const campoBusca = document.getElementById("campo-busca");
-    if(campoBusca){
-        campoBusca.classList.remove("oculto");
+    baixarJSON() {
+        const b = new Blob([JSON.stringify(Model.ler(),null,2)], {type:'application/json'});
+        this.triggerDownload(b, 'backup.json');
+    },
+    baixarDB() {
+        const b = new Blob([new Uint8Array(Serializer.simularArquivoBinario(Model.ler()))], {type:'application/octet-stream'});
+        this.triggerDownload(b, 'dados.db');
+    },
+    triggerDownload(blob, nome) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href=url; a.download=nome;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
     }
-    document.getElementById("form-editar-produto").reset();
-    const btnEditarPrincipal = document.getElementById("btn-editar-produto");
-    if(btnEditarPrincipal){
-        btnEditarPrincipal.textContent = "Buscar Produto";
-        delete btnEditarPrincipal.dataset.modo;
-    }
-});
+};
 
-
-// Excluir produto 
-function excluirProduto(id){
-    const confirmar = confirm("Tem certeza que deseja excluir este produto?");
-    if(!confirmar){ 
-        return;
-    }
-
-    const produtos = getProdutos().filter(p => p.id != id);
-    salvarProdutos(produtos);
-    atualizarTabela();
-
-    alert("Produto excluído com sucesso!");
-}
-
-// Buscar produto
-const inputBusca = document.querySelector("#busca");
-if(inputBusca){
-    inputBusca.addEventListener("input", e =>{
-        atualizarTabela(e.target.value);
-    });
-}
-
-// Inicializa a tabela
-document.addEventListener("DOMContentLoaded", () =>{
-    atualizarTabela();
-});
+window.Controller = Controller;
+document.addEventListener("DOMContentLoaded", () => Controller.init());
