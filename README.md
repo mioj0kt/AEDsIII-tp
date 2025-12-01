@@ -281,25 +281,35 @@ Embora a aplicação rode no navegador, ela **simula fielmente** a estrutura de 
 8.3.**Ordenação de Produtos por GTIN** ![Função que ordena a lista de produtos por GTIN](img/Parte%202%20(TP4)/8.3%20-%20Ordenação%20de%20Produtos%20por%20GTIN.png)
 9.1.**Menu Lateral de Exibição dos Dados - Json** ![ Menu lateral que exibe os dados dos produto, visualização em Json](img/Parte%202%20(TP4)/9.1%20-%20Menu%20Lateral%20de%20Exibição%20dos%20Dados%20-%20Json.png)
 9.2.**Menu Lateral de Exibição dos Dados - Binário** ![ Menu lateral que exibe os dados dos produto, visualização em Binário](img/Parte%202%20(TP4)/9.2%20-%20Menu%20Lateral%20de%20Exibição%20dos%20Dados%20-%20Binário.png)
-10.**Arquivos Exportados** ![Print da área de trabalho com os dois arquivos possiveis para download - "backup.json" e "dados.db"](img/Parte%202%20(TP4)/10%20-%20Arquivos%20Exportados.png)
+10.**Arquivos Exportados** ![Print da área de trabalho com os dois arquivos possíveis para download - "backup.json" e "dados.db"](img/Parte%202%20(TP4)/10%20-%20Arquivos%20Exportados.png)
 
 ---
 
 ## 📊 Avaliação com Usuários (Teste de Usabilidade)
 
-### Checklist de Avaliação (TP4)
-Conforme requisito da atividade extensionista, o sistema foi testado por alunos do curso de Ciência da Computação. Abaixo apresentamos a média das avaliações (Escala Likert de 1 a 5):
+Conforme requisito da atividade extensionista, o sistema foi testado por **10 alunos** do curso de Ciência da Computação. O teste foi conduzido utilizando um roteiro de tarefas (cadastro, edição, busca e simulação binária) seguido de um questionário.
 
-| Item | Afirmação resumida | Média das respostas |
+**Metodologia:**
+* **Público-alvo:** Alunos de Ciência da Computação (do 1º ao 8º período).
+* **Ferramenta:** Google Forms.
+* **Dados Brutos:** [Clique aqui para ver a planilha com todas as respostas (.csv)](docs/dados_avaliacao.csv)
+* **Formulário Original:** [Link para o Forms (Para conferência)](https://forms.office.com/Pages/ResponsePage.aspx?id=p9XLFJTsukazFMwPyXKhYT01GxXKzf1Apv72O13UgK1UOVRTTUM3MTk2MkJWU01CNkI2RUI1MllZMC4u)
+
+### Resultados Consolidados (Escala Likert 1 a 5)
+
+Abaixo apresentamos a média das avaliações coletadas:
+
+| Item | Pergunta realizada | Média das respostas |
 | :--- | :--- | :--- |
-| 1 | Eficiência da aplicação | x |
-| 2 | Facilidade de uso das funções | x |
-| 3 | Clareza das mensagens (Feedback) | x |
-| 4 | Intuitividade da Interface | x |
-| 5 | Satisfação geral | x |
+| 1 | **Facilidade de Uso:** As funções principais foram fáceis de encontrar e usar? | 5,0 |
+| 2 | **Feedback Visual:** As mensagens do sistema (sucesso/erro) foram claras? | 5,0 |
+| 3 | **Interface:** A organização visual é agradável e intuitiva? | 4,7 |
+| 4 | **Utilidade Pedagógica:** A visualização "Binário" ajuda a compreender a matéria de AEDS III? | 5,0 |
+| 5 | **Performance:** O sistema respondeu rapidamente às ações sem travar? | 5,0 |
+| 6 | **Satisfação Geral:** De modo geral, está satisfeito com a experiência? | 5,0 |
 
 **Análise Qualitativa:**
-Os usuários elogiaram a visualização do "Hex Dump" lateral, considerando-a muito útil para entender como os bytes são organizados no arquivo. A interface moderna e o feedback visual (toasts) foram citados como pontos positivos que facilitaram o uso sem necessidade de treinamento prévio.
+Os resultados foram extremamente positivos, com destaque para a **Utilidade Pedagógica** e **Performance**, que atingiram a nota máxima (5,0). O feedback textual reforçou a estabilidade do sistema, com comentários como *"Nenhum bug, a plataforma é boa"* e *"Muito bom o trabalho! Não me deparei com nenhum bug ou problema"*. A nota 4,7 na interface indica que, embora funcional e agradável, ainda há espaço para pequenos refinamentos visuais futuros, mas o objetivo principal de simulação e ensino foi plenamente atingido.
 
 ---
 
@@ -313,7 +323,7 @@ Os usuários elogiaram a visualização do "Hex Dump" lateral, considerando-a mu
 
 > **O relatório do trabalho foi entregue no APC?** ✅
 >
-> **** 
+> **Sim. Uma copia do relatório foi cadastrado no APC (Ambiente de Projetos Curriculares).** 
 
 > **O trabalho foi criado apenas com HTML, CSS e JS?** ✅
 >
@@ -334,4 +344,4 @@ Os usuários elogiaram a visualização do "Hex Dump" lateral, considerando-a mu
 * **TP1 (Console):** [https://youtu.be/ZYMZ9jcaeK0](https://youtu.be/ZYMZ9jcaeK0)
 * **TP2 (Console):** [https://youtu.be/GzxbBbwcHy0](https://youtu.be/GzxbBbwcHy0)
 * **TP3 (Console):** [https://youtu.be/TK6eKy3TGHQ](https://youtu.be/TK6eKy3TGHQ)
-* **TP4 (Web Visualizer):** [https://youtu.be/](https://youtu.be/)
+* **TP4 (Web Visualizer):** [https://youtu.be/-OFDD6R3JvM](https://youtu.be/-OFDD6R3JvM)
